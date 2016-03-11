@@ -47,12 +47,12 @@ public class Settings {
 	
 	public boolean load() throws SQLException{
 		Statement stmt = c.createStatement();
-		  String sql = "SELECT * FROM `settings`"; 
-		  ResultSet rs = stmt.executeQuery(sql);
-	      while ( rs.next() ) {
-	    	  setting.put(rs.getString("name"), rs.getString("value"));
-	      }
-		  stmt.close();
-		  return true;
+		String sql = "SELECT * FROM `settings`"; 
+		ResultSet rs = stmt.executeQuery(sql);
+		while ( rs.next() ) {
+			setting.put(rs.getString("name"), rs.getString("value"));
+		}
+		stmt.close();
+		return true;
 	}
 }
