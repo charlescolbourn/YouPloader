@@ -1,3 +1,17 @@
+/* 
+ * YouPloader Copyright (c) 2016 genuineparts (itsme@genuineparts.org)
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+ * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * 
+ */
 package at.becast.youploader.account;
 
 import java.io.IOException;
@@ -44,7 +58,7 @@ public class AccountManager {
 		String sql = "SELECT * FROM `accounts` WHERE `active`"; 
 		ResultSet rs = stmt.executeQuery(sql);
 		if(rs.isBeforeFirst()){
-			return new OAuth2(s.setting.get("client_id"),s.setting.get("client_secret"), Account.read(rs.getString("name")).refreshToken);
+			return new OAuth2(s.setting.get("client_id"),s.setting.get("clientSecret"), Account.read(rs.getString("name")).refreshToken);
 		}else{
 			stmt.close();
 			return null;
@@ -91,11 +105,19 @@ public class AccountManager {
 
 	public void change_user(String actionCommand) {
 		try {
-			currentaccount = new OAuth2(s.setting.get("client_id"),s.setting.get("client_secret"), Account.read(actionCommand).refreshToken);
+			currentaccount = new OAuth2(s.setting.get("client_id"),s.setting.get("clientSecret"), Account.read(actionCommand).refreshToken);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
+	}
+
+	public OAuth2 getAuth(String acc) {
+		try {
+			return new OAuth2(s.setting.get("client_id"),s.setting.get("clientSecret"), Account.read(acc).refreshToken);
+		} catch (IOException e) {
+			return null;
+		}
 	}
 }

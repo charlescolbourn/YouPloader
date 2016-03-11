@@ -1,3 +1,17 @@
+/* 
+ * YouPloader Copyright (c) 2016 genuineparts (itsme@genuineparts.org)
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+ * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * 
+ */
 package at.becast.youploader.youtube;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,7 +30,7 @@ import java.util.Map;
 
 public class Uploader {
   private OAuth2 oAuth2;
-
+  private UploadStream stream;
   public Uploader(OAuth2 oAuth2) {
     this.oAuth2 = oAuth2;
   }
@@ -34,14 +48,8 @@ public class Uploader {
     headers.put("X-Upload-Content-Length", String.valueOf(file.length()));
     headers.put("X-Upload-Content-Type", "video/*");
 
-    Upload url = new Upload(
-      http.post(
-        "https://www.googleapis.com//upload/youtube/v3/videos?uploadType=resumable&part=snippet,status",
-        headers,
-        new ObjectMapper().writeValueAsString(video)
-      ),
-      file
-    );
+    String[] result = http.post("https://www.googleapis.com//upload/youtube/v3/videos?uploadType=resumable&part=snippet,status",headers,new ObjectMapper().writeValueAsString(video));
+    Upload url = new Upload(result[0], file, result[1]);
 
     http.close();
     return url;
@@ -54,12 +62,16 @@ public class Uploader {
     headers.put("Authorization", this.oAuth2.getHeader());
     headers.put("Content-Type", "video/*");
 
-    UploadStream stream = new UploadStream(upload.file, event);
+    stream = new UploadStream(upload.file, event);
     stream.setSpeedLimit(limit);
     http.put(upload.url, headers, stream);
 
     stream.close();
     http.close();
+  }
+  
+  public void set_speedlimit(int limit){
+	  stream.setSpeedLimit(limit);
   }
 
   public void resumeUpload(Upload upload, UploadEvent event, long limit) throws IOException {

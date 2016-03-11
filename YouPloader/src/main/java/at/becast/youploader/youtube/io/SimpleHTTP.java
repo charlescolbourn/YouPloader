@@ -21,7 +21,7 @@ public class SimpleHTTP {
     this.chc = HttpClients.createDefault();
   }
 
-  public String post(String url, Map<String, String> headers, String body) throws IOException, UploadException {
+  public String[] post(String url, Map<String, String> headers, String body) throws IOException, UploadException {
     HttpPost post = new HttpPost(url);
 
     for (String key : headers.keySet()) {
@@ -31,10 +31,13 @@ public class SimpleHTTP {
     post.setEntity(new ByteArrayEntity(body.getBytes("UTF-8")));
     CloseableHttpResponse response = this.chc.execute(post);
 
-    String location = null;
+    String[] location = new String[2];
     for (Header h : response.getAllHeaders()) {
       if (h.getName().equals("Location")) {
-        location = h.getValue();
+        location[0] = h.getValue();
+      }
+      if (h.getName().equals("X-Goog-Correlation-Id")){
+    	location[1] = h.getValue();
       }
     }
 
