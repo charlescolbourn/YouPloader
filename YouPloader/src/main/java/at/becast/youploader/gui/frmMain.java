@@ -37,10 +37,6 @@ import at.becast.youploader.youtube.Categories;
 import javax.swing.JPanel;
 import javax.swing.JMenu;
 import javax.swing.JScrollPane;
-import javax.swing.JList;
-import javax.swing.ListSelectionModel;
-import javax.swing.BoxLayout;
-
 import net.miginfocom.layout.CC;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JSpinner;
@@ -48,19 +44,12 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
 import java.awt.FlowLayout;
-import javax.swing.JInternalFrame;
-import javax.swing.JLayeredPane;
-import javax.swing.JDesktopPane;
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
-import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import com.jgoodies.forms.layout.FormSpecs;
 import javax.swing.SwingConstants;
 import javax.swing.SpinnerNumberModel;
-import java.awt.CardLayout;
-import javax.swing.SpringLayout;
 
 /**
  *
