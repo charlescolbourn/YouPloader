@@ -14,6 +14,7 @@
  */
 package at.becast.youploader.youtube.io;
 
+import java.io.File;
 import java.io.IOException;
 
 import at.becast.youploader.account.Account;
@@ -23,6 +24,7 @@ import at.becast.youploader.youtube.GuiUploadEvent;
 import at.becast.youploader.youtube.Uploader;
 import at.becast.youploader.youtube.data.Upload;
 import at.becast.youploader.youtube.data.Video;
+import at.becast.youploader.youtube.exceptions.UploadException;
 
 public class UploadWorker extends Thread {
 	
@@ -34,14 +36,23 @@ public class UploadWorker extends Thread {
 	private String acc;
 	private AccountManager AccMgr;
 	
-	public UploadWorker(Video video, UploadItem frame, Upload upload, String acc){
-		this.video = video;
+	public UploadWorker(UploadItem frame, String acc){
 		this.frame = frame;
-		this.upload = upload;
 		this.acc = acc;
 		this.AccMgr = AccountManager.getInstance();
 		this.uploader = new Uploader(this.AccMgr.getAuth(acc));
 		this.event = new GuiUploadEvent(frame);
+	}
+	
+	public void prepare(File file, Video videodata){
+		this.video = videodata;
+		try {
+			this.upload = this.uploader.prepareUpload(file, videodata);
+		} catch (IOException | UploadException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		this.frame.getlblUrl().setText("https://www.youtube.com/watch?v="+this.upload.id);
 	}
 	
 	@Override

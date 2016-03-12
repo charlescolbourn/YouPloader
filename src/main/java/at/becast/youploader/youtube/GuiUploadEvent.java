@@ -15,14 +15,10 @@
 package at.becast.youploader.youtube;
 
 import java.text.DateFormat;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.Date;
 import java.util.Locale;
-import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
@@ -80,7 +76,7 @@ public class GuiUploadEvent implements UploadEvent {
     	this.lastdata = position;
     	long speed = this.dataDelta / (this.timeDelta + 1) * 1000 + 1;
 		long duration = ((size-position)/speed)*1000;
-		String time = String.format("%d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(duration), TimeUnit.MILLISECONDS
+		String time = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(duration), TimeUnit.MILLISECONDS
 					.toMinutes(duration) - TimeUnit.HOURS
 					.toMinutes(TimeUnit.MILLISECONDS.toHours(duration)), TimeUnit.MILLISECONDS
 					.toSeconds(duration) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration)));

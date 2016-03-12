@@ -6,14 +6,16 @@ public class Upload {
   public final String url;
   public final File file;
   public final String id;
+  public final Video video;
 
-  public Upload(String url, File file, String id) {
+  public Upload(String url, File file, String id, Video video) {
     this.url = url;
     this.file = file;
     this.id = id;
+    this.video = video;
   }
 
   public Upload(String result, File file2) {
-    this(null, null, null);
+    this(null, null, null, null);
   }
 }

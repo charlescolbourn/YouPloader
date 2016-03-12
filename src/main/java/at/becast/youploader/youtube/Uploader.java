@@ -49,7 +49,7 @@ public class Uploader {
     headers.put("X-Upload-Content-Type", "video/*");
 
     String[] result = http.post("https://www.googleapis.com//upload/youtube/v3/videos?uploadType=resumable&part=snippet,status",headers,new ObjectMapper().writeValueAsString(video));
-    Upload url = new Upload(result[0], file, result[1]);
+    Upload url = new Upload(result[0], file, result[1], video);
 
     http.close();
     return url;
@@ -96,7 +96,7 @@ public class Uploader {
       headers.put("Authorization", this.oAuth2.getHeader());
       headers.put("Content-Range", String.format("bytes %d-%d/%d", uploaded, length - 1, length));
 
-      UploadStream stream = new UploadStream(upload.file, event, uploaded);
+      stream = new UploadStream(upload.file, event, uploaded);
       stream.setSpeedLimit(limit);
       http.put(upload.url, headers, stream);
       stream.close();

@@ -14,10 +14,25 @@
  */
 package at.becast.youploader.youtube.io;
 
-import java.util.List;
+import java.io.File;
+import java.util.LinkedList;
+
+import at.becast.youploader.gui.UploadItem;
+import at.becast.youploader.youtube.data.Video;
 
 public class UploadManager {
-	private static int LIMIT = 1;
-	private List<UploadWorker> _ToUpload;
+	private int upload_limit = 1;
+	private LinkedList<UploadWorker> _ToUpload = new LinkedList<UploadWorker>();
+	private int speed_limit = 0;
+	
+	public UploadManager(){
+		
+	}
+	
+	public void add_upload(UploadItem frame, File data, Video videodata, String acc){
+		UploadWorker worker = new UploadWorker(frame,acc);
+		worker.prepare(data, videodata);
+		_ToUpload.add(worker);
+	}
 	
 }

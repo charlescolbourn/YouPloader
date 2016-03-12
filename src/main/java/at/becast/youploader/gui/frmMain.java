@@ -48,11 +48,10 @@ import javax.swing.JFileChooser;
 import javax.swing.JButton;
 import javax.swing.DefaultComboBoxModel;
 import at.becast.youploader.youtube.Categories;
-import at.becast.youploader.youtube.Uploader;
-import at.becast.youploader.youtube.data.Upload;
 import at.becast.youploader.youtube.data.Video;
 import at.becast.youploader.youtube.exceptions.UploadException;
 import at.becast.youploader.youtube.io.UploadWorker;
+import at.becast.youploader.youtube.io.UploadManager;
 
 import javax.swing.JPanel;
 import javax.swing.JMenu;
@@ -88,6 +87,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
 	private static final long serialVersionUID = 1L;
 	public static final String DB_FILE = "data/data.db";
 	public static final String VERSION = "0.1";
+	public static UploadManager UploadManager = new UploadManager();
 	public Settings s = Settings.getInstance();
 	public AccountManager accMng =  AccountManager.getInstance();
 	private ModalDialog modal; 
@@ -622,13 +622,8 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         Video v = new Video();
         v.snippet.title=Name;
         v.snippet.description="Uploaded with YouPloader";
-        accMng.change_user("genuineparts");
-		Uploader u = new Uploader(AccountManager.currentaccount);
 		File data = new File(File);
-		Upload upload = u.prepareUpload(data, v);
-		f.getlblUrl().setText("https://www.youtube.com/watch?v="+upload.id);
-		UploadWorker worker = new UploadWorker(v,f,upload,"genuineparts");
-		worker.start();
+		UploadManager.add_upload(f, data, v, "genuineparts"); 
         return f;
     }
     
