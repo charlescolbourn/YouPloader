@@ -28,7 +28,8 @@ import at.becast.youploader.youtube.exceptions.UploadException;
 
 public class UploadWorker extends Thread {
 	
-	private Video video;
+	private Video videodata;
+	private File file;
 	private UploadItem frame;
 	private Upload upload;
 	private UploadEvent event;
@@ -36,18 +37,19 @@ public class UploadWorker extends Thread {
 	private String acc;
 	private AccountManager AccMgr;
 	
-	public UploadWorker(UploadItem frame, String acc){
+	public UploadWorker(UploadItem frame, String acc, File file, Video videodata){
 		this.frame = frame;
 		this.acc = acc;
+		this.file = file;
+		this.videodata = videodata;
 		this.AccMgr = AccountManager.getInstance();
 		this.uploader = new Uploader(this.AccMgr.getAuth(acc));
 		this.event = new GuiUploadEvent(frame);
 	}
 	
-	public void prepare(File file, Video videodata){
-		this.video = videodata;
+	public void prepare(){
 		try {
-			this.upload = this.uploader.prepareUpload(file, videodata);
+			this.upload = this.uploader.prepareUpload(this.file, this.videodata);
 		} catch (IOException | UploadException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -59,6 +61,7 @@ public class UploadWorker extends Thread {
 	public void run(){
 		setName( "Uploader-" + getId() );
 		try {
+			this.prepare();
 			this.uploader.upload(this.upload, this.event, 0);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

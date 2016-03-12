@@ -21,8 +21,9 @@ import at.becast.youploader.gui.UploadItem;
 import at.becast.youploader.youtube.data.Video;
 
 public class UploadManager {
-	private int upload_limit = 1;
+	private int upload_limit = 2;
 	private LinkedList<UploadWorker> _ToUpload = new LinkedList<UploadWorker>();
+	private LinkedList<UploadWorker> _Uploading = new LinkedList<UploadWorker>();
 	private int speed_limit = 0;
 	
 	public UploadManager(){
@@ -30,9 +31,24 @@ public class UploadManager {
 	}
 	
 	public void add_upload(UploadItem frame, File data, Video videodata, String acc){
-		UploadWorker worker = new UploadWorker(frame,acc);
-		worker.prepare(data, videodata);
-		_ToUpload.add(worker);
+		UploadWorker worker = new UploadWorker(frame,acc, data, videodata);
+		_ToUpload.addLast(worker);
+	}
+	
+	public void start(){
+		if(!_ToUpload.isEmpty()){
+			for(int i=0;i<=upload_limit-_Uploading.size();i++){
+				UploadWorker w = _ToUpload.removeFirst();
+				w.start();
+				_Uploading.add(w);
+			}
+		}
+	}
+	
+	public void set_limit(int limit){
+		for(int i=0;i<_Uploading.size();i++){
+			_Uploading.get(i).setSpeed(limit);
+		}
 	}
 	
 }

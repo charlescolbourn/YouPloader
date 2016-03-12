@@ -38,6 +38,8 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.JTextArea;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -74,6 +76,8 @@ import javax.swing.SpinnerNumberModel;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.Font;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
 
 /**
  *
@@ -164,6 +168,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         		 JFileChooser chooser = new JFileChooser();
         		    int returnVal = chooser.showOpenDialog((Component) self);
         		    if(returnVal == JFileChooser.APPROVE_OPTION) {
+        		    	cmbFile.removeAllItems();
         		    	cmbFile.addItem(chooser.getSelectedFile().getAbsolutePath().toString());
         		    }
         	}
@@ -529,6 +534,11 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         		RowSpec.decode("max(0dlu;default)"),}));
         
         btnStart = new JButton("Start");
+        btnStart.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		UploadManager.start();
+        	}
+        });
         panel_2.add(btnStart, "2, 4");
         
         btnStop = new JButton("Stop");
@@ -540,6 +550,14 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         
         spinner = new JSpinner();
         spinner.setModel(new SpinnerNumberModel(new Integer(0), new Integer(0), null, new Integer(10)));
+        spinner.addChangeListener(new ChangeListener() {
+
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				JSpinner s = (JSpinner) e.getSource();
+				UploadManager.set_limit(Integer.parseInt(s.getValue().toString()));			
+			}
+        });
         panel_2.add(spinner, "50, 4");
         
         JLabel lblKbps = new JLabel("kbps");

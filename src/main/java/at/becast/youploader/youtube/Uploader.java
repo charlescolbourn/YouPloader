@@ -71,7 +71,7 @@ public class Uploader {
   }
   
   public void set_speedlimit(int limit){
-	  stream.setSpeedLimit(limit);
+	  this.stream.setSpeedLimit(limit);
   }
 
   public void resumeUpload(Upload upload, UploadEvent event, long limit) throws IOException {

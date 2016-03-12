@@ -73,10 +73,10 @@ public class UploadItem extends JPanel {
 		lblStartedAt.setHorizontalAlignment(SwingConstants.TRAILING);
 		add(lblStartedAt, "cell 1 0,growx");
 		
-		lblStart = new JLabel("<Startdate>");
+		lblStart = new JLabel("Not yet started");
 		add(lblStart, "cell 2 0,growx");
 		
-		lblUrl = new JLabel("<url>");
+		lblUrl = new JLabel("");
 		lblUrl.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -109,7 +109,7 @@ public class UploadItem extends JPanel {
 		lblReleased.setHorizontalAlignment(SwingConstants.TRAILING);
 		add(lblReleased, "cell 1 1,growx");
 		
-		lblRelease = new JLabel("<released>");
+		lblRelease = new JLabel("Not yet started");
 		add(lblRelease, "cell 2 1,growx");
 		
 		progressBar = new JProgressBar();
