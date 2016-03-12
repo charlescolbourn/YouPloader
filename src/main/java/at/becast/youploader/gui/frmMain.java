@@ -14,15 +14,19 @@
  */
 package at.becast.youploader.gui;
 
-import at.becast.youploader.account.AccountManager;
-import at.becast.youploader.gui.slider.SideBar;
-import at.becast.youploader.gui.slider.SidebarSection;
-import at.becast.youploader.settings.Settings;
-
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Desktop;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Frame;
+import java.awt.GridBagConstraints;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -30,64 +34,55 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
-import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JSpinner;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.JTextArea;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JSeparator;
-import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JButton;
-import javax.swing.DefaultComboBoxModel;
+
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.FormSpecs;
+import com.jgoodies.forms.layout.RowSpec;
+
+import at.becast.youploader.account.AccountManager;
+import at.becast.youploader.gui.slider.SideBar;
+import at.becast.youploader.gui.slider.SidebarSection;
+import at.becast.youploader.settings.Settings;
 import at.becast.youploader.youtube.Categories;
 import at.becast.youploader.youtube.data.Video;
 import at.becast.youploader.youtube.exceptions.UploadException;
-import at.becast.youploader.youtube.io.UploadWorker;
 import at.becast.youploader.youtube.io.UploadManager;
-
-import javax.swing.JPanel;
-import javax.swing.JMenu;
-import javax.swing.JScrollPane;
 import net.miginfocom.layout.CC;
 import net.miginfocom.swing.MigLayout;
-import javax.swing.JSpinner;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
-import java.awt.FlowLayout;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Desktop;
-import java.awt.GridBagConstraints;
-import com.jgoodies.forms.layout.FormSpecs;
-import javax.swing.SwingConstants;
-import javax.swing.SpinnerNumberModel;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.Font;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeEvent;
 
 /**
  *
- * @author Bernhard
+ * @author genuineparts
  */
+
 public class frmMain extends javax.swing.JFrame implements IMainMenu{
 
-    /**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	public static final String DB_FILE = "data/data.db";
 	public static final String VERSION = "0.1";
@@ -101,8 +96,6 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
     private javax.swing.JButton jButton1;
     private JComboBox<String> cmbFile;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JPanel mainTab;
     private javax.swing.JMenu mnuAcc;
     private javax.swing.JMenuBar mnuBar;
@@ -110,7 +103,6 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
     private javax.swing.JMenuItem mnuQuit;
     private JTextField txtTitle;
     private JMenuItem mntmAddAccount;
-    private JRadioButtonMenuItem rdbtnmntmNewRadioItem;
     private JLabel lblTagslenght;
     private JLabel lblDesclenght;
     private JLabel lbltitlelenght;
@@ -118,19 +110,18 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
     private JMenuItem mntmAbout;
     private JScrollPane TabQueues;
     private JPanel panel_1;
-    private JScrollPane scrollPane;
     private JSpinner spinner;
     private JLabel lblUploadSpeed;
     private JPanel TabQueue;
-    private JPanel panel_4;
-    private JScrollPane scrollPane_1;
     private JButton btnStart;
     private JButton btnStop;
     private JPanel QueuePanel;
     private JMenuItem mntmDonate;
     private JTextArea txtTags;
     private JScrollPane scrollPane_2;
+    private JComboBox<String> cmbAccount;
 	public transient static HashMap<Integer, JMenuItem> _accounts = new HashMap<Integer, JMenuItem>();
+	
 	/**
      * Creates new form frmMain
      */
@@ -156,6 +147,9 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
     }
 
 
+    /**
+     * 
+     */
     public void initComponents() {
 
         TabbedPane = new javax.swing.JTabbedPane();
@@ -173,7 +167,6 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         		    }
         	}
         });
-        jScrollPane1 = new javax.swing.JScrollPane();
         SideBar sideBar = new SideBar(SideBar.SideBarMode.TOP_LEVEL, true, 300, true);
         SidebarSection ss1 = new SidebarSection(sideBar, "Template", new editPanel(),null);
         SidebarSection ss2 = new SidebarSection(sideBar, "Monetisation", new MonetPanel(),null);
@@ -225,7 +218,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
                 lblTagslenght.setText("("+txtTags.getText().length()+"/500)");
         	}
         });
-        JComboBox cmbAccount = new JComboBox();
+        cmbAccount = new JComboBox<String>();
         
         JLabel lblAccount = new JLabel("Account");
         
@@ -234,7 +227,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         	public void actionPerformed(ActionEvent e) {
         		if(cmbFile.getSelectedItem()!=null && !cmbFile.getSelectedItem().toString().equals("")){
         			try {
-						create_upload(cmbFile.getSelectedItem().toString(), txtTitle.getText());
+						create_upload(cmbFile.getSelectedItem().toString(), txtTitle.getText(), cmbAccount.getSelectedItem().toString());
 					} catch (IOException | UploadException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -614,9 +607,11 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
     	int i = 0;
     	HashMap<String, Integer> accounts =  accMng.load();
     	for(Entry<String, Integer> entry : accounts.entrySet()){
+    		cmbAccount.addItem(entry.getKey());
     		JRadioButtonMenuItem rdoBtn = new JRadioButtonMenuItem(entry.getKey());
     		if(entry.getValue()==1){
     			rdoBtn.setSelected(true);
+    			cmbAccount.setSelectedItem(entry.getKey());
     		}
     		rdoBtn.setActionCommand(entry.getKey());
     		rdoBtn.addActionListener(new ActionListener(){
@@ -632,7 +627,15 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         
     }
     
-    public UploadItem create_upload(String File, String Name) throws IOException, UploadException{
+    /**
+     * @param String File
+     * @param String Name
+     * @param String Account
+     * @return UploadItem
+     * @throws IOException
+     * @throws UploadException
+     */
+    public UploadItem create_upload(String File, String Name, String Account) throws IOException, UploadException{
         UploadItem f = new UploadItem();
         f.getlblName().setText(Name);
         this.getQueuePanel().add(f, new CC().wrap());
@@ -641,7 +644,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         v.snippet.title=Name;
         v.snippet.description="Uploaded with YouPloader";
 		File data = new File(File);
-		UploadManager.add_upload(f, data, v, "genuineparts"); 
+		UploadManager.add_upload(f, data, v, Account); 
         return f;
     }
     
