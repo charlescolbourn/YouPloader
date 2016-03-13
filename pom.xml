@@ -9,13 +9,13 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
-            <version>4.4.3</version>
+            <version>4.4.4</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.5.1</version>
+            <version>4.5.2</version>
             <type>jar</type>
         </dependency>
         <dependency>
@@ -93,8 +93,8 @@
                     </goals>
                     <configuration>
                         <headerType>gui</headerType>
-                        <jar>${project.build.directory}/${artifactId}-${version}.jar</jar>
-                        <outfile>${project.build.directory}/${artifactId}-${version}.exe</outfile>
+                        <jar>${project.build.directory}/${project.artifactId}-${project.version}.jar</jar>
+                        <outfile>${project.build.directory}/${project.artifactId}-${project.version}.exe</outfile>
                         <downloadUrl>http://java.com/download</downloadUrl>
                         <classPath>
                             <mainClass>at.becast.youploader.gui.frmMain</mainClass>
@@ -115,7 +115,7 @@
                             <productName>${project.name}</productName>
                             <companyName>becast.at</companyName>
                             <internalName>YouPloader</internalName>
-                            <originalFilename>${artifactId}-${version}.exe</originalFilename>
+                            <originalFilename>${project.artifactId}-${project.version}.exe</originalFilename>
                         </versionInfo>
                     </configuration>
                 </execution>
@@ -142,7 +142,7 @@
 	</build>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 </project>

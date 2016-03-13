@@ -70,6 +70,7 @@ import at.becast.youploader.gui.slider.SideBar;
 import at.becast.youploader.gui.slider.SidebarSection;
 import at.becast.youploader.settings.Settings;
 import at.becast.youploader.youtube.Categories;
+import at.becast.youploader.youtube.data.CategoryType;
 import at.becast.youploader.youtube.data.Video;
 import at.becast.youploader.youtube.exceptions.UploadException;
 import at.becast.youploader.youtube.io.UploadManager;
@@ -116,6 +117,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
     private JButton btnStart;
     private JButton btnStop;
     private JPanel QueuePanel;
+    private JComboBox<CategoryType> cmbCategory;
     private JMenuItem mntmDonate;
     private JTextArea txtTags;
     private JScrollPane scrollPane_2;
@@ -242,8 +244,11 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         
         JLabel lblCategory = new JLabel("Category");
         
-        JComboBox<Categories> cmbCategory = new JComboBox<Categories>();
-        cmbCategory.setModel(new DefaultComboBoxModel<Categories>(Categories.values()));
+        cmbCategory = new JComboBox<CategoryType>();
+        cmbCategory.setModel(new DefaultComboBoxModel<CategoryType>());
+        for(Categories cat: Categories.values()){
+        	 cmbCategory.addItem(new CategoryType(cat.getID(),cat.toString()));
+        }
         
         lblDesclenght = new JLabel("(0/1000)");
         
@@ -535,6 +540,11 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         panel_2.add(btnStart, "2, 4");
         
         btnStop = new JButton("Stop");
+        btnStop.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		UploadManager.stop();
+        	}
+        });
         panel_2.add(btnStop, "6, 4");
         
         lblUploadSpeed = new JLabel("Upload Speed:");
@@ -642,7 +652,9 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         this.getQueuePanel().revalidate();
         Video v = new Video();
         v.snippet.title=Name;
-        v.snippet.description="Uploaded with YouPloader";
+        CategoryType cat = (CategoryType) cmbCategory.getSelectedItem();
+        v.snippet.categoryId = cat.getValue();
+        v.snippet.description = txtDescription.getText();
 		File data = new File(File);
 		UploadManager.add_upload(f, data, v, Account); 
         return f;

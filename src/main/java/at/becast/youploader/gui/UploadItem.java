@@ -119,6 +119,7 @@ public class UploadItem extends JPanel {
 		add(progressBar, "cell 0 2 3 1,grow");
 		
 		JButton btnNewButton_1 = new JButton("");
+		btnNewButton_1.setIcon(new ImageIcon(getClass().getResource("/cross.png")));
 		add(btnNewButton_1, "cell 3 2,grow");
 		
 		JButton btnNewButton_2 = new JButton("");

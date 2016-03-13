@@ -22,12 +22,14 @@ import at.becast.youploader.youtube.data.Video;
 
 public class UploadManager {
 	private int upload_limit = 2;
+	private enum Status{STOPPED, RUNNING,FINISHED};
+	private Status status;
 	private LinkedList<UploadWorker> _ToUpload = new LinkedList<UploadWorker>();
 	private LinkedList<UploadWorker> _Uploading = new LinkedList<UploadWorker>();
 	private int speed_limit = 0;
 	
 	public UploadManager(){
-		
+		this.status=Status.STOPPED;
 	}
 	
 	public void add_upload(UploadItem frame, File data, Video videodata, String acc){
@@ -37,10 +39,22 @@ public class UploadManager {
 	
 	public void start(){
 		if(!_ToUpload.isEmpty()){
+			this.status=Status.RUNNING;
 			for(int i=0;i<=upload_limit-_Uploading.size();i++){
-				UploadWorker w = _ToUpload.removeFirst();
-				w.start();
-				_Uploading.add(w);
+				if(!_ToUpload.isEmpty()){
+					UploadWorker w = _ToUpload.removeFirst();
+					w.start();
+					_Uploading.add(w);
+				}
+			}
+		}
+	}
+	
+	public void stop(){
+		if(!_Uploading.isEmpty()){
+			this.status=Status.STOPPED;
+			for(int i=0;i<_Uploading.size();i++){
+				_Uploading.get(i).abort();
 			}
 		}
 	}

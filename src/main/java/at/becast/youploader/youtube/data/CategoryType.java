@@ -1,14 +1,14 @@
 package at.becast.youploader.youtube.data;
 
 public class CategoryType {
-	    private String value;
+	    private int value;
 	    private String label;
 	    
-	    public CategoryType(String id, String label){
+	    public CategoryType(int id, String label){
 		    this.value = id;
 		    this.label = label;
 	    }
-	    public String getValue(){
+	    public int getValue(){
 	    	return value;
 	    }
 	    public String toString(){

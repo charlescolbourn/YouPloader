@@ -31,4 +31,8 @@ public enum Categories {
 	public String toString() {
 		return label;
 	}
+	
+	public int getID() {
+		return number;
+	}
 }

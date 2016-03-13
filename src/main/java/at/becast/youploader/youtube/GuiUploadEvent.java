@@ -92,4 +92,10 @@ public class GuiUploadEvent implements UploadEvent {
   	frame.getProgressBar().revalidate();
     frame.revalidate();
   }
+
+@Override
+public void onAbort() {
+	// TODO Auto-generated method stub
+	
+}
 }

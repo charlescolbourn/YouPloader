@@ -35,6 +35,7 @@ public class UploadWorker extends Thread {
 	private UploadEvent event;
 	private Uploader uploader;
 	private String acc;
+	private Boolean threadSuspended;
 	private AccountManager AccMgr;
 	
 	public UploadWorker(UploadItem frame, String acc, File file, Video videodata){
@@ -42,6 +43,7 @@ public class UploadWorker extends Thread {
 		this.acc = acc;
 		this.file = file;
 		this.videodata = videodata;
+		this.threadSuspended = false;
 		this.AccMgr = AccountManager.getInstance();
 		this.uploader = new Uploader(this.AccMgr.getAuth(acc));
 		this.event = new GuiUploadEvent(frame);
@@ -73,4 +75,15 @@ public class UploadWorker extends Thread {
 		this.uploader.set_speedlimit(Speed);
 	}
 	
+	public void abort(){
+		this.uploader.abort();
+	}
+	
+	public void suspend(Boolean suspend){
+		synchronized (this.uploader) {
+			if(!suspend){
+				this.uploader.notify();
+			}
+		}
+	}
 }

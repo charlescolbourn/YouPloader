@@ -16,6 +16,9 @@ import java.util.Map;
 
 public class SimpleHTTP {
   private CloseableHttpClient chc;
+  private HttpPut put;
+  private InputStream stream;
+  private CloseableHttpResponse response;
 
   public SimpleHTTP() {
     this.chc = HttpClients.createDefault();
@@ -29,7 +32,7 @@ public class SimpleHTTP {
     }
 
     post.setEntity(new ByteArrayEntity(body.getBytes("UTF-8")));
-    CloseableHttpResponse response = this.chc.execute(post);
+    response = this.chc.execute(post);
 
     String[] location = new String[2];
     for (Header h : response.getAllHeaders()) {
@@ -41,7 +44,7 @@ public class SimpleHTTP {
       }
     }
 
-    if (location == null) {
+    if (location[0] == null) {
       throw UploadException.construct(response.getEntity().getContent());
     }
 
@@ -51,25 +54,30 @@ public class SimpleHTTP {
   }
 
   public void put(String url, Map<String, String> headers, InputStream stream) throws IOException {
-    HttpPut put = new HttpPut(url);
-
+    this.put = new HttpPut(url);
     for (String key : headers.keySet()) {
-      put.setHeader(key, headers.get(key));
+    	this.put.setHeader(key, headers.get(key));
     }
-
-    put.setEntity(new InputStreamEntity(stream));
-    CloseableHttpResponse response = this.chc.execute(put);
-    response.close();
+    this.stream=stream;
+    this.put.setEntity(new InputStreamEntity(this.stream));
+    try {
+    	response = this.chc.execute(this.put);
+    }catch(Exception e){
+    	
+    }
+    if(response!=null){
+    	response.close();
+    }
   }
 
   public long put(String url, Map<String, String> headers) throws IOException {
-    HttpPut put = new HttpPut(url);
+	  this.put = new HttpPut(url);
 
     for (String key : headers.keySet()) {
-      put.setHeader(key, headers.get(key));
+    	this.put.setHeader(key, headers.get(key));
     }
 
-    CloseableHttpResponse response = this.chc.execute(put);
+    response = this.chc.execute(put);
     Header[] responseHeaders = response.getAllHeaders();
     response.close();
 
@@ -80,6 +88,9 @@ public class SimpleHTTP {
     }
 
     return 0;
+  }
+  public void abort() {
+	  this.put.abort();
   }
 
   public void close() throws IOException {

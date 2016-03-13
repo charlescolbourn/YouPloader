@@ -22,4 +22,6 @@ public interface UploadEvent {
   public void onRead(long length, long position, long size);
 
   public void onClose();
+
+  public void onAbort();
 }

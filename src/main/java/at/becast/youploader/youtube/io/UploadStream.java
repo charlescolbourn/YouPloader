@@ -101,6 +101,14 @@ public class UploadStream extends FileInputStream {
     }
   }
 
+  public void abort() throws IOException {
+    if (this.event != null) {
+      this.event.onAbort();
+    }
+
+    super.close();
+  }
+  
   @Override
   public void close() throws IOException {
     if (this.event != null) {
