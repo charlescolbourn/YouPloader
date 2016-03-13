@@ -80,6 +80,47 @@
 	                </archive>
 	            </configuration>
 	        </plugin>
+	        <plugin>
+            <groupId>com.akathist.maven.plugins.launch4j</groupId>
+            <artifactId>launch4j-maven-plugin</artifactId>
+            <version>1.5.1</version>
+            <executions>
+                <execution>
+                    <id>l4j-clui</id>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>launch4j</goal>
+                    </goals>
+                    <configuration>
+                        <headerType>gui</headerType>
+                        <jar>${project.build.directory}/${artifactId}-${version}.jar</jar>
+                        <outfile>${project.build.directory}/${artifactId}-${version}.exe</outfile>
+                        <downloadUrl>http://java.com/download</downloadUrl>
+                        <classPath>
+                            <mainClass>at.becast.youploader.gui.frmMain</mainClass>
+                            <preCp>anything</preCp>
+                        </classPath>
+                        <icon>src/main/resources/yp_Eck_icon.ico</icon>
+                        <jre>
+                            <minVersion>1.8.0</minVersion>
+                            <jdkPreference>preferJre</jdkPreference>
+                        </jre>
+                        <versionInfo>
+                            <fileVersion>0.0.1.0</fileVersion>
+                            <txtFileVersion>${project.version}</txtFileVersion>
+                            <fileDescription>${project.name}</fileDescription>
+                            <copyright>2016 BeCast.at</copyright>
+                            <productVersion>0.0.1.0</productVersion>
+                            <txtProductVersion>0.0.1.0</txtProductVersion>
+                            <productName>${project.name}</productName>
+                            <companyName>becast.at</companyName>
+                            <internalName>YouPloader</internalName>
+                            <originalFilename>${artifactId}-${version}.exe</originalFilename>
+                        </versionInfo>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
 	        <!--  <plugin>
 				<groupId>org.codehaus.mojo</groupId>
 			    	<artifactId>buildnumber-maven-plugin</artifactId>

@@ -36,12 +36,10 @@ import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
-import at.becast.youploader.account.Account;
 import at.becast.youploader.oauth.OAuth2;
 import at.becast.youploader.settings.Settings;
 
 import javax.swing.SwingConstants;
-import javax.swing.Timer;
 
 import java.awt.Font;
 import javax.swing.JTextField;
@@ -55,7 +53,6 @@ public class ModalDialog extends JDialog {
 	private JLabel check_label;
 	Settings s = Settings.getInstance();
 	OAuth2 o2;
-	private Timer timer;
 
 	/**
 	 * Create the dialog.

@@ -19,12 +19,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-
 import at.becast.youploader.database.SQLite;
-import at.becast.youploader.gui.IMainMenu;
 import at.becast.youploader.oauth.OAuth2;
 import at.becast.youploader.settings.Settings;
 

@@ -15,10 +15,8 @@
 package at.becast.youploader.gui;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
-import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 
 import net.miginfocom.swing.MigLayout;
@@ -39,6 +37,10 @@ import java.awt.Color;
 import javax.swing.border.EtchedBorder;
 
 public class UploadItem extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JLabel lblName;
 	private JLabel lblUrl;
 	private JLabel lblStart;
