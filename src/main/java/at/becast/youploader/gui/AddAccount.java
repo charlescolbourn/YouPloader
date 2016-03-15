@@ -107,19 +107,26 @@ public class AddAccount extends javax.swing.JDialog {
         	this.setVisible(false);
         	if(!Account.exists(AccName.getText())){
         		o2 = new OAuth2(s.setting.get("client_id") , s.setting.get("clientSecret"));
-        		if (Desktop.isDesktopSupported()) {
+        		/*if (Desktop.isDesktopSupported()) {
         		      try {
         		        Desktop.getDesktop().browse(new URI("https://google.com/device"));
-        		      } catch (IOException | URISyntaxException e) { /* TODO: error handling */ }
-        		    } else { /* TODO: error handling */ }
-        		parent.prep_modal(AccName.getText(),o2.getCode());
+        		      } catch (IOException | URISyntaxException e) {  }
+        		    } else { }
+        			*/
+        			Account account = new Account(AccName.getText());
+                    String code = o2.getCode();
+        			Browser browser = new Browser(account,code);
+                    browser.setVisible(true);
+                    browser.loadURL("https://google.com/device");
+        		parent.prep_modal(AccName.getText(),code);
         		 Runnable runnable = new Runnable() {
         	            public void run() {
         	                try {
         						do {
         							Thread.sleep(5050);
         						} while (!o2.check());
-        						new Account(AccName.getText(),o2.getRefreshToken()).save();
+        						account.setRefreshToken(o2.getRefreshToken());
+        						account.save();
         						AccMng.set_active(AccName.getText());
         						parent.close_modal();
         					} catch (InterruptedException | IOException e) {

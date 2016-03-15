@@ -18,33 +18,51 @@ import at.becast.youploader.database.SQLite;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import at.becast.youploader.youtube.data.CookieJar.SerializableCookie;
 
 public class Account {
-  public final String refreshToken;
+  public String refreshToken;
   public String name;
+  public List<SerializableCookie> cookie;
   static Connection c = SQLite.getInstance();
 
 
-  public Account(String name, String refreshToken) {
+  public Account(String name, String refreshToken, List<SerializableCookie> cookie) {
 	this.name = name;
     this.refreshToken = refreshToken;
+    this.cookie = cookie;
   }
 
   public Account(String name) {
-    this(name, null);
+    this(name, null, null);
+  }
+  
+  public void setCookie(List<SerializableCookie> cookie){
+	  this.cookie = cookie;
   }
 
-
+  public void setRefreshToken(String refreshToken){
+	  this.refreshToken = refreshToken;
+  }
+  
   public static Account read(String name) throws IOException {
-	Statement stmt;
+	 PreparedStatement stmt;
 	try {
-		stmt = c.createStatement();
-		String sql = "SELECT * FROM `accounts` WHERE `name`='"+name+"' LIMIT 1"; 
-		ResultSet rs = stmt.executeQuery(sql);
-		return new Account(name,rs.getString("refresh_token"));
+		stmt = c.prepareStatement("SELECT * FROM `accounts` WHERE `name`=? LIMIT 1");
+		stmt.setString(1, name);
+		ResultSet rs = stmt.executeQuery();
+		ObjectMapper mapper = new ObjectMapper();
+		List<SerializableCookie> c = mapper.readValue(rs.getString("cookie"), new TypeReference<List<SerializableCookie>>() {});
+		return new Account(name,rs.getString("refresh_token"),c);
 	} catch (SQLException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
@@ -53,15 +71,20 @@ public class Account {
   }
 
   public void save() throws IOException {
+	  ObjectMapper mapper = new ObjectMapper();
 	  try {
-		Statement stmt = c.createStatement();
-		String sql = "INSERT INTO `accounts` (`name`,`refresh_token`) VALUES('"+this.name+"','"+this.refreshToken+"')"; 
-		stmt.executeUpdate(sql);
+		PreparedStatement stmt = c.prepareStatement("INSERT INTO `accounts` (`name`,`refresh_token`,`cookie`) VALUES(?,?,?)");
+		stmt.setString(1, this.name);
+		stmt.setString(2, this.refreshToken);
+		stmt.setString(3, mapper.writerWithType(new TypeReference<List<SerializableCookie>>() {}).writeValueAsString(this.cookie));
+		stmt.executeUpdate();
 	} catch (SQLException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
   }
+  
+  
 
 	public static boolean exists(String name) {
 		Connection c = SQLite.getInstance();
