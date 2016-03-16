@@ -14,7 +14,6 @@
  */
 package at.becast.youploader.oauth;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import at.becast.youploader.oauth.io.SimpleHTTP;
 import at.becast.youploader.oauth.json.Auth;
 import at.becast.youploader.oauth.json.Code;
@@ -22,6 +21,8 @@ import at.becast.youploader.oauth.json.Code;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.codehaus.jackson.map.ObjectMapper;
 
 public class OAuth2 {
   private String clientId;

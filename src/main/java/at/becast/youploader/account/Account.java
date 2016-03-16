@@ -24,30 +24,31 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.codehaus.jackson.map.DeserializationConfig.Feature;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 
-import at.becast.youploader.youtube.data.CookieJar.SerializableCookie;
+import at.becast.youploader.youtube.data.Cookie;
 
 public class Account {
   public String refreshToken;
   public String name;
-  public List<SerializableCookie> cookie;
+  public List<Cookie> cdata;
   static Connection c = SQLite.getInstance();
 
 
-  public Account(String name, String refreshToken, List<SerializableCookie> cookie) {
+  public Account(String name, String refreshToken, List<Cookie> cdata) {
 	this.name = name;
     this.refreshToken = refreshToken;
-    this.cookie = cookie;
+    this.cdata = cdata;
   }
 
   public Account(String name) {
     this(name, null, null);
   }
   
-  public void setCookie(List<SerializableCookie> cookie){
-	  this.cookie = cookie;
+  public void setCookie(List<Cookie> cdata){
+	  this.cdata = cdata;
   }
 
   public void setRefreshToken(String refreshToken){
@@ -61,8 +62,10 @@ public class Account {
 		stmt.setString(1, name);
 		ResultSet rs = stmt.executeQuery();
 		ObjectMapper mapper = new ObjectMapper();
-		List<SerializableCookie> c = mapper.readValue(rs.getString("cookie"), new TypeReference<List<SerializableCookie>>() {});
-		return new Account(name,rs.getString("refresh_token"),c);
+		List<Cookie> c = mapper.readValue(rs.getString("cookie"), new TypeReference<List<Cookie>>() {});
+		String token = rs.getString("refresh_token");
+		stmt.close();
+		return new Account(name,token,c);
 	} catch (SQLException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
@@ -76,8 +79,10 @@ public class Account {
 		PreparedStatement stmt = c.prepareStatement("INSERT INTO `accounts` (`name`,`refresh_token`,`cookie`) VALUES(?,?,?)");
 		stmt.setString(1, this.name);
 		stmt.setString(2, this.refreshToken);
-		stmt.setString(3, mapper.writerWithType(new TypeReference<List<SerializableCookie>>() {}).writeValueAsString(this.cookie));
+		mapper.writeValue(System.out,this.cdata);
+		stmt.setString(3, mapper.writeValueAsString(this.cdata));
 		stmt.executeUpdate();
+		stmt.close();
 	} catch (SQLException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();

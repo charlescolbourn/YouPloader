@@ -14,7 +14,6 @@
  */
 package at.becast.youploader.youtube;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import at.becast.youploader.oauth.OAuth2;
 import at.becast.youploader.youtube.data.Upload;
 import at.becast.youploader.youtube.data.Video;
@@ -27,6 +26,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.codehaus.jackson.map.ObjectMapper;
 
 public class Uploader {
   private OAuth2 oAuth2;

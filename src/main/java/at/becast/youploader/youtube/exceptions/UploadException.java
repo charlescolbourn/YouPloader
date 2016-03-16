@@ -1,9 +1,11 @@
 package at.becast.youploader.youtube.exceptions;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 import java.io.IOException;
 import java.io.InputStream;
+
+import org.codehaus.jackson.map.ObjectMapper;
 
 public class UploadException extends Exception {
   /**

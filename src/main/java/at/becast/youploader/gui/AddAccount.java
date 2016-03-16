@@ -128,6 +128,7 @@ public class AddAccount extends javax.swing.JDialog {
         						account.setRefreshToken(o2.getRefreshToken());
         						account.save();
         						AccMng.set_active(AccName.getText());
+        						parent.refresh_accounts();
         						parent.close_modal();
         					} catch (InterruptedException | IOException e) {
         						e.printStackTrace();

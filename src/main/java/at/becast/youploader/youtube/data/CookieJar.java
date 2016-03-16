@@ -7,6 +7,9 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
+@JsonIgnoreProperties({"uri"})
 public class CookieJar implements CookieStore{
 
 	private final CookieStore store;
@@ -15,17 +18,17 @@ public class CookieJar implements CookieStore{
 		store = new CookieManager().getCookieStore();
 	}
 
-	public void setSerializeableCookies(final List<SerializableCookie> cookies) {
-		for (final SerializableCookie cookie : cookies) {
+	public void setSerializeableCookies(final List<Cookie> cookies) {
+		for (final Cookie cookie : cookies) {
 			add(cookie.getURI(), cookie.getCookie());
 		}
 	}
 
-	public List<SerializableCookie> getSerializeableCookies() {
-		final List<SerializableCookie> cookies = new ArrayList<>(store.getCookies().size());
+	public List<Cookie> getSerializeableCookies() {
+		final List<Cookie> cookies = new ArrayList<>(store.getCookies().size());
 
 		for (final HttpCookie cookie : store.getCookies()) {
-			final SerializableCookie serializableCookie = new SerializableCookie(cookie);
+			final Cookie serializableCookie = new Cookie(cookie);
 			cookies.add(serializableCookie);
 		}
 		return cookies;
@@ -60,71 +63,5 @@ public class CookieJar implements CookieStore{
 	@Override
 	public boolean removeAll() {
 		return store.removeAll();
-	}
-
-	public static class SerializableCookie {
-
-		private final String  name;
-		private final String  value;
-		private final String  comment;
-		private final String  commentUrl;
-		private final String  domain;
-		private final boolean discard;
-		private final String  path;
-		private final String  portList;
-		private final long    maxAge;
-		private final boolean secure;
-		private final int     version;
-
-		private SerializableCookie() {
-			name = null;
-			value = null;
-			comment = null;
-			commentUrl = null;
-			domain = null;
-			discard = false;
-			path = null;
-			portList = null;
-			maxAge = 0;
-			secure = false;
-			version = 0;
-		}
-
-		public SerializableCookie(final HttpCookie cookie) {
-			name = cookie.getName();
-			value = cookie.getValue();
-			comment = cookie.getComment();
-			commentUrl = cookie.getCommentURL();
-			domain = cookie.getDomain();
-			discard = cookie.getDiscard();
-			maxAge = cookie.getMaxAge();
-			path = cookie.getPath();
-			portList = cookie.getPortlist();
-			secure = cookie.getSecure();
-			version = cookie.getVersion();
-		}
-
-		public URI getURI() {
-			return URI.create(domain);
-		}
-
-		public HttpCookie getCookie() {
-			final HttpCookie cookie = new HttpCookie(name, value);
-			cookie.setComment(comment);
-			cookie.setCommentURL(commentUrl);
-			cookie.setDiscard(discard);
-			cookie.setDomain(domain);
-			cookie.setPath(path);
-			cookie.setPortlist(portList);
-			cookie.setMaxAge(maxAge);
-			cookie.setSecure(secure);
-			cookie.setVersion(version);
-			return cookie;
-		}
-
-		@Override
-		public String toString() {
-			return String.format("%s: %s", name, value);
-		}
 	}
 }
