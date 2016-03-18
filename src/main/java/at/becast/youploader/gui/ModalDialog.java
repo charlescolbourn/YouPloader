@@ -157,9 +157,11 @@ public class ModalDialog extends JDialog {
 	}
 	
 	public void success() {
-		check_label.setIcon(new ImageIcon(getClass().getResource("/load_icon.gif")));
+		check_label.setIcon(new ImageIcon(getClass().getResource("/check.gif")));
+	    this.revalidate();
+	    this.repaint();
 		try {
-			Thread.sleep(5000);
+			Thread.sleep(3000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
