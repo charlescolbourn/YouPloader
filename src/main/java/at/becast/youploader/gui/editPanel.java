@@ -14,7 +14,6 @@
  */
 
 package at.becast.youploader.gui;
-import net.miginfocom.swing.MigLayout;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -27,8 +26,12 @@ import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
-import java.awt.Component;
+import java.util.Date;
 import java.awt.event.ActionEvent;
+import javax.swing.DefaultComboBoxModel;
+import at.becast.youploader.youtube.data.VisibilityType;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
 
 /**
  *
@@ -39,10 +42,12 @@ public class editPanel extends javax.swing.JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JComboBox jComboBox1;
+	private JComboBox<VisibilityType> jComboBox1;
     private JLabel jLabel1;
     private JTextField txtStartDir;
     private JTextField txtEndDir;
+    private JComboBox<VisibilityType> cmbVisibility;
+    private DateTimePicker dateTimePicker;
     /**
      * Creates new form editPanel
      */
@@ -53,7 +58,7 @@ public class editPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         jLabel1 = new JLabel();
-        jComboBox1 = new JComboBox();
+        jComboBox1 = new JComboBox<VisibilityType>();
         setLayout(new FormLayout(new ColumnSpec[] {
         		FormSpecs.RELATED_GAP_COLSPEC,
         		ColumnSpec.decode("87px"),
@@ -69,6 +74,10 @@ public class editPanel extends javax.swing.JPanel {
         		FormSpecs.RELATED_GAP_ROWSPEC,
         		RowSpec.decode("25px"),
         		FormSpecs.LABEL_COMPONENT_GAP_ROWSPEC,
+        		RowSpec.decode("25px"),
+        		FormSpecs.RELATED_GAP_ROWSPEC,
+        		RowSpec.decode("25px"),
+        		FormSpecs.RELATED_GAP_ROWSPEC,
         		RowSpec.decode("25px"),
         		FormSpecs.RELATED_GAP_ROWSPEC,
         		RowSpec.decode("25px"),}));
@@ -120,11 +129,44 @@ public class editPanel extends javax.swing.JPanel {
         JButton btnEndDir = new JButton("");
         btnEndDir.setIcon(new ImageIcon(getClass().getResource("/folder.png")));
         add(btnEndDir, "6, 6, fill, fill");
+        
+        JLabel lblVisibility = new JLabel("Visibility:");
+        add(lblVisibility, "2, 8, right, default");
+        
+        dateTimePicker = new DateTimePicker();
+        dateTimePicker.setEnabled(false);
+        dateTimePicker.getEditor().setEnabled(false);
+        
+        cmbVisibility = new JComboBox<VisibilityType>();
+        cmbVisibility.addPropertyChangeListener(new PropertyChangeListener() {
+        	public void propertyChange(PropertyChangeEvent arg0) {
+        		if(cmbVisibility.getSelectedItem() == VisibilityType.SCHEDULED){
+        			dateTimePicker.setEnabled(true);
+        			dateTimePicker.getEditor().setEnabled(true);
+        		}else{
+        			dateTimePicker.setEnabled(false);
+        			dateTimePicker.getEditor().setEnabled(false);
+        		}
+        	}
+        });
+        cmbVisibility.setModel(new DefaultComboBoxModel<VisibilityType>(VisibilityType.values()));
+        add(cmbVisibility, "4, 8, fill, fill");
+        
+        JLabel lblReleaseAt = new JLabel("Release at:");
+        add(lblReleaseAt, "2, 10, right, default");
+        
+        add(dateTimePicker, "4, 10, fill, fill");
     }
 	public JTextField getTxtStartDir() {
 		return txtStartDir;
 	}
 	public JTextField getTxtEndDir() {
 		return txtEndDir;
+	}
+	public JComboBox<VisibilityType> getCmbVisibility() {
+		return cmbVisibility;
+	}
+	public DateTimePicker getDateTimePicker() {
+		return dateTimePicker;
 	}
 }

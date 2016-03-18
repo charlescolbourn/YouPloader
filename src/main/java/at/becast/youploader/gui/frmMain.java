@@ -77,6 +77,7 @@ import at.becast.youploader.youtube.exceptions.UploadException;
 import at.becast.youploader.youtube.io.UploadManager;
 import net.miginfocom.layout.CC;
 import net.miginfocom.swing.MigLayout;
+import javax.swing.JSlider;
 
 /**
  *
@@ -91,7 +92,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
 	 */
 	private static final long serialVersionUID = 6965358827253585528L;
 	public static final String DB_FILE = "data/data.db";
-	public static final String VERSION = "0.1";
+	public static final String VERSION = "0.2";
 	public static UploadManager UploadManager = new UploadManager();
 	public Settings s = Settings.getInstance();
 	public AccountManager accMng =  AccountManager.getInstance();
@@ -128,6 +129,8 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
     private JScrollPane scrollPane_2;
     private JComboBox<String> cmbAccount;
 	public transient static HashMap<Integer, JMenuItem> _accounts = new HashMap<Integer, JMenuItem>();
+	private JSlider slider;
+	private JLabel lblUploads;
 	
 	/**
      * Creates new form frmMain
@@ -495,33 +498,9 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         		FormSpecs.RELATED_GAP_COLSPEC,
         		FormSpecs.DEFAULT_COLSPEC,
         		FormSpecs.RELATED_GAP_COLSPEC,
-        		FormSpecs.DEFAULT_COLSPEC,
-        		FormSpecs.RELATED_GAP_COLSPEC,
-        		FormSpecs.DEFAULT_COLSPEC,
-        		FormSpecs.RELATED_GAP_COLSPEC,
-        		FormSpecs.DEFAULT_COLSPEC,
-        		FormSpecs.RELATED_GAP_COLSPEC,
         		ColumnSpec.decode("default:grow"),
         		FormSpecs.RELATED_GAP_COLSPEC,
-        		FormSpecs.DEFAULT_COLSPEC,
-        		FormSpecs.RELATED_GAP_COLSPEC,
-        		FormSpecs.DEFAULT_COLSPEC,
-        		FormSpecs.RELATED_GAP_COLSPEC,
-        		FormSpecs.DEFAULT_COLSPEC,
-        		FormSpecs.RELATED_GAP_COLSPEC,
-        		ColumnSpec.decode("default:grow"),
-        		FormSpecs.RELATED_GAP_COLSPEC,
-        		FormSpecs.DEFAULT_COLSPEC,
-        		FormSpecs.RELATED_GAP_COLSPEC,
-        		FormSpecs.DEFAULT_COLSPEC,
-        		FormSpecs.RELATED_GAP_COLSPEC,
-        		FormSpecs.DEFAULT_COLSPEC,
-        		FormSpecs.RELATED_GAP_COLSPEC,
-        		FormSpecs.DEFAULT_COLSPEC,
-        		FormSpecs.RELATED_GAP_COLSPEC,
-        		FormSpecs.DEFAULT_COLSPEC,
-        		FormSpecs.RELATED_GAP_COLSPEC,
-        		FormSpecs.DEFAULT_COLSPEC,
+        		ColumnSpec.decode("max(39dlu;default)"),
         		FormSpecs.RELATED_GAP_COLSPEC,
         		FormSpecs.DEFAULT_COLSPEC,
         		FormSpecs.RELATED_GAP_COLSPEC,
@@ -558,9 +537,23 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         });
         panel_2.add(btnStop, "6, 4");
         
+        lblUploads = new JLabel("Uploads:");
+        panel_2.add(lblUploads, "18, 4, right, fill");
+        
+        slider = new JSlider();
+        slider.setMajorTickSpacing(1);
+        slider.setMinorTickSpacing(1);
+        slider.setMinimum(1);
+        slider.setMaximum(5);
+        slider.setValue(1);
+        slider.setSnapToTicks(true);
+        slider.setPaintTicks(true);
+        slider.setPaintLabels(true);
+        panel_2.add(slider, "20, 4, fill, fill");
+        
         lblUploadSpeed = new JLabel("Upload Speed:");
         lblUploadSpeed.setHorizontalAlignment(SwingConstants.TRAILING);
-        panel_2.add(lblUploadSpeed, "48, 4");
+        panel_2.add(lblUploadSpeed, "24, 4");
         
         spinner = new JSpinner();
         spinner.setModel(new SpinnerNumberModel(new Integer(0), new Integer(0), null, new Integer(10)));
@@ -572,10 +565,10 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
 				UploadManager.set_limit(Integer.parseInt(s.getValue().toString()));			
 			}
         });
-        panel_2.add(spinner, "50, 4");
+        panel_2.add(spinner, "26, 4");
         
         JLabel lblKbps = new JLabel("kbps");
-        panel_2.add(lblKbps, "52, 4");
+        panel_2.add(lblKbps, "28, 4");
         
         TabQueue = new JPanel();
         TabbedPane.addTab("Queue", null, TabQueue, null);
