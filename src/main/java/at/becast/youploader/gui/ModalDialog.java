@@ -36,6 +36,7 @@ import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
+import at.becast.youploader.account.Account;
 import at.becast.youploader.oauth.OAuth2;
 import at.becast.youploader.settings.Settings;
 
@@ -60,7 +61,7 @@ public class ModalDialog extends JDialog {
 	 * @throws IOException 
 	 * @throws InterruptedException 
 	 */
-	public ModalDialog(Frame parent, String AccName, String code) {
+	public ModalDialog(Frame parent, Account Acc, String code) {
 		super(parent);
 		setTitle("Linking YouTube Account");
 		setAlwaysOnTop(true);
@@ -68,7 +69,7 @@ public class ModalDialog extends JDialog {
 		setResizable(false);
 		setBounds(100, 100, 551, 401);
 		getContentPane().setLayout(new BorderLayout());
-		ModalDialog.AccName = AccName;
+		ModalDialog.AccName = Acc.name;
 		ModalDialog.parent = parent;
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setModalityType(ModalityType.DOCUMENT_MODAL);
@@ -95,11 +96,9 @@ public class ModalDialog extends JDialog {
 			JButton btnNewButton = new JButton("Open Browser to http://google.com/device");
 			btnNewButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					if (Desktop.isDesktopSupported()) {
-	        		      try {
-	        		        Desktop.getDesktop().browse(new URI("https://google.com/device"));
-	        		      } catch (IOException | URISyntaxException e1) { /* TODO: error handling */ }
-	        		    } else { /* TODO: error handling */ }
+        			Browser browser = new Browser(Acc,code);
+                    browser.setVisible(true);
+                    browser.loadURL("https://google.com/device");
 				}
 			});
 			contentPanel.add(btnNewButton, "2, 4, center, default");

@@ -607,7 +607,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         });
     }
 
-	public void prep_modal(String Account,String code) {
+	public void prep_modal(Account Account,String code) {
 		modal=new ModalDialog((Frame)this, Account, code);
 	}
     public void show_modal(){

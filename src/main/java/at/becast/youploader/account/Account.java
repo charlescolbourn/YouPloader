@@ -84,7 +84,6 @@ public class Account {
 		PreparedStatement stmt = c.prepareStatement("INSERT INTO `accounts` (`name`,`refresh_token`,`cookie`) VALUES(?,?,?)");
 		stmt.setString(1, this.name);
 		stmt.setString(2, this.refreshToken);
-		mapper.writeValue(System.out,this.cdata);
 		stmt.setString(3, mapper.writeValueAsString(this.cdata));
 		stmt.executeUpdate();
 		stmt.close();

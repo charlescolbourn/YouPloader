@@ -120,7 +120,7 @@ public class AddAccount extends javax.swing.JDialog {
         			Browser browser = new Browser(account,code);
                     browser.setVisible(true);
                     browser.loadURL("https://google.com/device");
-        		parent.prep_modal(AccName.getText(),code);
+        		parent.prep_modal(account,code);
         		 Runnable runnable = new Runnable() {
         	            public void run() {
         	                try {
