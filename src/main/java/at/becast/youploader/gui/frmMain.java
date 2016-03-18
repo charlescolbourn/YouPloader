@@ -65,6 +65,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
+import at.becast.youploader.account.Account;
 import at.becast.youploader.account.AccountManager;
 import at.becast.youploader.gui.slider.SideBar;
 import at.becast.youploader.gui.slider.SidebarSection;
@@ -76,6 +77,8 @@ import at.becast.youploader.youtube.exceptions.UploadException;
 import at.becast.youploader.youtube.io.UploadManager;
 import net.miginfocom.layout.CC;
 import net.miginfocom.swing.MigLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
  *
@@ -146,6 +149,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
 		}
         initComponents();
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/yp.png")));
+        this.setLocationRelativeTo( null );
     }
 
 

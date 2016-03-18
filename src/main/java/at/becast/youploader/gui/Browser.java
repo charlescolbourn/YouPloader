@@ -41,8 +41,6 @@ public class Browser extends JFrame {
     private final JLabel lblStatus = new JLabel();
     private final CookieJar persistentCookieStore = new CookieJar();
     private final CookieManager cmrCookieMan = new CookieManager(persistentCookieStore, null);
-
-    private final JButton btnGo = new JButton("Go");
     private final JTextField txtURL = new JTextField();
     private final JProgressBar progressBar = new JProgressBar();
  
@@ -57,21 +55,15 @@ public class Browser extends JFrame {
     private void initComponents() {
         createScene();
         self = this;
-		/*if (null != account) {
-			persistentCookieStore.setSerializeableCookies(account.getSerializeableCookies());
-		}*/
+        this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/yp.png")));
+		if (null != acc.cdata) {
+			persistentCookieStore.setSerializeableCookies(acc.getCookie());
+		}
 		
 		CookieHandler.setDefault(cmrCookieMan);
- 
-        ActionListener al = new ActionListener() {
-            @Override 
-            public void actionPerformed(ActionEvent e) {
-                loadURL(txtURL.getText());
-            }
-        };
- 
-        btnGo.addActionListener(al);
-        txtURL.addActionListener(al);
+		this.setLocationRelativeTo( null );
+
+        txtURL.setEditable(false);
   
         progressBar.setPreferredSize(new Dimension(150, 18));
         progressBar.setStringPainted(true);
@@ -79,7 +71,6 @@ public class Browser extends JFrame {
         JPanel topBar = new JPanel(new BorderLayout(5, 0));
         topBar.setBorder(BorderFactory.createEmptyBorder(3, 5, 3, 5));
         topBar.add(txtURL, BorderLayout.CENTER);
-        topBar.add(btnGo, BorderLayout.EAST);
  
         JPanel statusBar = new JPanel(new BorderLayout(5, 0));
         statusBar.setBorder(BorderFactory.createEmptyBorder(3, 5, 3, 5));

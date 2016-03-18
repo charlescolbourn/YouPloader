@@ -138,13 +138,12 @@ public class ModalDialog extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton okButton = new JButton("OK");
-				okButton.setActionCommand("OK");
-				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
-			}
-			{
 				JButton cancelButton = new JButton("Cancel");
+				cancelButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						close();
+					}
+				});
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
@@ -152,6 +151,10 @@ public class ModalDialog extends JDialog {
        
 	}
 
+	public void close() {
+		this.setVisible(false);
+		this.dispose();
+	}
 	
 	public void success() {
 		check_label.setIcon(new ImageIcon(getClass().getResource("/load_icon.gif")));
@@ -161,8 +164,7 @@ public class ModalDialog extends JDialog {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		this.setVisible(false);
-		this.dispose();
+		this.close();
 	}
 
 	public void setCode(String text) {

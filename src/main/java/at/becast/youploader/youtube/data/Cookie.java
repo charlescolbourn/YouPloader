@@ -3,8 +3,9 @@ package at.becast.youploader.youtube.data;
 import java.net.HttpCookie;
 import java.net.URI;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
+@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE) 
 public class Cookie {
 
 	private final String  name;
@@ -46,7 +47,6 @@ public class Cookie {
 		secure = cookie.getSecure();
 		version = cookie.getVersion();
 	}
-	@JsonIgnore
 	public URI getURI() {
 		return URI.create(domain);
 	}

@@ -16,6 +16,7 @@
 package at.becast.youploader.gui;
 
 import java.awt.Desktop;
+import java.awt.Toolkit;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -44,7 +45,8 @@ public class AddAccount extends javax.swing.JDialog {
     public AddAccount(frmMain parent) {
     	this.parent = parent;
         initComponents();
-        
+        this.setLocationRelativeTo( null );
+        this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/yp.png")));
     }
 
     @SuppressWarnings("unchecked")

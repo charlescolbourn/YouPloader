@@ -24,6 +24,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
+import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
 import org.codehaus.jackson.map.DeserializationConfig.Feature;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
@@ -49,6 +50,10 @@ public class Account {
   
   public void setCookie(List<Cookie> cdata){
 	  this.cdata = cdata;
+  }
+  
+  public List<Cookie> getCookie(){
+	  return this.cdata;
   }
 
   public void setRefreshToken(String refreshToken){
