@@ -15,15 +15,11 @@
 package at.becast.youploader.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Desktop;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -46,7 +42,7 @@ import java.awt.Font;
 import javax.swing.JTextField;
 
 public class ModalDialog extends JDialog {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -49240475185934236L;
 	private static String AccName = null;
 	private static Frame parent = null;
 	private final JPanel contentPanel = new JPanel();
@@ -96,7 +92,7 @@ public class ModalDialog extends JDialog {
 			JButton btnNewButton = new JButton("Open Browser to http://google.com/device");
 			btnNewButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-        			Browser browser = new Browser(Acc,code);
+        			Browser browser = new Browser(Acc);
                     browser.setVisible(true);
                     browser.loadURL("https://google.com/device");
 				}

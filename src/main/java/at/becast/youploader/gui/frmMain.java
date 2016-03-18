@@ -77,8 +77,6 @@ import at.becast.youploader.youtube.exceptions.UploadException;
 import at.becast.youploader.youtube.io.UploadManager;
 import net.miginfocom.layout.CC;
 import net.miginfocom.swing.MigLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 /**
  *
@@ -87,7 +85,11 @@ import java.awt.event.MouseEvent;
 
 public class frmMain extends javax.swing.JFrame implements IMainMenu{
 
-	private static final long serialVersionUID = 1L;
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6965358827253585528L;
 	public static final String DB_FILE = "data/data.db";
 	public static final String VERSION = "0.1";
 	public static UploadManager UploadManager = new UploadManager();

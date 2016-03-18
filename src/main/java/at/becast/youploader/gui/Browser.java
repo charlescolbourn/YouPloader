@@ -15,7 +15,6 @@ import at.becast.youploader.account.Account;
 import at.becast.youploader.youtube.data.CookieJar;
 
 import java.awt.*;
-import java.awt.event.*;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.MalformedURLException;
@@ -35,8 +34,6 @@ public class Browser extends JFrame {
     private WebView view;
     private Account acc;
     private Browser self;
-    private String code;
- 
     private final JPanel panel = new JPanel(new BorderLayout());
     private final JLabel lblStatus = new JLabel();
     private final CookieJar persistentCookieStore = new CookieJar();
@@ -44,11 +41,10 @@ public class Browser extends JFrame {
     private final JTextField txtURL = new JTextField();
     private final JProgressBar progressBar = new JProgressBar();
  
-    public Browser(Account acc, String code) {
+    public Browser(Account acc) {
         super();
     	this.acc = acc;
-    	this.code = code;
-        initComponents();
+    	initComponents();
     }
 
     

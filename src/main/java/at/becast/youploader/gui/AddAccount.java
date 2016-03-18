@@ -15,14 +15,13 @@
 
 package at.becast.youploader.gui;
 
-import java.awt.Desktop;
 import java.awt.Toolkit;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 
-import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 
 import at.becast.youploader.account.Account;
 import at.becast.youploader.account.AccountManager;
@@ -35,6 +34,11 @@ import at.becast.youploader.settings.Settings;
  */
 public class AddAccount extends javax.swing.JDialog {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4804877236112916847L;
+	
 	Settings s = Settings.getInstance();
 	OAuth2 o2;
 	frmMain parent;
@@ -49,13 +53,11 @@ public class AddAccount extends javax.swing.JDialog {
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/yp.png")));
     }
 
-    @SuppressWarnings("unchecked")
-
     private void initComponents() {
 
-        AccName = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
-        btnOk = new javax.swing.JButton();
+        AccName = new JTextField();
+        jLabel1 = new JLabel();
+        btnOk = new JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Add Account");
@@ -117,7 +119,7 @@ public class AddAccount extends javax.swing.JDialog {
         			*/
         			Account account = new Account(AccName.getText());
                     String code = o2.getCode();
-        			Browser browser = new Browser(account,code);
+        			Browser browser = new Browser(account);
                     browser.setVisible(true);
                     browser.loadURL("https://google.com/device");
         		parent.prep_modal(account,code);
