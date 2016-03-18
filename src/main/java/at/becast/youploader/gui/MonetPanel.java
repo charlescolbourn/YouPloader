@@ -13,6 +13,11 @@
  * 
  */
 package at.becast.youploader.gui;
+import javax.swing.JLabel;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.GroupLayout;
+import javax.swing.SwingConstants;
+import java.awt.Font;
 
 /**
  *
@@ -36,25 +41,37 @@ public class MonetPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         jCheckBox1 = new javax.swing.JCheckBox();
+        jCheckBox1.setEnabled(false);
 
         jCheckBox1.setText("Overlay ads");
+        
+        JLabel lblNotYetImplemented = new JLabel("Not yet implemented :( Sorry");
+        lblNotYetImplemented.setFont(new Font("Tahoma", Font.BOLD, 17));
+        lblNotYetImplemented.setHorizontalAlignment(SwingConstants.CENTER);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jCheckBox1)
-                .addContainerGap(311, Short.MAX_VALUE))
+        	layout.createParallelGroup(Alignment.LEADING)
+        		.addGroup(layout.createSequentialGroup()
+        			.addGroup(layout.createParallelGroup(Alignment.LEADING)
+        				.addGroup(layout.createSequentialGroup()
+        					.addContainerGap()
+        					.addComponent(jCheckBox1))
+        				.addGroup(layout.createSequentialGroup()
+        					.addGap(92)
+        					.addComponent(lblNotYetImplemented, GroupLayout.PREFERRED_SIZE, 273, GroupLayout.PREFERRED_SIZE)))
+        			.addContainerGap(85, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jCheckBox1)
-                .addContainerGap(270, Short.MAX_VALUE))
+        	layout.createParallelGroup(Alignment.LEADING)
+        		.addGroup(layout.createSequentialGroup()
+        			.addContainerGap()
+        			.addComponent(jCheckBox1)
+        			.addGap(71)
+        			.addComponent(lblNotYetImplemented, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
+        			.addContainerGap(167, Short.MAX_VALUE))
         );
+        this.setLayout(layout);
     }
 
 

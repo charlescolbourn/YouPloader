@@ -163,9 +163,19 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         jLabel1 = new javax.swing.JLabel();
         cmbFile = new JComboBox<String>();
         jButton1 = new javax.swing.JButton();
+
+        SideBar sideBar = new SideBar(SideBar.SideBarMode.TOP_LEVEL, true, 300, true);
+        SidebarSection ss1 = new SidebarSection(sideBar, "Template", new editPanel(),null);
+        SidebarSection ss2 = new SidebarSection(sideBar, "Monetisation", new MonetPanel(),null);
+        sideBar.addSection(ss1,false);
+        sideBar.addSection(ss2);
         jButton1.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		 JFileChooser chooser = new JFileChooser();
+        		 editPanel edit = (editPanel)ss1.contentPane;
+        		 if(edit.getTxtStartDir() != null && !edit.getTxtStartDir().equals("")){
+        			 chooser.setCurrentDirectory(new File(edit.getTxtStartDir().getText()));
+        		 }
         		    int returnVal = chooser.showOpenDialog((Component) self);
         		    if(returnVal == JFileChooser.APPROVE_OPTION) {
         		    	cmbFile.removeAllItems();
@@ -173,11 +183,6 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         		    }
         	}
         });
-        SideBar sideBar = new SideBar(SideBar.SideBarMode.TOP_LEVEL, true, 300, true);
-        SidebarSection ss1 = new SidebarSection(sideBar, "Template", new editPanel(),null);
-        SidebarSection ss2 = new SidebarSection(sideBar, "Monetisation", new MonetPanel(),null);
-        sideBar.addSection(ss1,false);
-        sideBar.addSection(ss2);
         mnuBar = new javax.swing.JMenuBar();
         mnuFile = new javax.swing.JMenu();
         mnuQuit = new javax.swing.JMenuItem();
@@ -308,7 +313,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         					.addPreferredGap(ComponentPlacement.RELATED)
         					.addComponent(jButton1, GroupLayout.PREFERRED_SIZE, 34, GroupLayout.PREFERRED_SIZE)
         					.addGap(2))
-        				.addComponent(lblCategory, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 73, GroupLayout.PREFERRED_SIZE)
+        				.addComponent(lblCategory, GroupLayout.PREFERRED_SIZE, 73, GroupLayout.PREFERRED_SIZE)
         				.addComponent(lblAccount))
         			.addPreferredGap(ComponentPlacement.RELATED)
         			.addComponent(sideBar, GroupLayout.DEFAULT_SIZE, 421, Short.MAX_VALUE)
@@ -659,6 +664,10 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         CategoryType cat = (CategoryType) cmbCategory.getSelectedItem();
         v.snippet.categoryId = cat.getValue();
         v.snippet.description = txtDescription.getText();
+        if(txtTags != null && !txtTags.getText().equals("")){
+        	String[] tags = txtTags.getText().trim().split(",");
+        	v.snippet.tags = tags;
+        }
 		File data = new File(File);
 		UploadManager.add_upload(f, data, v, Account); 
         return f;

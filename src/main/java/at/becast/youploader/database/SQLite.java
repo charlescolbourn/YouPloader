@@ -15,9 +15,16 @@
 
 package at.becast.youploader.database;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.*;
 
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+
 import at.becast.youploader.gui.frmMain;
+import at.becast.youploader.youtube.data.Video;
 
 public class SQLite {
 	
@@ -36,5 +43,25 @@ public class SQLite {
         if(c == null)
             new SQLite(frmMain.DB_FILE);
         return c;
+    }
+    
+    public static int addUpload(String account, File file, Video data) throws SQLException, JsonGenerationException, JsonMappingException, IOException{
+    	PreparedStatement prest = null;
+    	ObjectMapper mapper = new ObjectMapper();
+    	String sql	= "INSERT INTO `uploads` (`account`, `file`, `lenght`, `data`, `status`) " +
+    			"VALUES (?,?,?,?,?)";
+    	prest = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+    	prest.setString(1, account);
+    	prest.setString(2, file.getAbsolutePath());
+    	prest.setLong(3, file.length());
+    	prest.setString(4, mapper.writeValueAsString(data));
+    	prest.setString(5, "NOT_STARTED");
+    	prest.execute();
+        ResultSet rs = prest.getGeneratedKeys();
+        if (rs.next()){
+        	return rs.getInt(1);
+        }else{
+        	return -1;
+        }
     }
 }

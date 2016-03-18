@@ -22,13 +22,22 @@ public class Video {
     public String privacyStatus;
     public boolean embeddable;
     public String license;
+    public String publishAt;
 
     public Status(String privacyStatus, boolean embeddable, String license) {
       this.privacyStatus = privacyStatus;
       this.embeddable = embeddable;
       this.license = license;
     }
+    
+    public void setPublishDate(String date){
+    	this.privacyStatus = "private";
+    			//String pattern = "yyyy-MM-dd'T'HH:mm:ssZ";
+    	this.publishAt = date;
+    }
+
   }
+  
 
   public Video() {
     this.snippet = new Snippet(
