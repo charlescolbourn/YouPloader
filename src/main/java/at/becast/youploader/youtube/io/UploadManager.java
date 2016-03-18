@@ -25,7 +25,7 @@ import at.becast.youploader.gui.UploadItem;
 import at.becast.youploader.youtube.data.Video;
 
 public class UploadManager {
-	private int upload_limit = 2;
+	private int upload_limit = 1;
 	private enum Status{STOPPED, RUNNING,FINISHED};
 	private Status status;
 	private LinkedList<UploadWorker> _ToUpload = new LinkedList<UploadWorker>();
@@ -74,6 +74,10 @@ public class UploadManager {
 		for(int i=0;i<_Uploading.size();i++){
 			_Uploading.get(i).setSpeed(limit);
 		}
+	}
+	
+	public void set_uploadlimit(int limit){
+		this.upload_limit = limit;
 	}
 	
 }

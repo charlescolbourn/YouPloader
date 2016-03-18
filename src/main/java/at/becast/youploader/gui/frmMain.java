@@ -37,6 +37,7 @@ import java.util.Map.Entry;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
+import javax.swing.ImageIcon;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -50,6 +51,7 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSpinner;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
@@ -78,6 +80,9 @@ import at.becast.youploader.youtube.io.UploadManager;
 import net.miginfocom.layout.CC;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JSlider;
+import javax.swing.SpringLayout;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
 
 /**
  *
@@ -100,7 +105,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
 	private IMainMenu self;
 	private JTextArea txtDescription;
     private javax.swing.JTabbedPane TabbedPane;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnSelectMovie;
     private JComboBox<String> cmbFile;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel mainTab;
@@ -126,11 +131,12 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
     private JComboBox<CategoryType> cmbCategory;
     private JMenuItem mntmDonate;
     private JTextArea txtTags;
-    private JScrollPane scrollPane_2;
     private JComboBox<String> cmbAccount;
 	public transient static HashMap<Integer, JMenuItem> _accounts = new HashMap<Integer, JMenuItem>();
 	private JSlider slider;
 	private JLabel lblUploads;
+	private JPanel panel;
+	private JScrollPane scrollPane_1;
 	
 	/**
      * Creates new form frmMain
@@ -163,31 +169,15 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
      */
     public void initComponents() {
 
-        TabbedPane = new javax.swing.JTabbedPane();
-        mainTab = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        cmbFile = new JComboBox<String>();
-        jButton1 = new javax.swing.JButton();
-
+        TabbedPane = new JTabbedPane();
+        mainTab = new JPanel();
+        cmbCategory = new JComboBox<CategoryType>();
+        cmbCategory.setModel(new DefaultComboBoxModel<CategoryType>());
         SideBar sideBar = new SideBar(SideBar.SideBarMode.TOP_LEVEL, true, 300, true);
         SidebarSection ss1 = new SidebarSection(sideBar, "Template", new editPanel(),null);
         SidebarSection ss2 = new SidebarSection(sideBar, "Monetisation", new MonetPanel(),null);
         sideBar.addSection(ss1,false);
         sideBar.addSection(ss2);
-        jButton1.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        		 JFileChooser chooser = new JFileChooser();
-        		 editPanel edit = (editPanel)ss1.contentPane;
-        		 if(edit.getTxtStartDir() != null && !edit.getTxtStartDir().equals("")){
-        			 chooser.setCurrentDirectory(new File(edit.getTxtStartDir().getText()));
-        		 }
-        		    int returnVal = chooser.showOpenDialog((Component) self);
-        		    if(returnVal == JFileChooser.APPROVE_OPTION) {
-        		    	cmbFile.removeAllItems();
-        		    	cmbFile.addItem(chooser.getSelectedFile().getAbsolutePath().toString());
-        		    }
-        	}
-        });
         mnuBar = new javax.swing.JMenuBar();
         mnuFile = new javax.swing.JMenu();
         mnuQuit = new javax.swing.JMenuItem();
@@ -197,76 +187,73 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         setTitle("YouPloader "+VERSION);
         setIconImages(null);
         setName("frmMain");
-
-        jLabel1.setText("Select Video File");
-
-        jButton1.setText("jButton1");
-        
-        JLabel lblTitle = new JLabel("Title");
-        
-        txtTitle = new JTextField();
-        txtTitle.setColumns(10);
-
-        
-        JLabel lblDescription = new JLabel("Description");
-        
-        JLabel lblTags = new JLabel("Tags");
-        
-        txtTags = new JTextArea();
-        txtTags.setFont(new Font("Tahoma", Font.PLAIN, 11));
-        txtTags.setWrapStyleWord(true);
-        txtTags.setLineWrap(true);
-        txtTags.setBorder(BorderFactory.createEtchedBorder());
-        
-        lblTagslenght = new JLabel("(0/500)");
-        txtTags.addKeyListener(new KeyAdapter() {
-        	@Override
-        	public void keyReleased(KeyEvent e) {
-        		if(txtTags.getText().length()>450){
-        			lblTagslenght.setForeground(Color.RED);
-        		}else{
-        			lblTagslenght.setForeground(Color.BLACK);
-                }
-                if(txtTags.getText().length()>=501){
-                	txtTags.setText(txtTags.getText().substring(0, 500));
-
-                }
-                lblTagslenght.setText("("+txtTags.getText().length()+"/500)");
-        	}
-        });
-        cmbAccount = new JComboBox<String>();
-        
-        JLabel lblAccount = new JLabel("Account");
-        
-        JButton btnAddToQueue = new JButton("Add to Queue");
-        btnAddToQueue.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        		if(cmbFile.getSelectedItem()!=null && !cmbFile.getSelectedItem().toString().equals("")){
-        			try {
-						create_upload(cmbFile.getSelectedItem().toString(), txtTitle.getText(), cmbAccount.getSelectedItem().toString());
-					} catch (IOException | UploadException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-        		}else{
-        			JOptionPane.showMessageDialog(null,"You have to select a file.","Give me something to work with!", JOptionPane.ERROR_MESSAGE);
-        		}
-        	}
-        });
-        
-        JButton btnReset = new JButton("Reset");
-        
-        JLabel lblCategory = new JLabel("Category");
-        
-        cmbCategory = new JComboBox<CategoryType>();
-        cmbCategory.setModel(new DefaultComboBoxModel<CategoryType>());
         for(Categories cat: Categories.values()){
         	 cmbCategory.addItem(new CategoryType(cat.getID(),cat.toString()));
         }
         
-        lblDesclenght = new JLabel("(0/1000)");
+        panel = new JPanel();
+        javax.swing.GroupLayout mainTabLayout = new javax.swing.GroupLayout(mainTab);
+        mainTabLayout.setHorizontalGroup(
+        	mainTabLayout.createParallelGroup(Alignment.LEADING)
+        		.addGroup(Alignment.TRAILING, mainTabLayout.createSequentialGroup()
+        			.addComponent(panel, GroupLayout.DEFAULT_SIZE, 469, Short.MAX_VALUE)
+        			.addPreferredGap(ComponentPlacement.RELATED)
+        			.addComponent(sideBar, GroupLayout.DEFAULT_SIZE, 416, Short.MAX_VALUE))
+        );
+        mainTabLayout.setVerticalGroup(
+        	mainTabLayout.createParallelGroup(Alignment.LEADING)
+        		.addComponent(sideBar, GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE)
+        		.addComponent(panel, GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE)
+        );
+        panel.setLayout(new FormLayout(new ColumnSpec[] {
+        		ColumnSpec.decode("2px"),
+        		FormSpecs.RELATED_GAP_COLSPEC,
+        		ColumnSpec.decode("20px:grow"),
+        		FormSpecs.LABEL_COMPONENT_GAP_COLSPEC,
+        		ColumnSpec.decode("23px"),
+        		ColumnSpec.decode("33px"),
+        		FormSpecs.UNRELATED_GAP_COLSPEC,
+        		ColumnSpec.decode("61px"),
+        		FormSpecs.DEFAULT_COLSPEC,
+        		FormSpecs.RELATED_GAP_COLSPEC,
+        		ColumnSpec.decode("24px"),
+        		ColumnSpec.decode("28px"),
+        		ColumnSpec.decode("40px"),
+        		ColumnSpec.decode("36px"),
+        		FormSpecs.LABEL_COMPONENT_GAP_COLSPEC,
+        		ColumnSpec.decode("28px"),
+        		FormSpecs.LABEL_COMPONENT_GAP_COLSPEC,
+        		ColumnSpec.decode("58px"),},
+        	new RowSpec[] {
+        		RowSpec.decode("2px"),
+        		FormSpecs.RELATED_GAP_ROWSPEC,
+        		RowSpec.decode("14px"),
+        		RowSpec.decode("25px"),
+        		FormSpecs.RELATED_GAP_ROWSPEC,
+        		RowSpec.decode("14px"),
+        		RowSpec.decode("25px"),
+        		FormSpecs.LINE_GAP_ROWSPEC,
+        		RowSpec.decode("14px"),
+        		RowSpec.decode("25px"),
+        		FormSpecs.RELATED_GAP_ROWSPEC,
+        		FormSpecs.DEFAULT_ROWSPEC,
+        		RowSpec.decode("64dlu"),
+        		RowSpec.decode("14px"),
+        		FormSpecs.RELATED_GAP_ROWSPEC,
+        		RowSpec.decode("max(64dlu;default):grow"),
+        		FormSpecs.RELATED_GAP_ROWSPEC,
+        		FormSpecs.DEFAULT_ROWSPEC,
+        		RowSpec.decode("25px"),
+        		FormSpecs.PARAGRAPH_GAP_ROWSPEC,
+        		RowSpec.decode("24px"),
+        		RowSpec.decode("23px"),}));
         
         lbltitlelenght = new JLabel("(0/100)");
+        panel.add(lbltitlelenght, "14, 6, 3, 1, right, top");
+        
+        txtTitle = new JTextField();
+        panel.add(txtTitle, "3, 7, 14, 1, fill, fill");
+        txtTitle.setColumns(10);
         txtTitle.addKeyListener(new KeyAdapter() {
         	@Override
         	public void keyReleased(KeyEvent e) {
@@ -283,96 +270,24 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         	}
         });
         
-        scrollPane_2 = new JScrollPane();
-        javax.swing.GroupLayout mainTabLayout = new javax.swing.GroupLayout(mainTab);
-        mainTabLayout.setHorizontalGroup(
-        	mainTabLayout.createParallelGroup(Alignment.LEADING)
-        		.addGroup(mainTabLayout.createSequentialGroup()
-        			.addContainerGap()
-        			.addGroup(mainTabLayout.createParallelGroup(Alignment.LEADING)
-        				.addGroup(Alignment.TRAILING, mainTabLayout.createSequentialGroup()
-        					.addGroup(mainTabLayout.createParallelGroup(Alignment.LEADING)
-        						.addComponent(scrollPane_2, GroupLayout.DEFAULT_SIZE, 409, Short.MAX_VALUE)
-        						.addGroup(mainTabLayout.createSequentialGroup()
-        							.addComponent(lblTitle)
-        							.addPreferredGap(ComponentPlacement.RELATED, 353, Short.MAX_VALUE)
-        							.addComponent(lbltitlelenght))
-        						.addGroup(mainTabLayout.createSequentialGroup()
-        							.addComponent(lblDescription, GroupLayout.PREFERRED_SIZE, 79, GroupLayout.PREFERRED_SIZE)
-        							.addPreferredGap(ComponentPlacement.RELATED, 288, Short.MAX_VALUE)
-        							.addComponent(lblDesclenght))
-        						.addComponent(cmbAccount, 0, 409, Short.MAX_VALUE)
-        						.addGroup(mainTabLayout.createSequentialGroup()
-        							.addComponent(lblTags, GroupLayout.PREFERRED_SIZE, 58, GroupLayout.PREFERRED_SIZE)
-        							.addPreferredGap(ComponentPlacement.RELATED, 315, Short.MAX_VALUE)
-        							.addComponent(lblTagslenght))
-        						.addComponent(cmbCategory, 0, 409, Short.MAX_VALUE)
-        						.addGroup(mainTabLayout.createSequentialGroup()
-        							.addComponent(btnAddToQueue, GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
-        							.addPreferredGap(ComponentPlacement.RELATED)
-        							.addComponent(btnReset, GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE))
-        						.addComponent(txtTitle, GroupLayout.DEFAULT_SIZE, 409, Short.MAX_VALUE)
-        						.addComponent(jLabel1)
-        						.addComponent(cmbFile, 0, 409, Short.MAX_VALUE)
-        						.addComponent(txtTags, GroupLayout.DEFAULT_SIZE, 409, Short.MAX_VALUE))
-        					.addPreferredGap(ComponentPlacement.RELATED)
-        					.addComponent(jButton1, GroupLayout.PREFERRED_SIZE, 34, GroupLayout.PREFERRED_SIZE)
-        					.addGap(2))
-        				.addComponent(lblCategory, GroupLayout.PREFERRED_SIZE, 73, GroupLayout.PREFERRED_SIZE)
-        				.addComponent(lblAccount))
-        			.addPreferredGap(ComponentPlacement.RELATED)
-        			.addComponent(sideBar, GroupLayout.DEFAULT_SIZE, 421, Short.MAX_VALUE)
-        			.addContainerGap())
-        );
-        mainTabLayout.setVerticalGroup(
-        	mainTabLayout.createParallelGroup(Alignment.LEADING)
-        		.addGroup(mainTabLayout.createSequentialGroup()
-        			.addContainerGap()
-        			.addComponent(jLabel1)
-        			.addPreferredGap(ComponentPlacement.RELATED)
-        			.addGroup(mainTabLayout.createParallelGroup(Alignment.BASELINE)
-        				.addComponent(cmbFile, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        				.addComponent(jButton1))
-        			.addPreferredGap(ComponentPlacement.RELATED)
-        			.addGroup(mainTabLayout.createParallelGroup(Alignment.BASELINE)
-        				.addComponent(lblTitle)
-        				.addComponent(lbltitlelenght))
-        			.addPreferredGap(ComponentPlacement.RELATED)
-        			.addComponent(txtTitle, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        			.addPreferredGap(ComponentPlacement.RELATED)
-        			.addComponent(lblCategory)
-        			.addPreferredGap(ComponentPlacement.RELATED)
-        			.addComponent(cmbCategory, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        			.addPreferredGap(ComponentPlacement.RELATED)
-        			.addGroup(mainTabLayout.createParallelGroup(Alignment.BASELINE)
-        				.addComponent(lblDescription)
-        				.addComponent(lblDesclenght))
-        			.addPreferredGap(ComponentPlacement.RELATED)
-        			.addComponent(scrollPane_2, GroupLayout.PREFERRED_SIZE, 77, GroupLayout.PREFERRED_SIZE)
-        			.addPreferredGap(ComponentPlacement.RELATED)
-        			.addGroup(mainTabLayout.createParallelGroup(Alignment.BASELINE)
-        				.addComponent(lblTags)
-        				.addComponent(lblTagslenght))
-        			.addPreferredGap(ComponentPlacement.RELATED)
-        			.addComponent(txtTags, GroupLayout.PREFERRED_SIZE, 84, GroupLayout.PREFERRED_SIZE)
-        			.addPreferredGap(ComponentPlacement.RELATED)
-        			.addComponent(lblAccount)
-        			.addPreferredGap(ComponentPlacement.RELATED)
-        			.addComponent(cmbAccount, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        			.addGap(10)
-        			.addGroup(mainTabLayout.createParallelGroup(Alignment.BASELINE)
-        				.addComponent(btnAddToQueue)
-        				.addComponent(btnReset))
-        			.addContainerGap())
-        		.addComponent(sideBar, GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE)
-        );
+        JLabel lblCategory = new JLabel("Category");
+        panel.add(lblCategory, "3, 9, 4, 1, left, top");
+        panel.add(cmbCategory, "3, 10, 14, 1, fill, fill");
+       
+        JLabel lblDescription = new JLabel("Description");
+        panel.add(lblDescription, "3, 12, 4, 1, left, bottom");
+        
+        lblDesclenght = new JLabel("(0/1000)");
+        panel.add(lblDesclenght, "14, 12, 3, 1, right, bottom");
+        
+        JScrollPane scrollPane = new JScrollPane();
+        panel.add(scrollPane, "3, 13, 14, 1, fill, fill");
         
         txtDescription = new JTextArea();
+        scrollPane.setViewportView(txtDescription);
         txtDescription.setFont(new Font("Tahoma", Font.PLAIN, 11));
         txtDescription.setWrapStyleWord(true);
         txtDescription.setLineWrap(true);
-        scrollPane_2.setViewportView(txtDescription);
-        mainTab.setLayout(mainTabLayout);
         txtDescription.addKeyListener(new KeyAdapter() {
         	@Override
         	public void keyReleased(KeyEvent e) {
@@ -388,6 +303,89 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
                 lblDesclenght.setText("("+txtDescription.getText().length()+"/1000)");
         	}
         });
+        
+        JLabel lblTags = new JLabel("Tags");
+        panel.add(lblTags, "3, 14, left, top");
+        
+        lblTagslenght = new JLabel("(0/500)");
+        panel.add(lblTagslenght, "14, 14, 3, 1, right, top");
+        
+        scrollPane_1 = new JScrollPane();
+        panel.add(scrollPane_1, "3, 16, 14, 1, fill, fill");
+        
+        txtTags = new JTextArea();
+        scrollPane_1.setViewportView(txtTags);
+        txtTags.setFont(new Font("Tahoma", Font.PLAIN, 11));
+        txtTags.setWrapStyleWord(true);
+        txtTags.setLineWrap(true);
+        txtTags.setBorder(BorderFactory.createEtchedBorder());
+        txtTags.addKeyListener(new KeyAdapter() {
+        	@Override
+        	public void keyReleased(KeyEvent e) {
+        		if(txtTags.getText().length()>450){
+        			lblTagslenght.setForeground(Color.RED);
+        		}else{
+        			lblTagslenght.setForeground(Color.BLACK);
+                }
+                if(txtTags.getText().length()>=501){
+                	txtTags.setText(txtTags.getText().substring(0, 500));
+
+                }
+                lblTagslenght.setText("("+txtTags.getText().length()+"/500)");
+        	}
+        });
+        
+        JLabel lblAccount = new JLabel("Account");
+        panel.add(lblAccount, "3, 18, 4, 1, left, top");
+        cmbAccount = new JComboBox<String>();
+        panel.add(cmbAccount, "3, 19, 14, 1, fill, fill");
+        
+        JButton btnAddToQueue = new JButton("Add to Queue");
+        panel.add(btnAddToQueue, "3, 21, 6, 1, fill, fill");
+        btnAddToQueue.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		if(cmbFile.getSelectedItem()!=null && !cmbFile.getSelectedItem().toString().equals("")){
+        			try {
+						create_upload(cmbFile.getSelectedItem().toString(), txtTitle.getText(), cmbAccount.getSelectedItem().toString());
+					} catch (IOException | UploadException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+        		}else{
+        			JOptionPane.showMessageDialog(null,"You have to select a file.","Give me something to work with!", JOptionPane.ERROR_MESSAGE);
+        		}
+        	}
+        });
+        jLabel1 = new JLabel();
+        panel.add(jLabel1, "3, 3, 4, 1, left, top");
+        
+        jLabel1.setText("Select Video File");
+        cmbFile = new JComboBox<String>();
+        panel.add(cmbFile, "3, 4, 14, 1, fill, fill");
+        btnSelectMovie = new JButton();
+        panel.add(btnSelectMovie, "18, 4, center, top");
+        btnSelectMovie.setIcon(new ImageIcon(getClass().getResource("/film_add.png")));
+        
+        JLabel lblTitle = new JLabel("Title");
+        panel.add(lblTitle, "3, 6, left, top");
+        
+        JButton btnReset = new JButton("Reset");
+        panel.add(btnReset, "11, 21, 6, 1, fill, fill");
+        btnSelectMovie.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		 JFileChooser chooser = new JFileChooser();
+        		 editPanel edit = (editPanel)ss1.contentPane;
+        		 if(edit.getTxtStartDir() != null && !edit.getTxtStartDir().equals("")){
+        			 chooser.setCurrentDirectory(new File(edit.getTxtStartDir().getText()));
+        		 }
+        		    int returnVal = chooser.showOpenDialog((Component) self);
+        		    if(returnVal == JFileChooser.APPROVE_OPTION) {
+        		    	cmbFile.removeAllItems();
+        		    	cmbFile.addItem(chooser.getSelectedFile().getAbsolutePath().toString());
+        		    }
+        	}
+        });
+        mainTab.setLayout(mainTabLayout);
         TabbedPane.addTab("Video Settings", mainTab);
 
         mnuFile.setText("File");
@@ -541,6 +539,12 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         panel_2.add(lblUploads, "18, 4, right, fill");
         
         slider = new JSlider();
+        slider.addPropertyChangeListener(new PropertyChangeListener() {
+        	public void propertyChange(PropertyChangeEvent evt) {
+        		JSlider s = (JSlider) evt.getSource();
+				UploadManager.set_uploadlimit(s.getValue());		
+        	}
+        });
         slider.setMajorTickSpacing(1);
         slider.setMinorTickSpacing(1);
         slider.setMinimum(1);
