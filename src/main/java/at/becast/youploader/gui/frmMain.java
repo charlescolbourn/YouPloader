@@ -733,8 +733,12 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         v.snippet.categoryId = cat.getValue();
         v.snippet.description = txtDescription.getText();
         if(txtTags != null && !txtTags.getText().equals("")){
-        	String[] tags = txtTags.getText().replaceAll("\\s+","").split(",");
-        	v.snippet.tags = tags;
+        	String[] tags = txtTags.getText().split(",");
+        	String[] trimmedtags = new String[tags.length];
+        	for (int i = 0; i < tags.length; i++){
+        		trimmedtags[i] = tags[i].trim();
+        	}
+        	v.snippet.tags = trimmedtags;
         }
         VisibilityType visibility = (VisibilityType)edit.getCmbVisibility().getSelectedItem();
         if(visibility == VisibilityType.SCHEDULED){
