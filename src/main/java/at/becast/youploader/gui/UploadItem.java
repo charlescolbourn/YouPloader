@@ -112,22 +112,19 @@ public class UploadItem extends JPanel {
 		lblReleased.setHorizontalAlignment(SwingConstants.TRAILING);
 		add(lblReleased, "cell 1 1,growx");
 		
-		lblRelease = new JLabel("Not yet started");
+		lblRelease = new JLabel("not set");
 		add(lblRelease, "cell 2 1,growx");
 		
 		progressBar = new JProgressBar();
 		progressBar.setStringPainted(true);
 		add(progressBar, "cell 0 2 3 1,grow");
 		
-		JButton btnNewButton_1 = new JButton("");
-		btnNewButton_1.setIcon(new ImageIcon(getClass().getResource("/cross.png")));
-		add(btnNewButton_1, "cell 3 2,grow");
+		JButton btnDelete = new JButton("");
+		btnDelete.setIcon(new ImageIcon(getClass().getResource("/cross.png")));
+		add(btnDelete, "cell 3 2,grow");
 		
-		JButton btnNewButton_2 = new JButton("");
-		add(btnNewButton_2, "cell 4 2,grow");
-		
-		JButton btnNewButton_3 = new JButton("");
-		add(btnNewButton_3, "cell 5 2,grow");
+		JButton btnEdit = new JButton("");
+		add(btnEdit, "cell 4 2,grow");
 		
 		lblKbs = new JLabel("");
 		lblKbs.setHorizontalAlignment(SwingConstants.LEFT);
@@ -137,8 +134,9 @@ public class UploadItem extends JPanel {
 		lblETA.setIcon(new ImageIcon(getClass().getResource("/clock-icon.png")));
 		add(lblETA, "cell 2 3");
 		
-		JButton btnNewButton = new JButton("New button");
-		add(btnNewButton, "cell 3 3 3 1,growx");
+		JButton btnCancel = new JButton("Cancel Upload");
+		btnCancel.setIcon(new ImageIcon(getClass().getResource("/cancel.png")));
+		add(btnCancel, "cell 3 3 3 1,grow");
 
 	}
 	

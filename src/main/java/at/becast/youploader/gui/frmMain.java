@@ -747,12 +747,16 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         		Date date = edit.getDateTimePicker().getDate();
         		String pattern = "yyyy-MM-dd'T'HH:mm:ss.sssZ";
         		SimpleDateFormat formatter = new SimpleDateFormat(pattern);
+        		f.getlblRelease().setText(edit.getDateTimePicker().getEditor().getValue().toString());
         		v.status.publishAt = formatter.format(date);
         	}else{
         		v.status.privacyStatus = VisibilityType.PRIVATE.getData();
         	}
         }else{
         	v.status.privacyStatus = visibility.getData();
+        	if(visibility == VisibilityType.PUBLIC){
+        		f.getlblRelease().setText("public");
+        	}
         }
         LicenseType license = (LicenseType)edit.getCmbLicense().getSelectedItem();
         v.status.license = license.getData();

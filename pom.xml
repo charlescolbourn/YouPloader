@@ -79,12 +79,15 @@
     <build>
     <resources>
     <resource>
-	        <!-- You may have a different path for your properties file -->
-	        <directory>src/main/resources</directory>
+	        <directory>src/main/resources/data</directory>
 	        <includes>
 	          <include>**/*.properties</include>
 	        </includes>
 	        <filtering>true</filtering>
+	    </resource>
+	    <resource>
+	        <directory>src/main/resources/images</directory>
+	        <filtering>false</filtering>
 	    </resource>
 	</resources>
 	    <plugins>
