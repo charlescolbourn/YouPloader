@@ -26,12 +26,14 @@ import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
+import java.util.Calendar;
 import java.util.Date;
 import java.awt.event.ActionEvent;
 import javax.swing.DefaultComboBoxModel;
 import at.becast.youploader.youtube.data.VisibilityType;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
+import at.becast.youploader.youtube.data.LicenseType;
 
 /**
  *
@@ -42,12 +44,13 @@ public class editPanel extends javax.swing.JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JComboBox<VisibilityType> jComboBox1;
+	private JComboBox<VisibilityType> cmbTemplate;
     private JLabel jLabel1;
     private JTextField txtStartDir;
     private JTextField txtEndDir;
     private JComboBox<VisibilityType> cmbVisibility;
     private DateTimePicker dateTimePicker;
+    private JComboBox cmbLicense;
     /**
      * Creates new form editPanel
      */
@@ -58,7 +61,7 @@ public class editPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         jLabel1 = new JLabel();
-        jComboBox1 = new JComboBox<VisibilityType>();
+        cmbTemplate = new JComboBox<VisibilityType>();
         setLayout(new FormLayout(new ColumnSpec[] {
         		FormSpecs.RELATED_GAP_COLSPEC,
         		ColumnSpec.decode("87px"),
@@ -80,11 +83,13 @@ public class editPanel extends javax.swing.JPanel {
         		FormSpecs.RELATED_GAP_ROWSPEC,
         		RowSpec.decode("25px"),
         		FormSpecs.RELATED_GAP_ROWSPEC,
+        		RowSpec.decode("25px"),
+        		FormSpecs.RELATED_GAP_ROWSPEC,
         		RowSpec.decode("25px"),}));
 
         jLabel1.setText("Template:");
         add(jLabel1, "2, 2, right, center");
-        add(jComboBox1, "4, 2, fill, fill");
+        add(cmbTemplate, "4, 2, fill, fill");
         
         JButton btnNewTemplate = new JButton("");
         btnNewTemplate.setIcon(new ImageIcon(getClass().getResource("/add.png")));
@@ -136,6 +141,10 @@ public class editPanel extends javax.swing.JPanel {
         dateTimePicker = new DateTimePicker();
         dateTimePicker.setEnabled(false);
         dateTimePicker.getEditor().setEnabled(false);
+        Calendar calendar = dateTimePicker.getMonthView().getCalendar();
+        // starting today if we are in a hurry
+        calendar.setTime(new Date());
+        dateTimePicker.getMonthView().setLowerBound(calendar.getTime());
         
         cmbVisibility = new JComboBox<VisibilityType>();
         cmbVisibility.addPropertyChangeListener(new PropertyChangeListener() {
@@ -156,6 +165,13 @@ public class editPanel extends javax.swing.JPanel {
         add(lblReleaseAt, "2, 10, right, default");
         
         add(dateTimePicker, "4, 10, fill, fill");
+        
+        JLabel lblLicense = new JLabel("License:");
+        add(lblLicense, "2, 12, right, default");
+        
+        cmbLicense = new JComboBox();
+        cmbLicense.setModel(new DefaultComboBoxModel(LicenseType.values()));
+        add(cmbLicense, "4, 12, fill, fill");
     }
 	public JTextField getTxtStartDir() {
 		return txtStartDir;
@@ -168,5 +184,11 @@ public class editPanel extends javax.swing.JPanel {
 	}
 	public DateTimePicker getDateTimePicker() {
 		return dateTimePicker;
+	}
+	public JComboBox getJComboBox1() {
+		return cmbTemplate;
+	}
+	public JComboBox getCmbLicense() {
+		return cmbLicense;
 	}
 }

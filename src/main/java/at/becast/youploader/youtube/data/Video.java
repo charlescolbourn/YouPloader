@@ -32,7 +32,7 @@ public class Video {
     
     public void setPublishDate(String date){
     	this.privacyStatus = "private";
-    			//String pattern = "yyyy-MM-dd'T'HH:mm:ssZ";
+    			//String pattern = "yyyy-MM-dd'T'HH:mm:ss.sssZ";
     	this.publishAt = date;
     }
 

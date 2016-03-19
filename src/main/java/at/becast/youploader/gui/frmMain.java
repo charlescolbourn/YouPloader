@@ -31,6 +31,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -74,7 +76,9 @@ import at.becast.youploader.gui.slider.SidebarSection;
 import at.becast.youploader.settings.Settings;
 import at.becast.youploader.youtube.Categories;
 import at.becast.youploader.youtube.data.CategoryType;
+import at.becast.youploader.youtube.data.LicenseType;
 import at.becast.youploader.youtube.data.Video;
+import at.becast.youploader.youtube.data.VisibilityType;
 import at.becast.youploader.youtube.exceptions.UploadException;
 import at.becast.youploader.youtube.io.UploadManager;
 import net.miginfocom.layout.CC;
@@ -132,6 +136,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
     private JMenuItem mntmDonate;
     private JTextArea txtTags;
     private JComboBox<String> cmbAccount;
+    private SidebarSection ss1, ss2, ss3;
 	public transient static HashMap<Integer, JMenuItem> _accounts = new HashMap<Integer, JMenuItem>();
 	private JSlider slider;
 	private JLabel lblUploads;
@@ -174,10 +179,12 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         cmbCategory = new JComboBox<CategoryType>();
         cmbCategory.setModel(new DefaultComboBoxModel<CategoryType>());
         SideBar sideBar = new SideBar(SideBar.SideBarMode.TOP_LEVEL, true, 300, true);
-        SidebarSection ss1 = new SidebarSection(sideBar, "Template", new editPanel(),null);
-        SidebarSection ss2 = new SidebarSection(sideBar, "Monetisation", new MonetPanel(),null);
+        ss1 = new SidebarSection(sideBar, "Settings", new editPanel(),null);
+        ss2 = new SidebarSection(sideBar, "Playlists", new playlistPanel(),null);
+        ss3 = new SidebarSection(sideBar, "Monetisation", new MonetPanel(),null);
         sideBar.addSection(ss1,false);
         sideBar.addSection(ss2);
+        sideBar.addSection(ss3);
         mnuBar = new javax.swing.JMenuBar();
         mnuFile = new javax.swing.JMenu();
         mnuQuit = new javax.swing.JMenuItem();
@@ -655,6 +662,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
      */
     public UploadItem create_upload(String File, String Name, String Account) throws IOException, UploadException{
         UploadItem f = new UploadItem();
+        editPanel edit = (editPanel)ss1.contentPane;
         f.getlblName().setText(Name);
         this.getQueuePanel().add(f, new CC().wrap());
         this.getQueuePanel().revalidate();
@@ -664,9 +672,25 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         v.snippet.categoryId = cat.getValue();
         v.snippet.description = txtDescription.getText();
         if(txtTags != null && !txtTags.getText().equals("")){
-        	String[] tags = txtTags.getText().trim().split(",");
+        	String[] tags = txtTags.getText().replaceAll("\\s+","").split(",");
         	v.snippet.tags = tags;
         }
+        VisibilityType visibility = (VisibilityType)edit.getCmbVisibility().getSelectedItem();
+        if(visibility == VisibilityType.SCHEDULED){
+        	if(edit.getDateTimePicker().getEditor().getValue() != null && !edit.getDateTimePicker().getEditor().getValue().equals("")){
+        		v.status.privacyStatus = VisibilityType.SCHEDULED.getData();
+        		Date date = edit.getDateTimePicker().getDate();
+        		String pattern = "yyyy-MM-dd'T'HH:mm:ss.sssZ";
+        		SimpleDateFormat formatter = new SimpleDateFormat(pattern);
+        		v.status.publishAt = formatter.format(date);
+        	}else{
+        		v.status.privacyStatus = VisibilityType.PRIVATE.getData();
+        	}
+        }else{
+        	v.status.privacyStatus = visibility.getData();
+        }
+        LicenseType license = (LicenseType)edit.getCmbLicense().getSelectedItem();
+        v.status.license = license.getData();
 		File data = new File(File);
 		UploadManager.add_upload(f, data, v, Account); 
         return f;
