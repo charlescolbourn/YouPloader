@@ -19,6 +19,7 @@ import java.io.IOException;
 
 import at.becast.youploader.account.Account;
 import at.becast.youploader.account.AccountManager;
+import at.becast.youploader.database.SQLite;
 import at.becast.youploader.gui.UploadItem;
 import at.becast.youploader.youtube.GuiUploadEvent;
 import at.becast.youploader.youtube.Uploader;
@@ -29,19 +30,37 @@ import at.becast.youploader.youtube.exceptions.UploadException;
 public class UploadWorker extends Thread {
 	
 	private Video videodata;
+	private int id, speed_limit;
 	private File file;
 	private UploadItem frame;
 	private Upload upload;
 	private UploadEvent event;
 	private Uploader uploader;
-	private String acc;
+	private String acc, url;
 	private Boolean threadSuspended;
 	private AccountManager AccMgr;
 	
-	public UploadWorker(UploadItem frame, String acc, File file, Video videodata){
+	public UploadWorker(int id, UploadItem frame, String acc, File file, Video videodata, int speed_limit){
+		this.id = id;
+		this.speed_limit = speed_limit;
+		this.frame = frame;
+		this.upload = null;
+		this.acc = acc;
+		this.file = file;
+		this.videodata = videodata;
+		this.threadSuspended = false;
+		this.AccMgr = AccountManager.getInstance();
+		this.uploader = new Uploader(this.AccMgr.getAuth(acc));
+		this.event = new GuiUploadEvent(frame);
+	}
+	
+	public UploadWorker(int id, UploadItem frame, String acc, File file, Video videodata, int speed_limit, String url, String yt_id){
+		this.id = id;
+		this.speed_limit = speed_limit;
 		this.frame = frame;
 		this.acc = acc;
 		this.file = file;
+		this.upload = new Upload(url,file,yt_id,videodata);
 		this.videodata = videodata;
 		this.threadSuspended = false;
 		this.AccMgr = AccountManager.getInstance();
@@ -56,6 +75,7 @@ public class UploadWorker extends Thread {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		SQLite.prepareUpload(this.id,this.upload.url);
 		this.frame.getlblUrl().setText("https://www.youtube.com/watch?v="+this.upload.id);
 	}
 	
@@ -63,8 +83,14 @@ public class UploadWorker extends Thread {
 	public void run(){
 		setName( "Uploader-" + getId() );
 		try {
-			this.prepare();
-			this.uploader.upload(this.upload, this.event, 0);
+			if(this.upload == null){
+				this.prepare();
+				SQLite.startUpload(this.id,0);
+				this.uploader.upload(this.upload, this.event, this.speed_limit);
+			}else{
+				this.uploader.resumeUpload(this.upload, this.event, this.speed_limit);
+			}
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -31,9 +31,13 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 
 import javax.swing.BorderFactory;
@@ -64,6 +68,11 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
+
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.FormSpecs;
@@ -71,11 +80,13 @@ import com.jgoodies.forms.layout.RowSpec;
 
 import at.becast.youploader.account.Account;
 import at.becast.youploader.account.AccountManager;
+import at.becast.youploader.database.SQLite;
 import at.becast.youploader.gui.slider.SideBar;
 import at.becast.youploader.gui.slider.SidebarSection;
 import at.becast.youploader.settings.Settings;
 import at.becast.youploader.youtube.Categories;
 import at.becast.youploader.youtube.data.CategoryType;
+import at.becast.youploader.youtube.data.Cookie;
 import at.becast.youploader.youtube.data.LicenseType;
 import at.becast.youploader.youtube.data.Video;
 import at.becast.youploader.youtube.data.VisibilityType;
@@ -166,6 +177,12 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         initComponents();
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/yp.png")));
         this.setLocationRelativeTo( null );
+        try {
+			load_queue();
+		} catch (SQLException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
 
@@ -621,9 +638,11 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
 	public void prep_modal(Account Account,String code) {
 		modal=new ModalDialog((Frame)this, Account, code);
 	}
+	
     public void show_modal(){
     	modal.setVisible(true);
     }
+    
     public void close_modal(){
     	modal.success();
     }
@@ -652,6 +671,48 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         
     }
     
+    private void load_queue() throws JsonParseException, JsonMappingException, SQLException, IOException{
+    	ObjectMapper mapper = new ObjectMapper();
+    	PreparedStatement prest = null;
+    	String sql	= "SELECT * FROM `uploads` ORDER BY `id`";
+		prest = SQLite.c.prepareStatement(sql);
+		ResultSet rs = prest.executeQuery();
+    	if(rs.isBeforeFirst()){
+			while(rs.next()){
+				UploadItem f = new UploadItem();
+				Video v = mapper.readValue(rs.getString("data"), new TypeReference<Video>() {}); 
+				f.upload_id = rs.getInt("id");
+				String url = rs.getString("url");
+				String yt_id = rs.getString("yt_id");
+				f.getlblUrl().setText("https://www.youtube.com/watch?v="+yt_id);
+				f.getlblName().setText(v.snippet.title);
+		        File data = new File(rs.getString("file"));
+		        String Account = rs.getString("account");
+		        String status = rs.getString("status");
+		        long position = rs.getLong("uploaded");
+		        long size = rs.getLong("lenght");
+				if(url != null && !url.equals("") && !status.equals("FINISHED")){
+					UploadManager.add_resumeable_upload(f, data, v, Account,url,yt_id); 
+			    	f.getProgressBar().setString(String.format("%6.2f%%",(float) position / size * 100));
+			    	f.getProgressBar().setValue((int)((float) position / size * 100));
+			    	f.getProgressBar().revalidate();
+			        f.revalidate();
+			        f.repaint();
+				}else if(status.equals("NOT_STARTED")){
+					UploadManager.add_upload(f, data, v, Account); 
+				}else{
+					f.getProgressBar().setValue(100);
+					f.getProgressBar().setString("100 %");
+				}
+		        this.getQueuePanel().add(f, new CC().wrap());
+		        this.getQueuePanel().revalidate();
+
+			}
+			rs.close();
+			prest.close();
+		}        
+    }
+    
     /**
      * @param String File
      * @param String Name
@@ -661,7 +722,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
      * @throws UploadException
      */
     public UploadItem create_upload(String File, String Name, String Account) throws IOException, UploadException{
-        UploadItem f = new UploadItem();
+    	UploadItem f = new UploadItem();
         editPanel edit = (editPanel)ss1.contentPane;
         f.getlblName().setText(Name);
         this.getQueuePanel().add(f, new CC().wrap());

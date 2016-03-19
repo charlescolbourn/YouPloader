@@ -64,4 +64,55 @@ public class SQLite {
         	return -1;
         }
     }
+    
+    public static Boolean prepareUpload(int id, String Url){
+    	PreparedStatement prest = null;
+    	String sql	= "UPDATE `uploads` SET `status`=?,`url`=? WHERE `id`=?";
+    	try {
+			prest = c.prepareStatement(sql);
+	    	prest.setString(1, "PREPARED");
+	    	prest.setString(2, Url);
+	    	prest.setInt(3, id);
+	    	boolean res = prest.execute();
+	    	prest.close();
+	    	return res;     
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+    }
+    
+    public static Boolean startUpload(int id, long progress){
+    	PreparedStatement prest = null;
+    	String sql	= "UPDATE `uploads` SET `status`=?,`uploaded`=? WHERE `id`=?";
+    	try {
+			prest = c.prepareStatement(sql);
+	    	prest.setString(1, "UPLOADING");
+	    	prest.setLong(2, progress);
+	    	prest.setInt(3, id);
+	    	boolean res = prest.execute();
+	    	prest.close();
+	    	return res;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+    }
+    
+    public static Boolean updateUploadProgress(int id, long progress){
+    	PreparedStatement prest = null;
+    	String sql	= "UPDATE `uploads` SET `uploaded`=? WHERE `id`=?";
+    	try {
+			prest = c.prepareStatement(sql);
+	    	prest.setLong(1, progress);
+	    	prest.setInt(2, id);
+	    	boolean res = prest.execute();
+	    	prest.close();
+	    	return res;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+    }
+    
 }

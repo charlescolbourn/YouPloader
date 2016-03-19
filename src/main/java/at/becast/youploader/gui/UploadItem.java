@@ -41,6 +41,7 @@ public class UploadItem extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	public int upload_id;
 	private JLabel lblName;
 	private JLabel lblUrl;
 	private JLabel lblStart;
@@ -139,6 +140,10 @@ public class UploadItem extends JPanel {
 		JButton btnNewButton = new JButton("New button");
 		add(btnNewButton, "cell 3 3 3 1,growx");
 
+	}
+	
+	public void set_id(int id){
+		this.upload_id = id;
 	}
 
 	public JLabel getlblName() {

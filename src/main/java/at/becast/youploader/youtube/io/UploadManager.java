@@ -38,14 +38,30 @@ public class UploadManager {
 	}
 	
 	public void add_upload(UploadItem frame, File data, Video videodata, String acc){
-		try {
-			SQLite.addUpload(acc, data, videodata);
-		} catch (SQLException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if(frame.upload_id == -1){
+			int id = -1;
+			try {
+				id = SQLite.addUpload(acc, data, videodata);
+			} catch (SQLException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if(id != -1){
+				frame.set_id(id);
+				UploadWorker worker = new UploadWorker(id, frame,acc, data, videodata, speed_limit);
+				_ToUpload.addLast(worker);
+			}else{
+				// TODO Error Handling
+			}
+		}else{
+			UploadWorker worker = new UploadWorker(frame.upload_id, frame,acc, data, videodata, speed_limit);
+			_ToUpload.addLast(worker);
 		}
-		UploadWorker worker = new UploadWorker(frame,acc, data, videodata);
-		_ToUpload.addLast(worker);
+	}
+	
+	public void add_resumeable_upload(UploadItem frame, File data, Video videodata, String acc, String url, String yt_id){
+		UploadWorker worker = new UploadWorker(frame.upload_id, frame,acc, data, videodata, speed_limit, url, yt_id);
+		_ToUpload.addFirst(worker);
 	}
 	
 	public void start(){

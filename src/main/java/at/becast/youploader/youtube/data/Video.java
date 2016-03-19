@@ -16,6 +16,10 @@ public class Video {
       this.tags = tags;
       this.categoryId = categoryId;
     }
+    
+    public Snippet(){
+    	
+    }
   }
 
   public static class Status {
@@ -28,6 +32,10 @@ public class Video {
       this.privacyStatus = privacyStatus;
       this.embeddable = embeddable;
       this.license = license;
+    }
+    
+    public Status(){
+    	
     }
     
     public void setPublishDate(String date){

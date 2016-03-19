@@ -83,7 +83,7 @@ public class AccountManager {
 			String sql = "SELECT * FROM `accounts`"; 
 			ResultSet rs = stmt.executeQuery(sql);
 			if(rs.isBeforeFirst()){
-				HashMap<String, Integer> data = new HashMap<String, Integer>();;
+				HashMap<String, Integer> data = new HashMap<String, Integer>();
 				while(rs.next()){
 					data.put(rs.getString("name"),rs.getInt("active"));
 				}

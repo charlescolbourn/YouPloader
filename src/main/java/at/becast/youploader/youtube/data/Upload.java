@@ -15,7 +15,7 @@ public class Upload {
     this.video = video;
   }
 
-  public Upload(String result, File file2) {
+  public Upload() {
     this(null, null, null, null);
   }
 }

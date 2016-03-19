@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 
+import at.becast.youploader.database.SQLite;
 import at.becast.youploader.gui.UploadItem;
 import at.becast.youploader.youtube.io.UploadEvent;
 
@@ -70,6 +71,7 @@ public class GuiUploadEvent implements UploadEvent {
     	frame.getProgressBar().revalidate();
         frame.revalidate();
         frame.repaint();
+        SQLite.updateUploadProgress(frame.upload_id, position);
     	this.step = System.currentTimeMillis();
     	this.dataDelta = position - this.lastdata;
     	this.timeDelta = this.step - this.lasttime;
