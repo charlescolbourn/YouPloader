@@ -120,8 +120,8 @@
                     </goals>
                     <configuration>
                         <headerType>gui</headerType>
-                        <jar>${project.build.directory}/${project.artifactId}-${project.version}.jar</jar>
-                        <outfile>${project.build.directory}/${project.artifactId}-${project.version}.exe</outfile>
+                        <jar>${project.build.directory}/${project.artifactId}-${project.version}-${env.BUILD_NUMBER}.jar</jar>
+                        <outfile>${project.build.directory}/${project.artifactId}.exe</outfile>
                         <downloadUrl>http://java.com/download</downloadUrl>
                         <classPath>
                             <mainClass>at.becast.youploader.gui.frmMain</mainClass>
@@ -142,7 +142,7 @@
                             <productName>${project.name}</productName>
                             <companyName>becast.at</companyName>
                             <internalName>YouPloader</internalName>
-                            <originalFilename>${project.artifactId}-${project.version}-${buildNumber}.exe</originalFilename>
+                            <originalFilename>${project.artifactId}-${project.version}.exe</originalFilename>
                         </versionInfo>
                     </configuration>
                 </execution>
