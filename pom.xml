@@ -13,7 +13,7 @@
    	<scm>
 		<developerConnection>scm:git:git@github.com:becast/YouPloader.git</developerConnection>
 		<connection>scm:git:git://github.com/becast/YouPloader.git</connection>
-		<url>https://github.com/becast/YouPloader.git/tree/dev</url>
+		<url>https://github.com/becast/YouPloader.git</url>
 	</scm>
 
 	<!-- Build server -->
