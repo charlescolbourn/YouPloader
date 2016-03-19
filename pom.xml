@@ -159,7 +159,7 @@
                             <mainClass>at.becast.youploader.gui.frmMain</mainClass>
                             <preCp>anything</preCp>
                         </classPath>
-                        <icon>src/main/resources/yp_Eck_icon.ico</icon>
+                        <icon>src/main/resources/images/yp_Eck_icon.ico</icon>
                         <jre>
                             <minVersion>1.8.0</minVersion>
                             <jdkPreference>preferJre</jdkPreference>
