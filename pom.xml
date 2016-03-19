@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>at.becast</groupId>
     <artifactId>YouPloader</artifactId>
-    <version>0.2</version>
+    <version>0.2-${buildNumber}</version>
     <packaging>jar</packaging>
    	<scm>
 		<developerConnection>scm:git:git@github.com:becast/YouPloader.git</developerConnection>
@@ -142,7 +142,7 @@
                             <productName>${project.name}</productName>
                             <companyName>becast.at</companyName>
                             <internalName>YouPloader</internalName>
-                            <originalFilename>${project.artifactId}-${project.version}.exe</originalFilename>
+                            <originalFilename>${project.artifactId}-${project.version}-${buildNumber}.exe</originalFilename>
                         </versionInfo>
                     </configuration>
                 </execution>
@@ -167,6 +167,30 @@
 			</plugin>
 	    </plugins>
 	</build>
+	<profiles>
+		    <profile>
+	        <id>static_build_number</id>
+	        <activation>
+	            <property>
+	                <name>!buildNumber</name>
+	            </property>
+	        </activation>
+	        <properties>
+	            <buildNumber>0</buildNumber>
+	        </properties>
+	    </profile>
+	    <profile>
+	        <id>dynamic_build_number</id>
+	        <activation>
+	            <property>
+	                <name>buildNumber</name>
+	            </property>
+	        </activation>
+	        <properties>
+	            <buildNumber>${env.BUILD_NUMBER}</buildNumber>
+	        </properties>
+	    </profile>
+	</profiles>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
