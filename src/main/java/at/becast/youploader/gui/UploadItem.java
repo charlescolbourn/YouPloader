@@ -108,7 +108,7 @@ public class UploadItem extends JPanel {
 		});
 		add(lblUrl, "cell 0 1");
 		
-		JLabel lblReleased = new JLabel("Released:");
+		JLabel lblReleased = new JLabel("Release:");
 		lblReleased.setHorizontalAlignment(SwingConstants.TRAILING);
 		add(lblReleased, "cell 1 1,growx");
 		
@@ -124,6 +124,7 @@ public class UploadItem extends JPanel {
 		add(btnDelete, "cell 3 2,grow");
 		
 		JButton btnEdit = new JButton("");
+		btnEdit.setIcon(new ImageIcon(getClass().getResource("/pencil.png")));
 		add(btnEdit, "cell 4 2,grow");
 		
 		lblKbs = new JLabel("");
