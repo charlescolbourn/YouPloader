@@ -106,6 +106,7 @@
 			  <configuration>
 			    <doCheck>true</doCheck>
 			    <doUpdate>false</doUpdate>
+			    <shortRevisionLength>6</shortRevisionLength>
 			  </configuration>
 			</plugin>
 	    <plugin>
