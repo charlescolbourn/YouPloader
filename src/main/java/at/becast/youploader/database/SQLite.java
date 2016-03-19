@@ -65,14 +65,15 @@ public class SQLite {
         }
     }
     
-    public static Boolean prepareUpload(int id, String Url){
+    public static Boolean prepareUpload(int id, String Url, String yt_id){
     	PreparedStatement prest = null;
-    	String sql	= "UPDATE `uploads` SET `status`=?,`url`=? WHERE `id`=?";
+    	String sql	= "UPDATE `uploads` SET `status`=?,`url`=?,`yt_id`=? WHERE `id`=?";
     	try {
 			prest = c.prepareStatement(sql);
 	    	prest.setString(1, "PREPARED");
 	    	prest.setString(2, Url);
-	    	prest.setInt(3, id);
+	    	prest.setString(3, yt_id);
+	    	prest.setInt(4, id);
 	    	boolean res = prest.execute();
 	    	prest.close();
 	    	return res;     

@@ -75,7 +75,7 @@ public class UploadWorker extends Thread {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		SQLite.prepareUpload(this.id,this.upload.url);
+		SQLite.prepareUpload(this.id,this.upload.url,this.upload.id);
 		this.frame.getlblUrl().setText("https://www.youtube.com/watch?v="+this.upload.id);
 	}
 	
