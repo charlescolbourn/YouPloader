@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>at.becast</groupId>
     <artifactId>YouPloader</artifactId>
-    <version>0.2-${buildNumber}</version>
+    <version>0.2-${env.BUILD_NUMBER}</version>
     <packaging>jar</packaging>
    	<scm>
 		<developerConnection>scm:git:git@github.com:becast/YouPloader.git</developerConnection>
