@@ -460,6 +460,12 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         });
         
         mntmAbout = new JMenuItem("About");
+        mntmAbout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            	frmAbout about = new frmAbout();
+            	about.setVisible(true);
+            }
+        });
         menu.add(mntmAbout);
         //https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=AZ42BHSUTGPT6
 
