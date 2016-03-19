@@ -3,8 +3,20 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>at.becast</groupId>
     <artifactId>YouPloader</artifactId>
-    <version>0.1</version>
+    <version>0.2</version>
     <packaging>jar</packaging>
+   	<scm>
+		<developerConnection>scm:git:git@github.com:becast/YouPloader.git</developerConnection>
+		<connection>scm:git:git://github.com/becast/YouPloader.git</connection>
+		<url>https://github.com/becast/YouPloader.git/tree/dev</url>
+	</scm>
+
+	<!-- Build server -->
+	<ciManagement>
+		<system>jenkins</system>
+		<url>https://build.becast.at/job/YouPloader/</url>
+	</ciManagement>
+    
     <dependencies>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -58,6 +70,12 @@
         	<artifactId>jxdatepicker-support</artifactId>
         	<version>1.0</version>
         </dependency>
+        <dependency>
+        	<groupId>com.akathist.maven.plugins.launch4j</groupId>
+        	<artifactId>launch4j-maven-plugin</artifactId>
+        	<version>1.7.8</version>
+        	<type>maven-plugin</type>
+        </dependency>
     </dependencies>
     <build>
 	    <plugins>
@@ -92,7 +110,7 @@
 	        <plugin>
             <groupId>com.akathist.maven.plugins.launch4j</groupId>
             <artifactId>launch4j-maven-plugin</artifactId>
-            <version>1.5.1</version>
+            <version>1.7.8</version>
             <executions>
                 <execution>
                     <id>l4j-clui</id>
@@ -115,12 +133,12 @@
                             <jdkPreference>preferJre</jdkPreference>
                         </jre>
                         <versionInfo>
-                            <fileVersion>0.0.1.0</fileVersion>
+                            <fileVersion>0.0.2.0</fileVersion>
                             <txtFileVersion>${project.version}</txtFileVersion>
                             <fileDescription>${project.name}</fileDescription>
                             <copyright>2016 BeCast.at</copyright>
-                            <productVersion>0.0.1.0</productVersion>
-                            <txtProductVersion>0.0.1.0</txtProductVersion>
+                            <productVersion>0.0.2.0</productVersion>
+                            <txtProductVersion>0.0.2.0</txtProductVersion>
                             <productName>${project.name}</productName>
                             <companyName>becast.at</companyName>
                             <internalName>YouPloader</internalName>
@@ -130,28 +148,29 @@
                 </execution>
             </executions>
         </plugin>
-	        <!--  <plugin>
-				<groupId>org.codehaus.mojo</groupId>
-			    	<artifactId>buildnumber-maven-plugin</artifactId>
-					  <version>1.4</version>
-					  <executions>
-				    <execution>
-				      <phase>validate</phase>
-				      <goals>
-				        <goal>create</goal>
-				      </goals>
-				    </execution>
-				  </executions>
-				  <configuration>
-				    <doCheck>true</doCheck>
-				    <doUpdate>true</doUpdate>
-				  </configuration>
-			</plugin>-->
+	    <plugin>
+			<groupId>org.codehaus.mojo</groupId>
+		    	<artifactId>buildnumber-maven-plugin</artifactId>
+				  <version>1.4</version>
+				  <executions>
+			    <execution>
+			      <phase>validate</phase>
+			      <goals>
+			        <goal>create</goal>
+			      </goals>
+			    </execution>
+			  </executions>
+			  <configuration>
+			    <doCheck>true</doCheck>
+			    <doUpdate>true</doUpdate>
+			  </configuration>
+			</plugin>
 	    </plugins>
 	</build>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <buildNumber>0</buildNumber>
     </properties>
 </project>
