@@ -3,7 +3,13 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>at.becast</groupId>
     <artifactId>YouPloader</artifactId>
-    <version>0.2-${env.BUILD_NUMBER}</version>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <buildNumber>0</buildNumber>
+    </properties>
+    <version>0.2-${buildNumber}</version>
     <packaging>jar</packaging>
    	<scm>
 		<developerConnection>scm:git:git@github.com:becast/YouPloader.git</developerConnection>
@@ -120,7 +126,7 @@
                     </goals>
                     <configuration>
                         <headerType>gui</headerType>
-                        <jar>${project.build.directory}/${project.artifactId}-${project.version}-${env.BUILD_NUMBER}.jar</jar>
+                        <jar>${project.build.directory}/${project.artifactId}-${project.version}.jar</jar>
                         <outfile>${project.build.directory}/${project.artifactId}.exe</outfile>
                         <downloadUrl>http://java.com/download</downloadUrl>
                         <classPath>
@@ -191,10 +197,4 @@
 	        </properties>
 	    </profile>
 	</profiles>
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <buildNumber>0</buildNumber>
-    </properties>
 </project>
