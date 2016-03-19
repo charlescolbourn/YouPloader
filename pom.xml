@@ -87,19 +87,11 @@
 	        <filtering>true</filtering>
 	    </resource>
 	</resources>
-	 <pluginManagement>
-	  <plugins>
-        <plugin>
-          <artifactId>maven-release-plugin</artifactId>
-          <version>2.2</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
 	    <plugins>
 	    <plugin>
 			<groupId>org.codehaus.mojo</groupId>
 		    	<artifactId>buildnumber-maven-plugin</artifactId>
-				  <version>1.2</version>
+				  <version>1.4</version>
 				  <executions>
 			    <execution>
 	      <phase>generate-resources</phase>
@@ -110,7 +102,7 @@
 			  </executions>
 			  <configuration>
 			    <doCheck>true</doCheck>
-			    <doUpdate>true</doUpdate>
+			    <doUpdate>false</doUpdate>
 			  </configuration>
 			</plugin>
 	    <plugin>
