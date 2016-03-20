@@ -43,8 +43,6 @@ import javax.swing.JTextField;
 
 public class ModalDialog extends JDialog {
 	private static final long serialVersionUID = -49240475185934236L;
-	private static String AccName = null;
-	private static Frame parent = null;
 	private final JPanel contentPanel = new JPanel();
 	private JTextField labelcode;
 	private JLabel check_label;
@@ -65,8 +63,6 @@ public class ModalDialog extends JDialog {
 		setResizable(false);
 		setBounds(100, 100, 551, 401);
 		getContentPane().setLayout(new BorderLayout());
-		ModalDialog.AccName = Acc.name;
-		ModalDialog.parent = parent;
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setModalityType(ModalityType.DOCUMENT_MODAL);
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);

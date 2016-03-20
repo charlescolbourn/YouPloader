@@ -22,19 +22,21 @@ import java.util.LinkedList;
 
 import at.becast.youploader.database.SQLite;
 import at.becast.youploader.gui.UploadItem;
+import at.becast.youploader.gui.frmMain;
 import at.becast.youploader.youtube.data.Video;
 
 public class UploadManager {
 	private int upload_limit = 1;
-	private enum Status{STOPPED, RUNNING,FINISHED};
+	public static enum Status{NOT_STARTED,PREPARED,STOPPED,UPLOADING,FINISHED,ABORTED};
 	private Status status;
+	private frmMain parent;
 	private LinkedList<UploadWorker> _ToUpload = new LinkedList<UploadWorker>();
 	private LinkedList<UploadWorker> _Uploading = new LinkedList<UploadWorker>();
 	private int speed_limit = 0;
 	static Connection c = SQLite.getInstance();
 	
-	public UploadManager(){
-		this.status=Status.STOPPED;
+	public UploadManager(frmMain parent){
+		this.parent = parent;
 	}
 	
 	public void add_upload(UploadItem frame, File data, Video videodata, String acc){
@@ -66,7 +68,6 @@ public class UploadManager {
 	
 	public void start(){
 		if(!_ToUpload.isEmpty()){
-			this.status=Status.RUNNING;
 			for(int i=0;i<=upload_limit-_Uploading.size();i++){
 				if(!_ToUpload.isEmpty()){
 					UploadWorker w = _ToUpload.removeFirst();
@@ -79,9 +80,11 @@ public class UploadManager {
 	
 	public void stop(){
 		if(!_Uploading.isEmpty()){
-			this.status=Status.STOPPED;
 			for(int i=0;i<_Uploading.size();i++){
-				_Uploading.get(i).abort();
+				UploadWorker w = _Uploading.get(i);
+				w.abort();
+				_Uploading.remove(i);
+				_ToUpload.add(w);
 			}
 		}
 	}
@@ -94,6 +97,30 @@ public class UploadManager {
 	
 	public void set_uploadlimit(int limit){
 		this.upload_limit = limit;
+	}
+
+	public void cancel(int upload_id) {
+		if(!_Uploading.isEmpty()){
+			for(int i=0;i<_Uploading.size();i++){
+				if(_Uploading.get(i).id == upload_id){
+					_Uploading.get(i).abort();
+					_Uploading.remove(i);
+				}
+			}
+		}
+		
+	}
+
+	public void delete(int upload_id) {
+		if(!_ToUpload.isEmpty()){
+			for(int i=0;i<_Uploading.size();i++){
+				if(_ToUpload.get(i).id == upload_id){
+					_ToUpload.remove(i);
+				}
+			}
+		}
+		this.parent.removeItem(upload_id);
+		SQLite.deleteUpload(upload_id);
 	}
 	
 }

@@ -36,6 +36,8 @@ import java.beans.PropertyChangeEvent;
 
 import at.becast.youploader.templates.Template;
 import at.becast.youploader.youtube.data.LicenseType;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 /**
  *
@@ -64,6 +66,13 @@ public class editPanel extends javax.swing.JPanel {
 
         jLabel1 = new JLabel();
         cmbTemplate = new JComboBox<Template>();
+        cmbTemplate.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		if("comboBoxEdited".equals(e.getActionCommand())) {
+        			cmbTemplate.setEditable(false);
+		        }
+        	}
+        });
         setLayout(new FormLayout(new ColumnSpec[] {
         		FormSpecs.RELATED_GAP_COLSPEC,
         		ColumnSpec.decode("87px"),
@@ -96,7 +105,7 @@ public class editPanel extends javax.swing.JPanel {
         JButton btnNewTemplate = new JButton("");
         btnNewTemplate.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent arg0) {
-        		
+        		addTemplate();
         	}
         });
         btnNewTemplate.setIcon(new ImageIcon(getClass().getResource("/add.png")));
@@ -183,6 +192,7 @@ public class editPanel extends javax.swing.JPanel {
     
     public void addTemplate(){
     	cmbTemplate.setEditable(true);
+    	cmbTemplate.grabFocus();
     }
     
 	public JTextField getTxtStartDir() {

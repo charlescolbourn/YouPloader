@@ -10,7 +10,6 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.SpringLayout;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.JScrollPane;
@@ -22,6 +21,10 @@ import java.awt.Font;
 
 public class frmAbout extends JDialog {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8005016163820525203L;
 	private final JPanel contentPanel = new JPanel();
 
 	/**

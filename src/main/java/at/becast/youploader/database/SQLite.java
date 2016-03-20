@@ -25,6 +25,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import at.becast.youploader.gui.frmMain;
 import at.becast.youploader.youtube.data.Video;
+import at.becast.youploader.youtube.io.UploadManager;
+import at.becast.youploader.youtube.io.UploadManager.Status;
 
 public class SQLite {
 	
@@ -55,11 +57,14 @@ public class SQLite {
     	prest.setString(2, file.getAbsolutePath());
     	prest.setLong(3, file.length());
     	prest.setString(4, mapper.writeValueAsString(data));
-    	prest.setString(5, "NOT_STARTED");
+    	prest.setString(5, UploadManager.Status.NOT_STARTED.toString());
     	prest.execute();
         ResultSet rs = prest.getGeneratedKeys();
+        prest.close();
         if (rs.next()){
-        	return rs.getInt(1);
+        	int id = rs.getInt(1);
+        	rs.close();
+        	return id;
         }else{
         	return -1;
         }
@@ -70,7 +75,7 @@ public class SQLite {
     	String sql	= "UPDATE `uploads` SET `status`=?,`url`=?,`yt_id`=? WHERE `id`=?";
     	try {
 			prest = c.prepareStatement(sql);
-	    	prest.setString(1, "PREPARED");
+	    	prest.setString(1, UploadManager.Status.PREPARED.toString());
 	    	prest.setString(2, Url);
 	    	prest.setString(3, yt_id);
 	    	prest.setInt(4, id);
@@ -88,7 +93,7 @@ public class SQLite {
     	String sql	= "UPDATE `uploads` SET `status`=?,`uploaded`=? WHERE `id`=?";
     	try {
 			prest = c.prepareStatement(sql);
-	    	prest.setString(1, "UPLOADING");
+	    	prest.setString(1, UploadManager.Status.UPLOADING.toString());
 	    	prest.setLong(2, progress);
 	    	prest.setInt(3, id);
 	    	boolean res = prest.execute();
@@ -115,5 +120,38 @@ public class SQLite {
 			return false;
 		}
     }
+
+	public static Boolean setUploadFinished(int upload_id, Status Status) {
+		PreparedStatement prest = null;
+    	String sql	= "UPDATE `uploads` SET `status`=?,`url`=?,`uploaded`=`lenght` WHERE `id`=?";
+    	try {
+			prest = c.prepareStatement(sql);
+	    	prest.setString(1, Status.toString());
+	    	prest.setString(2, "");
+	    	prest.setInt(3, upload_id);
+	    	boolean res = prest.execute();
+	    	prest.close();
+	    	return res;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}		
+	}
+
+	public static Boolean deleteUpload(int upload_id) {
+		PreparedStatement prest = null;
+    	String sql	= "DELETE FROM `uploads` WHERE `id`=?";
+    	try {
+			prest = c.prepareStatement(sql);
+	    	prest.setInt(1, upload_id);
+	    	boolean res = prest.execute();
+	    	prest.close();
+	    	return res;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}				
+	}
+
     
 }

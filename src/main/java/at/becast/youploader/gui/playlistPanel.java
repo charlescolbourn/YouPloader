@@ -9,6 +9,11 @@ import java.awt.Font;
 public class playlistPanel extends JPanel {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -870661666925769377L;
+
+	/**
 	 * Create the panel.
 	 */
 	public playlistPanel() {

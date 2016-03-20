@@ -37,7 +37,6 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map.Entry;
 
 import javax.swing.BorderFactory;
@@ -86,7 +85,6 @@ import at.becast.youploader.gui.slider.SidebarSection;
 import at.becast.youploader.settings.Settings;
 import at.becast.youploader.youtube.Categories;
 import at.becast.youploader.youtube.data.CategoryType;
-import at.becast.youploader.youtube.data.Cookie;
 import at.becast.youploader.youtube.data.LicenseType;
 import at.becast.youploader.youtube.data.Video;
 import at.becast.youploader.youtube.data.VisibilityType;
@@ -95,7 +93,6 @@ import at.becast.youploader.youtube.io.UploadManager;
 import net.miginfocom.layout.CC;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JSlider;
-import javax.swing.SpringLayout;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
 
@@ -113,7 +110,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
 	private static final long serialVersionUID = 6965358827253585528L;
 	public static final String DB_FILE = "data/data.db";
 	public static final String VERSION = "0.2";
-	public static UploadManager UploadManager = new UploadManager();
+	public static UploadManager UploadManager;
 	public Settings s = Settings.getInstance();
 	public AccountManager accMng =  AccountManager.getInstance();
 	private ModalDialog modal; 
@@ -159,6 +156,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
      */
     public frmMain() {
     	self = this;
+    	UploadManager = new UploadManager(this);
     	try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException e1) {
@@ -788,5 +786,16 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
 	}
 	public JTextArea getTxtDescription() {
 		return txtDescription;
+	}
+
+	public void removeItem(int upload_id) {
+		for(int i=0;i<this.getQueuePanel().getComponentCount();i++){
+			UploadItem item = (UploadItem) this.getQueuePanel().getComponent(i);
+			if(item.upload_id == upload_id){
+				this.getQueuePanel().remove(i);
+				this.getQueuePanel().revalidate();
+				this.getQueuePanel().repaint();
+			}
+		}
 	}
 }

@@ -35,13 +35,15 @@ import java.net.URISyntaxException;
 import java.util.Map;
 import java.awt.Color;
 import javax.swing.border.EtchedBorder;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class UploadItem extends JPanel {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public int upload_id;
+	public int upload_id = -1;
 	private JLabel lblName;
 	private JLabel lblUrl;
 	private JLabel lblStart;
@@ -49,6 +51,9 @@ public class UploadItem extends JPanel {
 	private JProgressBar progressBar;
 	private JLabel lblKbs;
 	private JLabel lblETA;
+	private JButton btnCancel;
+	private JButton btnDelete;
+	private JButton btnEdit;
 
 	/**
 	 * Create the panel.
@@ -119,11 +124,16 @@ public class UploadItem extends JPanel {
 		progressBar.setStringPainted(true);
 		add(progressBar, "cell 0 2 3 1,grow");
 		
-		JButton btnDelete = new JButton("");
+		btnDelete = new JButton("");
+		btnDelete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				delete();
+			}
+		});
 		btnDelete.setIcon(new ImageIcon(getClass().getResource("/cross.png")));
 		add(btnDelete, "cell 3 2,grow");
 		
-		JButton btnEdit = new JButton("");
+		btnEdit = new JButton("");
 		btnEdit.setIcon(new ImageIcon(getClass().getResource("/pencil.png")));
 		add(btnEdit, "cell 4 2,grow");
 		
@@ -135,7 +145,13 @@ public class UploadItem extends JPanel {
 		lblETA.setIcon(new ImageIcon(getClass().getResource("/clock-icon.png")));
 		add(lblETA, "cell 2 3");
 		
-		JButton btnCancel = new JButton("Cancel Upload");
+		btnCancel = new JButton("Cancel Upload");
+		btnCancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cancel();
+			}
+		});
+		btnCancel.setEnabled(false);
 		btnCancel.setIcon(new ImageIcon(getClass().getResource("/cancel.png")));
 		add(btnCancel, "cell 3 3 3 1,grow");
 
@@ -165,5 +181,22 @@ public class UploadItem extends JPanel {
 	}
 	public JLabel getLblETA() {
 		return lblETA;
+	}
+	public JButton getBtnCancel() {
+		return btnCancel;
+	}
+	public JButton getBtnDelete() {
+		return btnDelete;
+	}
+	public JButton getBtnEdit() {
+		return btnEdit;
+	}
+	
+	public void cancel(){
+		frmMain.UploadManager.cancel(this.upload_id);
+	}
+	
+	public void delete(){
+		frmMain.UploadManager.delete(this.upload_id);
 	}
 }

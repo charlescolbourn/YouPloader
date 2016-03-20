@@ -17,7 +17,6 @@ package at.becast.youploader.youtube.io;
 import java.io.File;
 import java.io.IOException;
 
-import at.becast.youploader.account.Account;
 import at.becast.youploader.account.AccountManager;
 import at.becast.youploader.database.SQLite;
 import at.becast.youploader.gui.UploadItem;
@@ -30,7 +29,8 @@ import at.becast.youploader.youtube.exceptions.UploadException;
 public class UploadWorker extends Thread {
 	
 	private Video videodata;
-	private int id, speed_limit;
+	public int id;
+	private int speed_limit;
 	private File file;
 	private UploadItem frame;
 	private Upload upload;
@@ -100,7 +100,7 @@ public class UploadWorker extends Thread {
 	public void setSpeed(int Speed){
 		this.uploader.set_speedlimit(Speed);
 	}
-	
+		
 	public void abort(){
 		this.uploader.abort();
 	}

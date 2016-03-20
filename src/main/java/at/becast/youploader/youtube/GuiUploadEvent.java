@@ -26,6 +26,7 @@ import org.apache.commons.io.FileUtils;
 import at.becast.youploader.database.SQLite;
 import at.becast.youploader.gui.UploadItem;
 import at.becast.youploader.youtube.io.UploadEvent;
+import at.becast.youploader.youtube.io.UploadManager.Status;
 
 public class GuiUploadEvent implements UploadEvent {
   private long step;
@@ -55,6 +56,9 @@ public class GuiUploadEvent implements UploadEvent {
     frame.getProgressBar().setString("0,00 %");
     frame.getProgressBar().setValue(0);
     frame.getProgressBar().revalidate();
+	frame.getBtnCancel().setEnabled(true);
+	frame.getBtnEdit().setEnabled(true);
+	frame.getBtnDelete().setEnabled(false);
     frame.revalidate();
     frame.repaint();
   }
@@ -94,8 +98,13 @@ public class GuiUploadEvent implements UploadEvent {
 	  	frame.getProgressBar().setString("100,00%");
 	  	frame.getProgressBar().setValue(100);
 	  	frame.getProgressBar().revalidate();
-	    	frame.revalidate();
+    	frame.revalidate();
+    	SQLite.setUploadFinished(frame.upload_id,Status.FINISHED);
   	}
+	frame.getBtnCancel().setEnabled(false);
+	frame.getBtnEdit().setEnabled(false);
+	frame.getBtnDelete().setEnabled(true);
+	frame.revalidate();
   }
 
 @Override
@@ -104,5 +113,6 @@ public void onAbort() {
 	frame.getProgressBar().setString("Aborted");
   	frame.getProgressBar().setValue(0);
   	frame.getProgressBar().revalidate();
+  	SQLite.setUploadFinished(frame.upload_id,Status.ABORTED);
 }
 }
