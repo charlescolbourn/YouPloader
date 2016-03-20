@@ -134,6 +134,11 @@ public class UploadItem extends JPanel {
 		add(btnDelete, "cell 3 2,grow");
 		
 		btnEdit = new JButton("");
+		btnEdit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				edit();
+			}
+		});
 		btnEdit.setIcon(new ImageIcon(getClass().getResource("/pencil.png")));
 		add(btnEdit, "cell 4 2,grow");
 		
@@ -190,6 +195,10 @@ public class UploadItem extends JPanel {
 	}
 	public JButton getBtnEdit() {
 		return btnEdit;
+	}
+	
+	public void edit(){
+		frmMain.UploadManager.editUpload(this.upload_id);
 	}
 	
 	public void cancel(){

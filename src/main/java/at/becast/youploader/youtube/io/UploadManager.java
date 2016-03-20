@@ -84,7 +84,6 @@ public class UploadManager {
 				UploadWorker w = _Uploading.get(i);
 				w.abort();
 				_Uploading.remove(i);
-				_ToUpload.add(w);
 			}
 		}
 	}
@@ -121,6 +120,15 @@ public class UploadManager {
 		}
 		this.parent.removeItem(upload_id);
 		SQLite.deleteUpload(upload_id);
+	}
+	
+	public void editUpload(int upload_id) {
+		try {
+			this.parent.editUpload(upload_id);
+		} catch (SQLException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 }

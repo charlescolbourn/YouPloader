@@ -37,6 +37,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map.Entry;
 
 import javax.swing.BorderFactory;
@@ -49,6 +50,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -95,6 +97,7 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.JSlider;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
+import java.util.ResourceBundle;
 
 /**
  *
@@ -102,43 +105,36 @@ import java.beans.PropertyChangeEvent;
  */
 
 public class frmMain extends javax.swing.JFrame implements IMainMenu{
-
-
-	/**
+/**
 	 * 
 	 */
 	private static final long serialVersionUID = 6965358827253585528L;
 	public static final String DB_FILE = "data/data.db";
 	public static final String VERSION = "0.2";
 	public static UploadManager UploadManager;
+	static Locale locale = Locale.getDefault();
+	private static final ResourceBundle LANG = ResourceBundle.getBundle("lang", locale); //$NON-NLS-1$
 	public Settings s = Settings.getInstance();
 	public AccountManager accMng =  AccountManager.getInstance();
 	private ModalDialog modal; 
 	private IMainMenu self;
 	private JTextArea txtDescription;
-    private javax.swing.JTabbedPane TabbedPane;
-    private javax.swing.JButton btnSelectMovie;
+    private JTabbedPane TabbedPane;
     private JComboBox<String> cmbFile;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel mainTab;
-    private javax.swing.JMenu mnuAcc;
-    private javax.swing.JMenuBar mnuBar;
-    private javax.swing.JMenu mnuFile;
-    private javax.swing.JMenuItem mnuQuit;
+    private JLabel lblSelectVideo;
+    private JPanel mainTab;
+    private JMenu menu, mnuAcc, mnuFile;
+    private JMenuBar mnuBar;
+    private JMenuItem mnuQuit, mntmAbout;
     private JTextField txtTitle;
     private JMenuItem mntmAddAccount;
-    private JLabel lblTagslenght;
-    private JLabel lblDesclenght;
-    private JLabel lbltitlelenght;
-    private JMenu menu;
-    private JMenuItem mntmAbout;
+    private JLabel lblTagslenght, lbltitlelenght, lblDesclenght;
     private JScrollPane TabQueues;
-    private JPanel panel_1;
+    private JPanel panel, panel_1;
     private JSpinner spinner;
     private JLabel lblUploadSpeed;
     private JPanel TabQueue;
-    private JButton btnStart;
-    private JButton btnStop;
+    private JButton btnSelectMovie,btnStart, btnStop, btnAddToQueue;
     private JPanel QueuePanel;
     private JComboBox<CategoryType> cmbCategory;
     private JMenuItem mntmDonate;
@@ -148,13 +144,14 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
 	public transient static HashMap<Integer, JMenuItem> _accounts = new HashMap<Integer, JMenuItem>();
 	private JSlider slider;
 	private JLabel lblUploads;
-	private JPanel panel;
-	private JScrollPane scrollPane_1;
+	private JScrollPane TagScrollPane;
+	private int editItem = -1;
 	
 	/**
      * Creates new form frmMain
      */
     public frmMain() {
+    	
     	self = this;
     	UploadManager = new UploadManager(this);
     	try {
@@ -301,11 +298,11 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         lblDesclenght = new JLabel("(0/1000)");
         panel.add(lblDesclenght, "14, 12, 3, 1, right, bottom");
         
-        JScrollPane scrollPane = new JScrollPane();
-        panel.add(scrollPane, "3, 13, 14, 1, fill, fill");
+        JScrollPane DescriptionScrollPane = new JScrollPane();
+        panel.add(DescriptionScrollPane, "3, 13, 14, 1, fill, fill");
         
         txtDescription = new JTextArea();
-        scrollPane.setViewportView(txtDescription);
+        DescriptionScrollPane.setViewportView(txtDescription);
         txtDescription.setFont(new Font("Tahoma", Font.PLAIN, 11));
         txtDescription.setWrapStyleWord(true);
         txtDescription.setLineWrap(true);
@@ -331,11 +328,11 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         lblTagslenght = new JLabel("(0/500)");
         panel.add(lblTagslenght, "14, 14, 3, 1, right, top");
         
-        scrollPane_1 = new JScrollPane();
-        panel.add(scrollPane_1, "3, 16, 14, 1, fill, fill");
+        TagScrollPane = new JScrollPane();
+        panel.add(TagScrollPane, "3, 16, 14, 1, fill, fill");
         
         txtTags = new JTextArea();
-        scrollPane_1.setViewportView(txtTags);
+        TagScrollPane.setViewportView(txtTags);
         txtTags.setFont(new Font("Tahoma", Font.PLAIN, 11));
         txtTags.setWrapStyleWord(true);
         txtTags.setLineWrap(true);
@@ -361,26 +358,17 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         cmbAccount = new JComboBox<String>();
         panel.add(cmbAccount, "3, 19, 14, 1, fill, fill");
         
-        JButton btnAddToQueue = new JButton("Add to Queue");
+        btnAddToQueue = new JButton(LANG.getString("frmMain.addtoQueue"));
         panel.add(btnAddToQueue, "3, 21, 6, 1, fill, fill");
         btnAddToQueue.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		if(cmbFile.getSelectedItem()!=null && !cmbFile.getSelectedItem().toString().equals("")){
-        			try {
-						create_upload(cmbFile.getSelectedItem().toString(), txtTitle.getText(), cmbAccount.getSelectedItem().toString());
-					} catch (IOException | UploadException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-        		}else{
-        			JOptionPane.showMessageDialog(null,"You have to select a file.","Give me something to work with!", JOptionPane.ERROR_MESSAGE);
-        		}
+        		QueueButton();
         	}
         });
-        jLabel1 = new JLabel();
-        panel.add(jLabel1, "3, 3, 4, 1, left, top");
+        lblSelectVideo = new JLabel();
+        panel.add(lblSelectVideo, "3, 3, 4, 1, left, top");
         
-        jLabel1.setText("Select Video File");
+        lblSelectVideo.setText("Select Video File");
         cmbFile = new JComboBox<String>();
         panel.add(cmbFile, "3, 4, 14, 1, fill, fill");
         btnSelectMovie = new JButton();
@@ -502,12 +490,12 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         gbc_scrollPane.gridx = 0;
         gbc_scrollPane.gridy = 0;*/
         
-        JPanel panel_2 = new JPanel();
+        JPanel buttonPanel = new JPanel();
         GridBagConstraints gbc_panel_2 = new GridBagConstraints();
         gbc_panel_2.fill = GridBagConstraints.BOTH;
         gbc_panel_2.gridx = 0;
         gbc_panel_2.gridy = 1;
-        panel_2.setLayout(new FormLayout(new ColumnSpec[] {
+        buttonPanel.setLayout(new FormLayout(new ColumnSpec[] {
         		FormSpecs.RELATED_GAP_COLSPEC,
         		FormSpecs.DEFAULT_COLSPEC,
         		FormSpecs.RELATED_GAP_COLSPEC,
@@ -552,7 +540,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         		UploadManager.start();
         	}
         });
-        panel_2.add(btnStart, "2, 4");
+        buttonPanel.add(btnStart, "2, 4");
         
         btnStop = new JButton("Stop");
         btnStop.addActionListener(new ActionListener() {
@@ -560,10 +548,10 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         		UploadManager.stop();
         	}
         });
-        panel_2.add(btnStop, "6, 4");
+        buttonPanel.add(btnStop, "6, 4");
         
         lblUploads = new JLabel("Uploads:");
-        panel_2.add(lblUploads, "18, 4, right, fill");
+        buttonPanel.add(lblUploads, "18, 4, right, fill");
         
         slider = new JSlider();
         slider.addPropertyChangeListener(new PropertyChangeListener() {
@@ -580,11 +568,11 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         slider.setSnapToTicks(true);
         slider.setPaintTicks(true);
         slider.setPaintLabels(true);
-        panel_2.add(slider, "20, 4, fill, fill");
+        buttonPanel.add(slider, "20, 4, fill, fill");
         
         lblUploadSpeed = new JLabel("Upload Speed:");
         lblUploadSpeed.setHorizontalAlignment(SwingConstants.TRAILING);
-        panel_2.add(lblUploadSpeed, "24, 4");
+        buttonPanel.add(lblUploadSpeed, "24, 4");
         
         spinner = new JSpinner();
         spinner.setModel(new SpinnerNumberModel(new Integer(0), new Integer(0), null, new Integer(10)));
@@ -596,16 +584,16 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
 				UploadManager.set_limit(Integer.parseInt(s.getValue().toString()));			
 			}
         });
-        panel_2.add(spinner, "26, 4");
+        buttonPanel.add(spinner, "26, 4");
         
         JLabel lblKbps = new JLabel("kbps");
-        panel_2.add(lblKbps, "28, 4");
+        buttonPanel.add(lblKbps, "28, 4");
         
         TabQueue = new JPanel();
         TabbedPane.addTab("Queue", null, TabQueue, null);
         TabQueue.setLayout(new BorderLayout(0, 0));
         
-        TabQueue.add(panel_2, BorderLayout.SOUTH);
+        TabQueue.add(buttonPanel, BorderLayout.SOUTH);
         
         TabQueue.add(TabQueues, BorderLayout.CENTER);
         
@@ -704,6 +692,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
 				}else if(status.equals("NOT_STARTED")){
 					UploadManager.add_upload(f, data, v, Account); 
 				}else{
+					f.getBtnEdit().setEnabled(false);
 					f.getProgressBar().setValue(100);
 					f.getProgressBar().setString("100 %");
 				}
@@ -788,6 +777,22 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
 		return txtDescription;
 	}
 
+	private void QueueButton(){
+		if(this.editItem != -1){
+			//Update video
+		}else{
+			if(cmbFile.getSelectedItem()!=null && !cmbFile.getSelectedItem().toString().equals("")){
+				try {
+					create_upload(cmbFile.getSelectedItem().toString(), txtTitle.getText(), cmbAccount.getSelectedItem().toString());
+				} catch (IOException | UploadException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}else{
+				JOptionPane.showMessageDialog(null,"You have to select a file.","Give me something to work with!", JOptionPane.ERROR_MESSAGE);
+			}
+		}
+	}
 	public void removeItem(int upload_id) {
 		for(int i=0;i<this.getQueuePanel().getComponentCount();i++){
 			UploadItem item = (UploadItem) this.getQueuePanel().getComponent(i);
@@ -797,5 +802,36 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
 				this.getQueuePanel().repaint();
 			}
 		}
+	}
+
+	public void editUpload(int upload_id) throws SQLException, JsonParseException, JsonMappingException, IOException {
+		this.editItem = upload_id;
+		btnAddToQueue.setText(LANG.getString("frmMain.updateUpload"));
+		TabbedPane.setSelectedIndex(0);
+		ObjectMapper mapper = new ObjectMapper();
+    	PreparedStatement prest = null;
+    	String sql	= "SELECT * FROM `uploads` WHERE `id`="+upload_id;
+		prest = SQLite.c.prepareStatement(sql);
+		ResultSet rs = prest.executeQuery();
+    	if(rs.isBeforeFirst()){
+			while(rs.next()){
+				Video v = mapper.readValue(rs.getString("data"), new TypeReference<Video>() {}); 
+				cmbFile.removeAllItems();
+				cmbFile.addItem(rs.getString("file"));
+				txtTitle.setText(v.snippet.title);
+				cmbAccount.setSelectedItem(rs.getString("account"));
+				
+		        File data = new File(rs.getString("file"));
+		        String Account = rs.getString("account");
+		        String status = rs.getString("status");
+		        long position = rs.getLong("uploaded");
+		        long size = rs.getLong("lenght");
+				
+
+			}
+			rs.close();
+			prest.close();
+		}        
+		
 	}
 }

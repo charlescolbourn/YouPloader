@@ -89,6 +89,10 @@
 	        <directory>src/main/resources/images</directory>
 	        <filtering>false</filtering>
 	    </resource>
+	    <resource>
+	        <directory>src/main/resources/lang</directory>
+	        <filtering>false</filtering>
+	    </resource>
 	</resources>
 	    <plugins>
 	    <plugin>
