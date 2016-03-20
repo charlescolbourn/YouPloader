@@ -152,6 +152,33 @@ public class SQLite {
 			return false;
 		}				
 	}
+	
+	public static Boolean updateUpload(String account, File file, Video data, int id) throws SQLException, JsonGenerationException, JsonMappingException, IOException{
+    	PreparedStatement prest = null;
+    	String sql	= "UPDATE `uploads` SET `account`=?, `file`=?, `lenght`=? WHERE `id`=?";
+    	prest = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+    	prest.setString(1, account);
+    	prest.setString(2, file.getAbsolutePath());
+    	prest.setLong(3, file.length());
+    	prest.setInt(4, id);
+    	prest.execute();
+    	boolean res = prest.execute();
+    	prest.close();
+    	return res && updateUploadData(data, id);
+    }
+	
+    public static Boolean updateUploadData(Video data, int id) throws SQLException, JsonGenerationException, JsonMappingException, IOException{
+    	PreparedStatement prest = null;
+    	ObjectMapper mapper = new ObjectMapper();
+    	String sql	= "UPDATE `uploads` SET `data`=? WHERE `id`=?";
+    	prest = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+    	prest.setString(1, mapper.writeValueAsString(data));
+    	prest.setInt(2, id);
+    	prest.execute();
+    	boolean res = prest.execute();
+        prest.close();
+        return res;
+    }
 
     
 }

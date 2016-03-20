@@ -59,7 +59,7 @@ public class Account {
   }
   
   public static Account read(String name) throws IOException {
-	 PreparedStatement stmt;
+	PreparedStatement stmt;
 	try {
 		stmt = c.prepareStatement("SELECT * FROM `accounts` WHERE `name`=? LIMIT 1");
 		stmt.setString(1, name);

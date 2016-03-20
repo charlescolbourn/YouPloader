@@ -18,12 +18,21 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
+import java.util.Locale;
 
+import at.becast.youploader.account.AccountManager;
 import at.becast.youploader.database.SQLite;
 import at.becast.youploader.gui.UploadItem;
 import at.becast.youploader.gui.frmMain;
 import at.becast.youploader.youtube.data.Video;
+import at.becast.youploader.youtube.data.VideoUpdate;
+import at.becast.youploader.youtube.data.VisibilityType;
+import at.becast.youploader.youtube.exceptions.UploadException;
 
 public class UploadManager {
 	private int upload_limit = 1;
@@ -112,7 +121,7 @@ public class UploadManager {
 
 	public void delete(int upload_id) {
 		if(!_ToUpload.isEmpty()){
-			for(int i=0;i<_Uploading.size();i++){
+			for(int i=0;i<_ToUpload.size();i++){
 				if(_ToUpload.get(i).id == upload_id){
 					_ToUpload.remove(i);
 				}
@@ -129,6 +138,85 @@ public class UploadManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public void update_upload(int upload_id, File data, Video v, String account) {
+		if(!_Uploading.isEmpty()){
+			for(int i=0;i<_Uploading.size();i++){
+				if(_Uploading.get(i).id == upload_id){
+					UploadWorker w = _Uploading.get(i);
+					w.videodata = v;
+					w.frame.getlblName().setText(v.snippet.title);
+					String release = "";
+					if(v.status.privacyStatus == VisibilityType.SCHEDULED.getData()){
+			        	if(!v.status.publishAt.equals("")){
+			        		String pattern = "yyyy-MM-dd'T'HH:mm:ss.sssZ";
+			        		SimpleDateFormat formatter = new SimpleDateFormat(pattern);
+			        		Date date;
+							try {
+								date = formatter.parse(v.status.publishAt);
+								DateFormat formatters = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, Locale.getDefault());
+								release = formatters.format(date);
+							} catch (ParseException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+			        	}else{
+			        		release = VisibilityType.PRIVATE.toString();
+			        	}
+			        }else{
+			        	release = VisibilityType.valueOf(v.status.privacyStatus).toString();
+			        }
+					w.frame.getlblRelease().setText(release);
+					UploadUpdater updater = new UploadUpdater(AccountManager.accMng.getAuth(w.acc));
+					VideoUpdate s = new VideoUpdate(w.upload.id);
+					s.snippet = v.snippet;
+					s.status = v.status;
+					try {
+						updater.updateUpload(s);
+					} catch (IOException | UploadException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					return;
+				}
+			}
+			if(!_ToUpload.isEmpty()){
+				for(int i=0;i<_ToUpload.size();i++){
+					if(_ToUpload.get(i).id == upload_id){
+						UploadWorker w = _Uploading.get(i);
+						w.videodata = v;
+						w.frame.getlblName().setText(v.snippet.title);
+						String release = "";
+						if(v.status.privacyStatus == VisibilityType.SCHEDULED.getData()){
+				        	if(!v.status.publishAt.equals("")){
+				        		String pattern = "yyyy-MM-dd'T'HH:mm:ss.sssZ";
+				        		SimpleDateFormat formatter = new SimpleDateFormat(pattern);
+				        		Date date;
+								try {
+									date = formatter.parse(v.status.publishAt);
+									DateFormat formatters = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, Locale.getDefault());
+									release = formatters.format(date);
+								} catch (ParseException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+				        	}else{
+				        		release = VisibilityType.PRIVATE.toString();
+				        	}
+				        }else{
+				        	release = VisibilityType.valueOf(v.status.privacyStatus).toString();
+				        }
+						w.frame.getlblRelease().setText(release);
+						w.file = data;
+						w.acc = account;
+						w.reset_uploader();
+						return;
+					}
+				}
+			}
+		}
+		
 	}
 	
 }

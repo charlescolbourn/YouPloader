@@ -69,6 +69,22 @@ public class SimpleHTTP {
     	response.close();
     }
   }
+  
+  public void put(String url, Map<String, String> headers, String body) throws IOException {
+	this.put = new HttpPut(url);
+	for (String key : headers.keySet()) {
+		this.put.setHeader(key, headers.get(key));
+	}
+	this.put.setEntity(new ByteArrayEntity(body.getBytes("UTF-8")));
+	try {
+		response = this.chc.execute(this.put);
+	}catch(Exception e){
+		
+	}
+	if(response!=null){
+		response.close();
+	}
+  }
 
   public long put(String url, Map<String, String> headers) throws IOException {
 	  this.put = new HttpPut(url);

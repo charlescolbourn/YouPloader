@@ -34,6 +34,7 @@ import java.net.URISyntaxException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -89,6 +90,7 @@ import at.becast.youploader.youtube.Categories;
 import at.becast.youploader.youtube.data.CategoryType;
 import at.becast.youploader.youtube.data.LicenseType;
 import at.becast.youploader.youtube.data.Video;
+import at.becast.youploader.youtube.data.VideoUpdate;
 import at.becast.youploader.youtube.data.VisibilityType;
 import at.becast.youploader.youtube.exceptions.UploadException;
 import at.becast.youploader.youtube.io.UploadManager;
@@ -713,7 +715,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
      * @throws IOException
      * @throws UploadException
      */
-    public UploadItem create_upload(String File, String Name, String Account) throws IOException, UploadException{
+    public UploadItem create_upload(String File, String Name, String Account) throws IOException{
     	UploadItem f = new UploadItem();
         editPanel edit = (editPanel)ss1.contentPane;
         f.getlblName().setText(Name);
@@ -757,6 +759,56 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         return f;
     }
     
+    public void update(String File, String Account, int upload_id) throws IOException, SQLException{
+        editPanel edit = (editPanel)ss1.contentPane;
+        String sql	= "SELECT `yt_id` FROM `uploads` WHERE `id`="+upload_id;
+        PreparedStatement prest = null;
+        prest = SQLite.c.prepareStatement(sql);
+        ResultSet rs = prest.executeQuery();
+    	if(rs.isBeforeFirst()){
+			while(rs.next()){
+				String video_id = rs.getString("yt_id");
+				Video v = new Video();
+		        v.snippet.title=txtTitle.getText();
+		        CategoryType cat = (CategoryType) cmbCategory.getSelectedItem();
+		        v.snippet.categoryId = cat.getValue();
+		        v.snippet.description = txtDescription.getText();
+		        if(txtTags != null && !txtTags.getText().equals("")){
+		        	String[] tags = txtTags.getText().split(",");
+		        	String[] trimmedtags = new String[tags.length];
+		        	for (int i = 0; i < tags.length; i++){
+		        		trimmedtags[i] = tags[i].trim();
+		        	}
+		        	v.snippet.tags = trimmedtags;
+		        }
+		        VisibilityType visibility = (VisibilityType)edit.getCmbVisibility().getSelectedItem();
+		        if(visibility == VisibilityType.SCHEDULED){
+		        	if(edit.getDateTimePicker().getEditor().getValue() != null && !edit.getDateTimePicker().getEditor().getValue().equals("")){
+		        		v.status.privacyStatus = VisibilityType.SCHEDULED.getData();
+		        		Date date = edit.getDateTimePicker().getDate();
+		        		String pattern = "yyyy-MM-dd'T'HH:mm:ss.sssZ";
+		        		SimpleDateFormat formatter = new SimpleDateFormat(pattern);
+		        		v.status.publishAt = formatter.format(date);
+		        	}else{
+		        		v.status.privacyStatus = VisibilityType.PRIVATE.getData();
+		        	}
+		        }else{
+		        	v.status.privacyStatus = visibility.getData();
+		        }
+		        LicenseType license = (LicenseType)edit.getCmbLicense().getSelectedItem();
+		        v.status.license = license.getData();
+				if(video_id != null && !video_id.equals("")){
+					SQLite.updateUploadData(v, upload_id);
+				}else{
+					File data = new File(File);
+					SQLite.updateUpload(Account, data, v, upload_id);
+				}
+				File data = new File(File);
+				UploadManager.update_upload(upload_id, data, v, Account); 
+			}	
+    	}
+    }
+    
 	private JPanel getQueuePanel() {
 		return QueuePanel;
 	}
@@ -779,14 +831,19 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
 
 	private void QueueButton(){
 		if(this.editItem != -1){
-			//Update video
+			try {
+				update(cmbFile.getSelectedItem().toString(), cmbAccount.getSelectedItem().toString(), this.editItem);
+			} catch (IOException | SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			cmbFile.removeAllItems();
 		}else{
 			if(cmbFile.getSelectedItem()!=null && !cmbFile.getSelectedItem().toString().equals("")){
 				try {
 					create_upload(cmbFile.getSelectedItem().toString(), txtTitle.getText(), cmbAccount.getSelectedItem().toString());
 					cmbFile.removeAllItems();
-				} catch (IOException | UploadException e1) {
+				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
@@ -812,6 +869,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
 		TabbedPane.setSelectedIndex(0);
 		ObjectMapper mapper = new ObjectMapper();
     	PreparedStatement prest = null;
+    	editPanel edit = (editPanel)ss1.contentPane;
     	String sql	= "SELECT * FROM `uploads` WHERE `id`="+upload_id;
 		prest = SQLite.c.prepareStatement(sql);
 		ResultSet rs = prest.executeQuery();
@@ -836,12 +894,41 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
 						tags += ","+v.snippet.tags[i];
 					}
 				}
-				txtTags.setText(tags);	
+				txtTags.setText(tags);
+				for (int i = 0; i < edit.getCmbLicense().getItemCount(); i++) {
+				   if(edit.getCmbLicense().getItemAt(i).getData().equals(v.status.license)){
+					   edit.getCmbLicense().setSelectedIndex(i);
+				   }
+				}
+				for (int i = 0; i < edit.getCmbVisibility().getItemCount(); i++) {
+				   if(edit.getCmbVisibility().getItemAt(i).getData().equals(v.status.privacyStatus)){
+					   edit.getCmbVisibility().setSelectedIndex(i);
+				   }
+				}
+				if(v.status.publishAt != null && !v.status.publishAt.equals("")){
+					edit.getDateTimePicker().setEnabled(true);
+					edit.getDateTimePicker().getEditor().setEnabled(true);
+	        		String pattern = "yyyy-MM-dd'T'HH:mm:ss.sssZ";
+	        		SimpleDateFormat formatter = new SimpleDateFormat(pattern);
+	        		Date date;
+					try {
+						date = formatter.parse(v.status.publishAt);
+						edit.getDateTimePicker().setDate(date);
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				edit.revalidate();
+				edit.repaint();
 
 			}
 			rs.close();
 			prest.close();
-		}        
+		}else{
+			rs.close();
+			prest.close();
+		}
 		
 	}
 }

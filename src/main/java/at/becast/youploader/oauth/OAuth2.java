@@ -105,7 +105,7 @@ public class OAuth2 {
 
     Map<String, String> post = new HashMap<>();
     post.put("client_id", this.clientId);
-    post.put("scope", "https://www.googleapis.com/auth/youtube.upload");
+    post.put("scope", "https://www.googleapis.com/auth/youtube https://www.googleapis.com/auth/youtube.upload");
 
     Code code = new ObjectMapper().readValue(
       http.post(

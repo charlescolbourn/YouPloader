@@ -28,15 +28,15 @@ import at.becast.youploader.youtube.exceptions.UploadException;
 
 public class UploadWorker extends Thread {
 	
-	private Video videodata;
+	public Video videodata;
 	public int id;
 	private int speed_limit;
-	private File file;
-	private UploadItem frame;
-	private Upload upload;
+	public File file;
+	public UploadItem frame;
+	public Upload upload;
 	private UploadEvent event;
 	private Uploader uploader;
-	private String acc, url;
+	public String acc, url;
 	private Boolean threadSuspended;
 	private AccountManager AccMgr;
 	
@@ -100,7 +100,12 @@ public class UploadWorker extends Thread {
 	public void setSpeed(int Speed){
 		this.uploader.set_speedlimit(Speed);
 	}
-		
+	
+	public void reset_uploader(){
+		this.uploader = new Uploader(this.AccMgr.getAuth(acc));
+	}
+	
+	
 	public void abort(){
 		this.uploader.abort();
 	}
