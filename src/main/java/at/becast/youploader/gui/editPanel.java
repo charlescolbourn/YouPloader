@@ -33,6 +33,8 @@ import javax.swing.DefaultComboBoxModel;
 import at.becast.youploader.youtube.data.VisibilityType;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
+
+import at.becast.youploader.templates.Template;
 import at.becast.youploader.youtube.data.LicenseType;
 
 /**
@@ -44,13 +46,13 @@ public class editPanel extends javax.swing.JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JComboBox<VisibilityType> cmbTemplate;
+	private JComboBox<Template> cmbTemplate;
     private JLabel jLabel1;
     private JTextField txtStartDir;
     private JTextField txtEndDir;
     private JComboBox<VisibilityType> cmbVisibility;
     private DateTimePicker dateTimePicker;
-    private JComboBox cmbLicense;
+    private JComboBox<LicenseType> cmbLicense;
     /**
      * Creates new form editPanel
      */
@@ -61,7 +63,7 @@ public class editPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         jLabel1 = new JLabel();
-        cmbTemplate = new JComboBox<VisibilityType>();
+        cmbTemplate = new JComboBox<Template>();
         setLayout(new FormLayout(new ColumnSpec[] {
         		FormSpecs.RELATED_GAP_COLSPEC,
         		ColumnSpec.decode("87px"),
@@ -92,6 +94,11 @@ public class editPanel extends javax.swing.JPanel {
         add(cmbTemplate, "4, 2, fill, fill");
         
         JButton btnNewTemplate = new JButton("");
+        btnNewTemplate.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent arg0) {
+        		
+        	}
+        });
         btnNewTemplate.setIcon(new ImageIcon(getClass().getResource("/add.png")));
         add(btnNewTemplate, "6, 2, fill, fill");
         
@@ -169,10 +176,15 @@ public class editPanel extends javax.swing.JPanel {
         JLabel lblLicense = new JLabel("License:");
         add(lblLicense, "2, 12, right, default");
         
-        cmbLicense = new JComboBox();
-        cmbLicense.setModel(new DefaultComboBoxModel(LicenseType.values()));
+        cmbLicense = new JComboBox<LicenseType>();
+        cmbLicense.setModel(new DefaultComboBoxModel<LicenseType>(LicenseType.values()));
         add(cmbLicense, "4, 12, fill, fill");
     }
+    
+    public void addTemplate(){
+    	cmbTemplate.setEditable(true);
+    }
+    
 	public JTextField getTxtStartDir() {
 		return txtStartDir;
 	}
@@ -185,10 +197,10 @@ public class editPanel extends javax.swing.JPanel {
 	public DateTimePicker getDateTimePicker() {
 		return dateTimePicker;
 	}
-	public JComboBox getJComboBox1() {
+	public JComboBox<Template> getCmbTemplate() {
 		return cmbTemplate;
 	}
-	public JComboBox getCmbLicense() {
+	public JComboBox<LicenseType> getCmbLicense() {
 		return cmbLicense;
 	}
 }

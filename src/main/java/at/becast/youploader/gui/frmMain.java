@@ -184,8 +184,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
 			e.printStackTrace();
 		}
     }
-
-
+    
     /**
      * 
      */
