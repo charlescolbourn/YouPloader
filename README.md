@@ -35,4 +35,4 @@ RPi YouTube Uploader (https://github.com/DerET/rpi-youtube-uploader)
 ```
 Silk Icons (http://www.famfamfam.com/lab/icons/silk/) - Creative Commons Attribution 2.5 License.
 ```
-[![Build Status](https://build.becast.at/job/YouPloader/badge/icon)](https://build.becast.at/job/YouPloader/)
+[![Build Status](http://build.becast.at/job/YouPloader/badge/icon)](https://build.becast.at/job/YouPloader/)
