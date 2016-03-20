@@ -780,10 +780,12 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
 	private void QueueButton(){
 		if(this.editItem != -1){
 			//Update video
+			cmbFile.removeAllItems();
 		}else{
 			if(cmbFile.getSelectedItem()!=null && !cmbFile.getSelectedItem().toString().equals("")){
 				try {
 					create_upload(cmbFile.getSelectedItem().toString(), txtTitle.getText(), cmbAccount.getSelectedItem().toString());
+					cmbFile.removeAllItems();
 				} catch (IOException | UploadException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -817,16 +819,24 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
 			while(rs.next()){
 				Video v = mapper.readValue(rs.getString("data"), new TypeReference<Video>() {}); 
 				cmbFile.removeAllItems();
-				cmbFile.addItem(rs.getString("file"));
+				cmbFile.addItem(rs.getString("file"));		
+				for (int i = 0; i < cmbCategory.getItemCount(); i++) {
+				   if(cmbCategory.getItemAt(i).getValue() == v.snippet.categoryId){
+					   cmbCategory.setSelectedIndex(i);
+				   }
+				}
 				txtTitle.setText(v.snippet.title);
 				cmbAccount.setSelectedItem(rs.getString("account"));
-				
-		        File data = new File(rs.getString("file"));
-		        String Account = rs.getString("account");
-		        String status = rs.getString("status");
-		        long position = rs.getLong("uploaded");
-		        long size = rs.getLong("lenght");
-				
+				txtDescription.setText(v.snippet.description);
+				String tags = "";
+				for(int i = 0;i<v.snippet.tags.length;i++){
+					if(i == 0){
+						tags = v.snippet.tags[i];
+					}else{
+						tags += ","+v.snippet.tags[i];
+					}
+				}
+				txtTags.setText(tags);	
 
 			}
 			rs.close();
