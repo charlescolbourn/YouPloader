@@ -1,4 +1,4 @@
-package at.becast.youploader.youtube.data;
+package at.becast.youploader.youtube;
 
 public enum LicenseType {
 	YOUTUBE("youtube", "Youtube Licence"), CC("creativeCommon", "Creative Commons");

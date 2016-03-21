@@ -30,12 +30,15 @@ import java.util.Calendar;
 import java.util.Date;
 import java.awt.event.ActionEvent;
 import javax.swing.DefaultComboBoxModel;
-import at.becast.youploader.youtube.data.VisibilityType;
+
+import at.becast.youploader.youtube.LicenseType;
+import at.becast.youploader.youtube.VisibilityType;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
 
 import at.becast.youploader.templates.Template;
-import at.becast.youploader.youtube.data.LicenseType;
+
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 

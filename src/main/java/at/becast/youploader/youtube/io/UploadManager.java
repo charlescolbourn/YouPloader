@@ -29,9 +29,9 @@ import at.becast.youploader.account.AccountManager;
 import at.becast.youploader.database.SQLite;
 import at.becast.youploader.gui.UploadItem;
 import at.becast.youploader.gui.frmMain;
+import at.becast.youploader.youtube.VisibilityType;
 import at.becast.youploader.youtube.data.Video;
 import at.becast.youploader.youtube.data.VideoUpdate;
-import at.becast.youploader.youtube.data.VisibilityType;
 import at.becast.youploader.youtube.exceptions.UploadException;
 
 public class UploadManager {

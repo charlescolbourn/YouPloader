@@ -73,26 +73,25 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
-import at.becast.youploader.account.Account;
-import at.becast.youploader.account.AccountManager;
-import at.becast.youploader.account.AccountType;
+import at.becast.youploader.account.*;
+import at.becast.youploader.youtube.*;
 import at.becast.youploader.database.SQLite;
 import at.becast.youploader.gui.slider.SideBar;
 import at.becast.youploader.gui.slider.SidebarSection;
 import at.becast.youploader.settings.Settings;
-import at.becast.youploader.youtube.Categories;
 import at.becast.youploader.youtube.data.CategoryType;
-import at.becast.youploader.youtube.data.LicenseType;
 import at.becast.youploader.youtube.data.Video;
-import at.becast.youploader.youtube.data.VisibilityType;
 import at.becast.youploader.youtube.exceptions.UploadException;
 import at.becast.youploader.youtube.io.UploadManager;
+import at.becast.youploader.templates.TemplateManager;
 import net.miginfocom.layout.CC;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JSlider;
@@ -106,15 +105,15 @@ import java.util.ResourceBundle;
  */
 
 public class frmMain extends javax.swing.JFrame implements IMainMenu{
-/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 6965358827253585528L;
 	public static final String DB_FILE = "data/data.db";
-	public static final String VERSION = "0.2";
+	public static final String VERSION = "0.3";
+	private static final Logger logger = LoggerFactory.getLogger(frmMain.class);
 	public static UploadManager UploadManager;
+	public static TemplateManager TemplateMgr;
 	static Locale locale = Locale.getDefault();
-	private static final ResourceBundle LANG = ResourceBundle.getBundle("lang", locale); //$NON-NLS-1$
+	private static final ResourceBundle LANG = ResourceBundle.getBundle("lang", locale); 
 	public Settings s = Settings.getInstance();
 	public AccountManager accMng =  AccountManager.getInstance();
 	private ModalDialog modal; 
@@ -155,19 +154,16 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
     	
     	self = this;
     	UploadManager = new UploadManager(this);
+    	TemplateMgr = TemplateManager.getInstance();
     	try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (InstantiationException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (IllegalAccessException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (UnsupportedLookAndFeelException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
         initComponents();
@@ -176,7 +172,6 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         try {
 			load_queue();
 		} catch (SQLException | IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
@@ -620,6 +615,9 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
      * @param args the command line arguments
      */
     public static void main(String args[]) {
+    	if (args.length > 0 && args[0].equalsIgnoreCase("debug")) {
+    		
+    	}
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new frmMain().setVisible(true);

@@ -1,4 +1,4 @@
-package at.becast.youploader.youtube.data;
+package at.becast.youploader.youtube;
 
 public enum VisibilityType {
 	PUBLIC("public", "Public"), PRIVATE("private", "Private"), UNLISTED("unlisted", "Unlisted"), SCHEDULED("private", "Scheduled");
