@@ -16,30 +16,30 @@ package at.becast.youploader.gui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
-import com.jgoodies.forms.layout.FormLayout;
+
 import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
 import at.becast.youploader.account.Account;
 import at.becast.youploader.oauth.OAuth2;
 import at.becast.youploader.settings.Settings;
-
-import javax.swing.SwingConstants;
-
-import java.awt.Font;
-import javax.swing.JTextField;
 
 public class ModalDialog extends JDialog {
 	private static final long serialVersionUID = -49240475185934236L;
@@ -51,9 +51,10 @@ public class ModalDialog extends JDialog {
 
 	/**
 	 * Create the dialog.
-	 * @param code 
-	 * @throws IOException 
-	 * @throws InterruptedException 
+	 * 
+	 * @param code
+	 * @throws IOException
+	 * @throws InterruptedException
 	 */
 	public ModalDialog(Frame parent, Account Acc, String code) {
 		super(parent);
@@ -67,30 +68,20 @@ public class ModalDialog extends JDialog {
 		setModalityType(ModalityType.DOCUMENT_MODAL);
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
-		contentPanel.setLayout(new FormLayout(new ColumnSpec[] {
-				FormSpecs.LABEL_COMPONENT_GAP_COLSPEC,
-				ColumnSpec.decode("535px:grow"),},
-			new RowSpec[] {
-				FormSpecs.LINE_GAP_ROWSPEC,
-				RowSpec.decode("14px"),
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				FormSpecs.DEFAULT_ROWSPEC,
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				FormSpecs.DEFAULT_ROWSPEC,
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				FormSpecs.DEFAULT_ROWSPEC,
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				FormSpecs.DEFAULT_ROWSPEC,
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				FormSpecs.DEFAULT_ROWSPEC,
-				RowSpec.decode("294px"),}));
+		contentPanel.setLayout(new FormLayout(
+				new ColumnSpec[] { FormSpecs.LABEL_COMPONENT_GAP_COLSPEC, ColumnSpec.decode("535px:grow"), },
+				new RowSpec[] { FormSpecs.LINE_GAP_ROWSPEC, RowSpec.decode("14px"), FormSpecs.RELATED_GAP_ROWSPEC,
+						FormSpecs.DEFAULT_ROWSPEC, FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC,
+						FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC, FormSpecs.RELATED_GAP_ROWSPEC,
+						FormSpecs.DEFAULT_ROWSPEC, FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC,
+						RowSpec.decode("294px"), }));
 		{
 			JButton btnNewButton = new JButton("Open Browser to http://google.com/device");
 			btnNewButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-        			Browser browser = new Browser(Acc);
-                    browser.setVisible(true);
-                    browser.loadURL("https://google.com/device");
+					Browser browser = new Browser(Acc);
+					browser.setVisible(true);
+					browser.loadURL("https://google.com/device");
 				}
 			});
 			contentPanel.add(btnNewButton, "2, 4, center, default");
@@ -120,7 +111,8 @@ public class ModalDialog extends JDialog {
 			labelcode.setColumns(10);
 		}
 		{
-			JLabel lblThisWindowWill = new JLabel("This window will close as soon as the Account is successfully linked");
+			JLabel lblThisWindowWill = new JLabel(
+					"This window will close as soon as the Account is successfully linked");
 			lblThisWindowWill.setHorizontalAlignment(SwingConstants.CENTER);
 			contentPanel.add(lblThisWindowWill, "2, 12");
 		}
@@ -139,18 +131,18 @@ public class ModalDialog extends JDialog {
 				buttonPane.add(cancelButton);
 			}
 		}
-       
+
 	}
 
 	public void close() {
 		this.setVisible(false);
 		this.dispose();
 	}
-	
+
 	public void success() {
 		check_label.setIcon(new ImageIcon(getClass().getResource("/check.gif")));
-	    this.revalidate();
-	    this.repaint();
+		this.revalidate();
+		this.repaint();
 		try {
 			Thread.sleep(3000);
 		} catch (InterruptedException e) {
@@ -162,7 +154,7 @@ public class ModalDialog extends JDialog {
 
 	public void setCode(String text) {
 		labelcode.setText(text);
-		
+
 	}
-	
+
 }
