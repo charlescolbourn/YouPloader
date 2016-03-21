@@ -82,6 +82,7 @@ import com.jgoodies.forms.layout.RowSpec;
 
 import at.becast.youploader.account.Account;
 import at.becast.youploader.account.AccountManager;
+import at.becast.youploader.account.AccountType;
 import at.becast.youploader.database.SQLite;
 import at.becast.youploader.gui.slider.SideBar;
 import at.becast.youploader.gui.slider.SidebarSection;
@@ -141,7 +142,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
     private JComboBox<CategoryType> cmbCategory;
     private JMenuItem mntmDonate;
     private JTextArea txtTags;
-    private JComboBox<String> cmbAccount;
+    private JComboBox<AccountType> cmbAccount;
     private SidebarSection ss1, ss2, ss3;
 	public transient static HashMap<Integer, JMenuItem> _accounts = new HashMap<Integer, JMenuItem>();
 	private JSlider slider;
@@ -357,7 +358,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         
         JLabel lblAccount = new JLabel("Account");
         panel.add(lblAccount, "3, 18, 4, 1, left, top");
-        cmbAccount = new JComboBox<String>();
+        cmbAccount = new JComboBox<AccountType>();
         panel.add(cmbAccount, "3, 19, 14, 1, fill, fill");
         
         btnAddToQueue = new JButton(LANG.getString("frmMain.addtoQueue"));
@@ -642,19 +643,19 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
     
     public void load_accounts(){
     	int i = 0;
-    	HashMap<String, Integer> accounts =  accMng.load();
-    	for(Entry<String, Integer> entry : accounts.entrySet()){
+    	HashMap<AccountType, Integer> accounts =  accMng.load();
+    	for(Entry<AccountType, Integer> entry : accounts.entrySet()){
     		cmbAccount.addItem(entry.getKey());
-    		JRadioButtonMenuItem rdoBtn = new JRadioButtonMenuItem(entry.getKey());
+    		JMenuItem rdoBtn = new JMenuItem(entry.getKey().toString());
     		if(entry.getValue()==1){
     			rdoBtn.setSelected(true);
     			cmbAccount.setSelectedItem(entry.getKey());
     		}
-    		rdoBtn.setActionCommand(entry.getKey());
+    		rdoBtn.setActionCommand(entry.getKey().toString());
     		rdoBtn.addActionListener(new ActionListener(){
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					accMng.change_user(e.getActionCommand());
+					//accMng.change_user(e.getActionCommand());
 				}					
 			});
 			_accounts.put(i, rdoBtn);
@@ -680,19 +681,19 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
 				f.getlblUrl().setText("https://www.youtube.com/watch?v="+yt_id);
 				f.getlblName().setText(v.snippet.title);
 		        File data = new File(rs.getString("file"));
-		        String Account = rs.getString("account");
+		        int acc_id = rs.getInt("account");
 		        String status = rs.getString("status");
 		        long position = rs.getLong("uploaded");
 		        long size = rs.getLong("lenght");
 				if(url != null && !url.equals("") && !status.equals("FINISHED")){
-					UploadManager.add_resumeable_upload(f, data, v, Account,url,yt_id); 
+					UploadManager.add_resumeable_upload(f, data, v, acc_id, url, yt_id); 
 			    	f.getProgressBar().setString(String.format("%6.2f%%",(float) position / size * 100));
 			    	f.getProgressBar().setValue((int)((float) position / size * 100));
 			    	f.getProgressBar().revalidate();
 			        f.revalidate();
 			        f.repaint();
 				}else if(status.equals("NOT_STARTED")){
-					UploadManager.add_upload(f, data, v, Account); 
+					UploadManager.add_upload(f, data, v, acc_id); 
 				}else{
 					f.getBtnEdit().setEnabled(false);
 					f.getProgressBar().setValue(100);
@@ -715,7 +716,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
      * @throws IOException
      * @throws UploadException
      */
-    public UploadItem create_upload(String File, String Name, String Account) throws IOException{
+    public UploadItem create_upload(String File, String Name, int acc_id) throws IOException{
     	UploadItem f = new UploadItem();
         editPanel edit = (editPanel)ss1.contentPane;
         f.getlblName().setText(Name);
@@ -755,11 +756,11 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
         LicenseType license = (LicenseType)edit.getCmbLicense().getSelectedItem();
         v.status.license = license.getData();
 		File data = new File(File);
-		UploadManager.add_upload(f, data, v, Account); 
+		UploadManager.add_upload(f, data, v, acc_id); 
         return f;
     }
     
-    public void update(String File, String Account, int upload_id) throws IOException, SQLException{
+    public void update(String File, int acc_id, int upload_id) throws IOException, SQLException{
         editPanel edit = (editPanel)ss1.contentPane;
         String sql	= "SELECT `yt_id` FROM `uploads` WHERE `id`="+upload_id;
         PreparedStatement prest = null;
@@ -801,10 +802,10 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
 					SQLite.updateUploadData(v, upload_id);
 				}else{
 					File data = new File(File);
-					SQLite.updateUpload(Account, data, v, upload_id);
+					SQLite.updateUpload(acc_id, data, v, upload_id);
 				}
 				File data = new File(File);
-				UploadManager.update_upload(upload_id, data, v, Account); 
+				UploadManager.update_upload(upload_id, data, v, acc_id); 
 			}	
     	}
     }
@@ -830,9 +831,10 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
 	}
 
 	private void QueueButton(){
+		AccountType acc = (AccountType) cmbAccount.getSelectedItem();
 		if(this.editItem != -1){
 			try {
-				update(cmbFile.getSelectedItem().toString(), cmbAccount.getSelectedItem().toString(), this.editItem);
+				update(cmbFile.getSelectedItem().toString(), acc.getValue(), this.editItem);
 			} catch (IOException | SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -841,7 +843,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu{
 		}else{
 			if(cmbFile.getSelectedItem()!=null && !cmbFile.getSelectedItem().toString().equals("")){
 				try {
-					create_upload(cmbFile.getSelectedItem().toString(), txtTitle.getText(), cmbAccount.getSelectedItem().toString());
+					create_upload(cmbFile.getSelectedItem().toString(), txtTitle.getText(), acc.getValue());
 					cmbFile.removeAllItems();
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block

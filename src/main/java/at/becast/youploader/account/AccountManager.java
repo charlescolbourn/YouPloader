@@ -75,7 +75,7 @@ public class AccountManager {
 		}
     }
 	
-	public HashMap<String,Integer> load(){
+	public HashMap<AccountType,Integer> load(){
 		Connection c = SQLite.getInstance();
 		Statement stmt;
 		try {
@@ -83,35 +83,35 @@ public class AccountManager {
 			String sql = "SELECT * FROM `accounts`"; 
 			ResultSet rs = stmt.executeQuery(sql);
 			if(rs.isBeforeFirst()){
-				HashMap<String, Integer> data = new HashMap<String, Integer>();
+				HashMap<AccountType, Integer> data = new HashMap<AccountType, Integer>();
 				while(rs.next()){
-					data.put(rs.getString("name"),rs.getInt("active"));
+					data.put(new AccountType(rs.getInt("id"), rs.getString("name")),rs.getInt("active"));
 				}
 				rs.close();
+				stmt.close();
 				return data;
 			}else{
+				rs.close();
 				stmt.close();
-				return new HashMap<String, Integer>();
+				return new HashMap<AccountType, Integer>();
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return new HashMap<String, Integer>();
+			return new HashMap<AccountType, Integer>();
 		}
-	}
-
-	public void change_user(String actionCommand) {
-		try {
-			currentaccount = new OAuth2(s.setting.get("client_id"),s.setting.get("clientSecret"), Account.read(actionCommand).refreshToken);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
 	}
 
 	public OAuth2 getAuth(String acc) {
 		try {
 			return new OAuth2(s.setting.get("client_id"),s.setting.get("clientSecret"), Account.read(acc).refreshToken);
+		} catch (IOException e) {
+			return null;
+		}
+	}
+	
+	public OAuth2 getAuth(int id) {
+		try {
+			return new OAuth2(s.setting.get("client_id"),s.setting.get("clientSecret"), Account.read(id).refreshToken);
 		} catch (IOException e) {
 			return null;
 		}

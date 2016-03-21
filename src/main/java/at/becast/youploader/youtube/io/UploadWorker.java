@@ -29,42 +29,42 @@ import at.becast.youploader.youtube.exceptions.UploadException;
 public class UploadWorker extends Thread {
 	
 	public Video videodata;
-	public int id;
+	public int id, acc_id;
 	private int speed_limit;
 	public File file;
 	public UploadItem frame;
 	public Upload upload;
 	private UploadEvent event;
 	private Uploader uploader;
-	public String acc, url;
+	public String url;
 	private Boolean threadSuspended;
 	private AccountManager AccMgr;
 	
-	public UploadWorker(int id, UploadItem frame, String acc, File file, Video videodata, int speed_limit){
+	public UploadWorker(int id, UploadItem frame, int acc_id, File file, Video videodata, int speed_limit){
 		this.id = id;
 		this.speed_limit = speed_limit;
 		this.frame = frame;
 		this.upload = null;
-		this.acc = acc;
+		this.acc_id = acc_id;
 		this.file = file;
 		this.videodata = videodata;
 		this.threadSuspended = false;
 		this.AccMgr = AccountManager.getInstance();
-		this.uploader = new Uploader(this.AccMgr.getAuth(acc));
+		this.uploader = new Uploader(this.AccMgr.getAuth(acc_id));
 		this.event = new GuiUploadEvent(frame);
 	}
 	
-	public UploadWorker(int id, UploadItem frame, String acc, File file, Video videodata, int speed_limit, String url, String yt_id){
+	public UploadWorker(int id, UploadItem frame, int acc_id, File file, Video videodata, int speed_limit, String url, String yt_id){
 		this.id = id;
 		this.speed_limit = speed_limit;
 		this.frame = frame;
-		this.acc = acc;
+		this.acc_id = acc_id;
 		this.file = file;
 		this.upload = new Upload(url,file,yt_id,videodata);
 		this.videodata = videodata;
 		this.threadSuspended = false;
 		this.AccMgr = AccountManager.getInstance();
-		this.uploader = new Uploader(this.AccMgr.getAuth(acc));
+		this.uploader = new Uploader(this.AccMgr.getAuth(acc_id));
 		this.event = new GuiUploadEvent(frame);
 	}
 	
@@ -102,7 +102,7 @@ public class UploadWorker extends Thread {
 	}
 	
 	public void reset_uploader(){
-		this.uploader = new Uploader(this.AccMgr.getAuth(acc));
+		this.uploader = new Uploader(this.AccMgr.getAuth(acc_id));
 	}
 	
 	

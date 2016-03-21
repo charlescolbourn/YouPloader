@@ -47,13 +47,13 @@ public class SQLite {
         return c;
     }
     
-    public static int addUpload(String account, File file, Video data) throws SQLException, JsonGenerationException, JsonMappingException, IOException{
+    public static int addUpload(int account, File file, Video data) throws SQLException, JsonGenerationException, JsonMappingException, IOException{
     	PreparedStatement prest = null;
     	ObjectMapper mapper = new ObjectMapper();
     	String sql	= "INSERT INTO `uploads` (`account`, `file`, `lenght`, `data`, `status`) " +
     			"VALUES (?,?,?,?,?)";
     	prest = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-    	prest.setString(1, account);
+    	prest.setInt(1, account);
     	prest.setString(2, file.getAbsolutePath());
     	prest.setLong(3, file.length());
     	prest.setString(4, mapper.writeValueAsString(data));
@@ -153,11 +153,11 @@ public class SQLite {
 		}				
 	}
 	
-	public static Boolean updateUpload(String account, File file, Video data, int id) throws SQLException, JsonGenerationException, JsonMappingException, IOException{
+	public static Boolean updateUpload(int account, File file, Video data, int id) throws SQLException, JsonGenerationException, JsonMappingException, IOException{
     	PreparedStatement prest = null;
     	String sql	= "UPDATE `uploads` SET `account`=?, `file`=?, `lenght`=? WHERE `id`=?";
     	prest = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-    	prest.setString(1, account);
+    	prest.setInt(1, account);
     	prest.setString(2, file.getAbsolutePath());
     	prest.setLong(3, file.length());
     	prest.setInt(4, id);

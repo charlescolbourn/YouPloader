@@ -48,30 +48,30 @@ public class UploadManager {
 		this.parent = parent;
 	}
 	
-	public void add_upload(UploadItem frame, File data, Video videodata, String acc){
+	public void add_upload(UploadItem frame, File data, Video videodata, int acc_id){
 		if(frame.upload_id == -1){
 			int id = -1;
 			try {
-				id = SQLite.addUpload(acc, data, videodata);
+				id = SQLite.addUpload(acc_id, data, videodata);
 			} catch (SQLException | IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			if(id != -1){
 				frame.set_id(id);
-				UploadWorker worker = new UploadWorker(id, frame,acc, data, videodata, speed_limit);
+				UploadWorker worker = new UploadWorker(id, frame, acc_id, data, videodata, speed_limit);
 				_ToUpload.addLast(worker);
 			}else{
 				// TODO Error Handling
 			}
 		}else{
-			UploadWorker worker = new UploadWorker(frame.upload_id, frame,acc, data, videodata, speed_limit);
+			UploadWorker worker = new UploadWorker(frame.upload_id, frame, acc_id, data, videodata, speed_limit);
 			_ToUpload.addLast(worker);
 		}
 	}
 	
-	public void add_resumeable_upload(UploadItem frame, File data, Video videodata, String acc, String url, String yt_id){
-		UploadWorker worker = new UploadWorker(frame.upload_id, frame,acc, data, videodata, speed_limit, url, yt_id);
+	public void add_resumeable_upload(UploadItem frame, File data, Video videodata, int acc_id, String url, String yt_id){
+		UploadWorker worker = new UploadWorker(frame.upload_id, frame, acc_id, data, videodata, speed_limit, url, yt_id);
 		_ToUpload.addFirst(worker);
 	}
 	
@@ -140,7 +140,7 @@ public class UploadManager {
 		}
 	}
 
-	public void update_upload(int upload_id, File data, Video v, String account) {
+	public void update_upload(int upload_id, File data, Video v, int acc_id) {
 		if(!_Uploading.isEmpty()){
 			for(int i=0;i<_Uploading.size();i++){
 				if(_Uploading.get(i).id == upload_id){
@@ -168,7 +168,7 @@ public class UploadManager {
 			        	release = VisibilityType.valueOf(v.status.privacyStatus).toString();
 			        }
 					w.frame.getlblRelease().setText(release);
-					UploadUpdater updater = new UploadUpdater(AccountManager.accMng.getAuth(w.acc));
+					UploadUpdater updater = new UploadUpdater(AccountManager.accMng.getAuth(w.acc_id));
 					VideoUpdate s = new VideoUpdate(w.upload.id);
 					s.snippet = v.snippet;
 					s.status = v.status;
@@ -209,7 +209,7 @@ public class UploadManager {
 				        }
 						w.frame.getlblRelease().setText(release);
 						w.file = data;
-						w.acc = account;
+						w.acc_id = acc_id;
 						w.reset_uploader();
 						return;
 					}

@@ -30,69 +30,97 @@ import org.codehaus.jackson.type.TypeReference;
 import at.becast.youploader.youtube.data.Cookie;
 
 public class Account {
-  public String refreshToken;
-  public String name;
-  public List<Cookie> cdata;
-  static Connection c = SQLite.getInstance();
+	public int id;
+	public String refreshToken;
+	public String name;
+	public List<Cookie> cdata;
+	static Connection c = SQLite.getInstance();
 
 
-  public Account(String name, String refreshToken, List<Cookie> cdata) {
-	this.name = name;
-    this.refreshToken = refreshToken;
-    this.cdata = cdata;
-  }
+	public Account(int id, String name, String refreshToken, List<Cookie> cdata) {
+		this.id = id;
+		this.name = name;
+		this.refreshToken = refreshToken;
+		this.cdata = cdata;
+	}
 
-  public Account(String name) {
-    this(name, null, null);
-  }
+	public Account(String name) {
+		this(0,name, null, null);
+	}
   
-  public void setCookie(List<Cookie> cdata){
-	  this.cdata = cdata;
-  }
+	public void setCookie(List<Cookie> cdata){
+		this.cdata = cdata;
+	}
   
-  public List<Cookie> getCookie(){
-	  return this.cdata;
-  }
+	public List<Cookie> getCookie(){
+		return this.cdata;
+	}
 
-  public void setRefreshToken(String refreshToken){
-	  this.refreshToken = refreshToken;
-  }
+	public void setRefreshToken(String refreshToken){
+		this.refreshToken = refreshToken;
+	}
   
-  public static Account read(String name) throws IOException {
-	PreparedStatement stmt;
-	try {
-		stmt = c.prepareStatement("SELECT * FROM `accounts` WHERE `name`=? LIMIT 1");
-		stmt.setString(1, name);
-		ResultSet rs = stmt.executeQuery();
+	public static Account read(String name) throws IOException {
+		PreparedStatement stmt;
+		try {
+			stmt = c.prepareStatement("SELECT * FROM `accounts` WHERE `name`=? LIMIT 1");
+			stmt.setString(1, name);
+			ResultSet rs = stmt.executeQuery();
+			ObjectMapper mapper = new ObjectMapper();
+			List<Cookie> c = mapper.readValue(rs.getString("cookie"), new TypeReference<List<Cookie>>() {});
+			int id = rs.getInt("id");
+			String token = rs.getString("refresh_token");
+			stmt.close();
+			return new Account(id,name,token,c);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public static Account read(int id) throws IOException {
+		PreparedStatement stmt;
+		try {
+			stmt = c.prepareStatement("SELECT * FROM `accounts` WHERE `id`=? LIMIT 1");
+			stmt.setInt(1, id);
+			ResultSet rs = stmt.executeQuery();
+			ObjectMapper mapper = new ObjectMapper();
+			List<Cookie> c = mapper.readValue(rs.getString("cookie"), new TypeReference<List<Cookie>>() {});
+			String name = rs.getString("name");
+			String token = rs.getString("refresh_token");
+			stmt.close();
+			return new Account(id,name,token,c);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+  
+	public int save() throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
-		List<Cookie> c = mapper.readValue(rs.getString("cookie"), new TypeReference<List<Cookie>>() {});
-		String token = rs.getString("refresh_token");
-		stmt.close();
-		return new Account(name,token,c);
-	} catch (SQLException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-		return null;
+	  	try {
+			PreparedStatement stmt = c.prepareStatement("INSERT INTO `accounts` (`name`,`refresh_token`,`cookie`) VALUES(?,?,?)");
+			stmt.setString(1, this.name);
+			stmt.setString(2, this.refreshToken);
+			stmt.setString(3, mapper.writeValueAsString(this.cdata));
+		    ResultSet rs = stmt.getGeneratedKeys();
+		    stmt.close();
+	        if (rs.next()){
+	        	int id = rs.getInt(1);
+	        	rs.close();
+	        	return id;
+	        }else{
+	        	return -1;
+	        }
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return -1;
+		}
 	}
-  }
-
-  public void save() throws IOException {
-	  ObjectMapper mapper = new ObjectMapper();
-	  try {
-		PreparedStatement stmt = c.prepareStatement("INSERT INTO `accounts` (`name`,`refresh_token`,`cookie`) VALUES(?,?,?)");
-		stmt.setString(1, this.name);
-		stmt.setString(2, this.refreshToken);
-		stmt.setString(3, mapper.writeValueAsString(this.cdata));
-		stmt.executeUpdate();
-		stmt.close();
-	} catch (SQLException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-  }
   
-  
-
 	public static boolean exists(String name) {
 		Connection c = SQLite.getInstance();
 		Statement stmt;
