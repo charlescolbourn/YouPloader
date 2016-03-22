@@ -16,7 +16,7 @@ import at.becast.youploader.youtube.data.Video;
 
 public class TemplateManager {
 	private static TemplateManager manager = null;
-	private HashMap<String, Template> templates = new HashMap<String, Template>();
+	public HashMap<String, Template> templates = new HashMap<String, Template>();
 	
 	private TemplateManager(){
 		this.load_templates();

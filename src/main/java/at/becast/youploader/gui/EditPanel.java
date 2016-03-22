@@ -30,12 +30,16 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
 import at.becast.youploader.templates.Template;
+import at.becast.youploader.templates.TemplateManager;
 import at.becast.youploader.youtube.LicenseType;
 import at.becast.youploader.youtube.VisibilityType;
 
@@ -43,23 +47,27 @@ import at.becast.youploader.youtube.VisibilityType;
  *
  * @author Bernhard
  */
-public class editPanel extends javax.swing.JPanel {
+public class EditPanel extends javax.swing.JPanel {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -2023946504262191056L;
+	private static final Logger LOG = LoggerFactory.getLogger(EditPanel.class);
 	private JComboBox<Template> cmbTemplate;
 	private JLabel jLabel1;
 	private JTextField txtStartDir;
 	private JTextField txtEndDir;
+	private frmMain parent;
 	private JComboBox<VisibilityType> cmbVisibility;
 	private DateTimePicker dateTimePicker;
 	private JComboBox<LicenseType> cmbLicense;
+	private TemplateManager TemplateMgr = TemplateManager.getInstance();
 
 	/**
 	 * Creates new form editPanel
 	 */
-	public editPanel() {
+	public EditPanel(frmMain parent) {
+		this.parent = parent;
 		initComponents();
 	}
 
@@ -67,10 +75,16 @@ public class editPanel extends javax.swing.JPanel {
 
 		jLabel1 = new JLabel();
 		cmbTemplate = new JComboBox<Template>();
+		for (int i = 0; i < TemplateMgr.templates.size(); i++) {
+			cmbTemplate.addItem(TemplateMgr.templates.get(i));
+		}
+		cmbTemplate.setSelectedIndex(-1);
 		cmbTemplate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if ("comboBoxEdited".equals(e.getActionCommand())) {
+					LOG.debug("AddTemplate " + cmbTemplate.getSelectedItem().toString());
 					cmbTemplate.setEditable(false);
+
 				}
 			}
 		});

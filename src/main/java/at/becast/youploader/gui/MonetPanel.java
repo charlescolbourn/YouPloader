@@ -15,6 +15,10 @@
 package at.becast.youploader.gui;
 import javax.swing.JLabel;
 import javax.swing.GroupLayout.Alignment;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.swing.GroupLayout;
 import javax.swing.SwingConstants;
 import java.awt.Font;
@@ -29,12 +33,14 @@ public class MonetPanel extends javax.swing.JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
+	private static final Logger LOG = LoggerFactory.getLogger(MonetPanel.class);
+	private frmMain parent;
 
 	/**
      * Creates new form editPanel
      */
-    public MonetPanel() {
+    public MonetPanel(frmMain parent) {
+    	this.parent = parent;
         initComponents();
     }
 

@@ -113,7 +113,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 	private static final long serialVersionUID = 6965358827253585528L;
 	public static final String DB_FILE = "data/data.db";
 	public static final String VERSION = "0.3";
-	private static final Logger logger = LoggerFactory.getLogger(frmMain.class);
+	private static final Logger LOG = LoggerFactory.getLogger(frmMain.class);
 	public static UploadManager UploadManager;
 	public static TemplateManager TemplateMgr;
 	static Locale locale = Locale.getDefault();
@@ -162,13 +162,13 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException e1) {
-			e1.printStackTrace();
+			LOG.error(e1.getMessage(), frmMain.class);
 		} catch (InstantiationException e1) {
-			e1.printStackTrace();
+			LOG.error(e1.getMessage(), frmMain.class);
 		} catch (IllegalAccessException e1) {
-			e1.printStackTrace();
+			LOG.error(e1.getMessage(), frmMain.class);
 		} catch (UnsupportedLookAndFeelException e1) {
-			e1.printStackTrace();
+			LOG.error(e1.getMessage(), frmMain.class);
 		}
 		initComponents();
 		this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/yp.png")));
@@ -176,7 +176,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 		try {
 			load_queue();
 		} catch (SQLException | IOException e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage(), frmMain.class);
 		}
 	}
 
@@ -184,15 +184,15 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 	 * 
 	 */
 	public void initComponents() {
-
+		LOG.debug("init Components", frmMain.class);
 		TabbedPane = new JTabbedPane();
 		mainTab = new JPanel();
 		cmbCategory = new JComboBox<CategoryType>();
 		cmbCategory.setModel(new DefaultComboBoxModel<CategoryType>());
 		SideBar sideBar = new SideBar(SideBar.SideBarMode.TOP_LEVEL, true, 300, true);
-		ss1 = new SidebarSection(sideBar, "Settings", new editPanel(), null);
-		ss2 = new SidebarSection(sideBar, "Playlists", new playlistPanel(), null);
-		ss3 = new SidebarSection(sideBar, "Monetisation", new MonetPanel(), null);
+		ss1 = new SidebarSection(sideBar, "Settings", new EditPanel(this), null);
+		ss2 = new SidebarSection(sideBar, "Playlists", new PlaylistPanel(this), null);
+		ss3 = new SidebarSection(sideBar, "Monetisation", new MonetPanel(this), null);
 		sideBar.addSection(ss1, false);
 		sideBar.addSection(ss2);
 		sideBar.addSection(ss3);
@@ -203,7 +203,6 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		setTitle("YouPloader " + VERSION);
-		setIconImages(null);
 		setName("frmMain");
 		for (Categories cat : Categories.values()) {
 			cmbCategory.addItem(new CategoryType(cat.getID(), cat.toString()));
@@ -354,7 +353,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 		btnSelectMovie.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser chooser = new JFileChooser();
-				editPanel edit = (editPanel) ss1.contentPane;
+				EditPanel edit = (EditPanel) ss1.contentPane;
 				if (edit.getTxtStartDir() != null && !edit.getTxtStartDir().equals("")) {
 					chooser.setCurrentDirectory(new File(edit.getTxtStartDir().getText()));
 				}
@@ -664,7 +663,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 	 */
 	public UploadItem create_upload(String File, String Name, int acc_id) throws IOException {
 		UploadItem f = new UploadItem();
-		editPanel edit = (editPanel) ss1.contentPane;
+		EditPanel edit = (EditPanel) ss1.contentPane;
 		f.getlblName().setText(Name);
 		this.getQueuePanel().add(f, new CC().wrap());
 		this.getQueuePanel().revalidate();
@@ -708,7 +707,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 	}
 
 	public void update(String File, int acc_id, int upload_id) throws IOException, SQLException {
-		editPanel edit = (editPanel) ss1.contentPane;
+		EditPanel edit = (EditPanel) ss1.contentPane;
 		String sql = "SELECT `yt_id` FROM `uploads` WHERE `id`=" + upload_id;
 		PreparedStatement prest = null;
 		prest = SQLite.c.prepareStatement(sql);
@@ -822,7 +821,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 		TabbedPane.setSelectedIndex(0);
 		ObjectMapper mapper = new ObjectMapper();
 		PreparedStatement prest = null;
-		editPanel edit = (editPanel) ss1.contentPane;
+		EditPanel edit = (EditPanel) ss1.contentPane;
 		String sql = "SELECT * FROM `uploads` WHERE `id`=" + upload_id;
 		prest = SQLite.c.prepareStatement(sql);
 		ResultSet rs = prest.executeQuery();

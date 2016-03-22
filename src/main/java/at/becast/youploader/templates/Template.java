@@ -14,4 +14,9 @@ public class Template {
 	public Template(String name){
 		this.name=name;
 	}
+	
+	@Override
+	public String toString(){
+		return name;
+	}
 }

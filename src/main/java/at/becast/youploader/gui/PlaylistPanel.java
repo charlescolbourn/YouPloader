@@ -3,20 +3,31 @@ package at.becast.youploader.gui;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.swing.SpringLayout;
 import java.awt.Font;
 
-public class playlistPanel extends JPanel {
+public class PlaylistPanel extends JPanel {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -870661666925769377L;
+	private static final Logger LOG = LoggerFactory.getLogger(PlaylistPanel.class);
+	private frmMain parent;
 
 	/**
 	 * Create the panel.
 	 */
-	public playlistPanel() {
+	public PlaylistPanel(frmMain parent) {
+		this.parent = parent;
+		initComponents();
+	}
+	
+	private void initComponents(){
 		SpringLayout springLayout = new SpringLayout();
 		setLayout(springLayout);
 		
@@ -28,7 +39,6 @@ public class playlistPanel extends JPanel {
 		lblNotImplementedYet.setFont(new Font("Tahoma", Font.BOLD, 18));
 		lblNotImplementedYet.setHorizontalAlignment(SwingConstants.CENTER);
 		add(lblNotImplementedYet);
-
 	}
 
 }
