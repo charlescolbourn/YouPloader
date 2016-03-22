@@ -49,6 +49,7 @@ public class frmAbout extends JDialog {
 		setTitle("About YouPloader");
         ResourceBundle bundle = ResourceBundle.getBundle( "build" );
         String rev = bundle.getString( "git-sha-1" );
+        String build = bundle.getString( "jenkins-build" );
 		this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/yp.png")));
 		setBounds(100, 100, 500, 397);
 		getContentPane().setLayout(new BorderLayout());
@@ -84,6 +85,10 @@ public class frmAbout extends JDialog {
 		JLabel lblRevision = new JLabel("Revision "+rev);
 		lblRevision.setFont(new Font("Arial", Font.PLAIN, 13));
 		contentPanel.add(lblRevision, "3, 4");
+		
+		JLabel lblBuild = new JLabel("Build "+build);
+		lblBuild.setFont(new Font("Arial", Font.PLAIN, 13));
+		contentPanel.add(lblBuild, "3, 6");
 		
 		JScrollPane scrollPane = new JScrollPane();
 		contentPanel.add(scrollPane, "1, 12, 3, 1, fill, fill");
