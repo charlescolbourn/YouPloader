@@ -90,6 +90,7 @@ public class UploadItem extends JPanel {
 			public void mouseEntered(MouseEvent e) {
 				Font font = lblUrl.getFont();
 				lblUrl.getParent().setBackground(new Color(240, 248, 255));
+				@SuppressWarnings("unchecked")
 				Map<TextAttribute, Integer> attributes = (Map<TextAttribute, Integer>) font.getAttributes();
 				attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
 				lblUrl.setFont(font.deriveFont(attributes));
@@ -98,6 +99,7 @@ public class UploadItem extends JPanel {
 			@Override
 			public void mouseExited(MouseEvent e) {
 				Font font = lblUrl.getFont();
+				@SuppressWarnings("unchecked")
 				Map<TextAttribute, Integer> attributes = (Map<TextAttribute, Integer>) font.getAttributes();
 				attributes.put(TextAttribute.UNDERLINE, -1);
 				lblUrl.setFont(font.deriveFont(attributes));
