@@ -4,16 +4,66 @@ import at.becast.youploader.youtube.data.Video;
 
 public class Template {
 	
-	public int id;
 	public String name;
 	public Video videodata;
 	public String startdir;
 	public String enddir;
 	
-	
 	public Template(String name){
 		this.name=name;
 	}
+	
+	public Template(){
+
+	}
+	
+	public Template(String name, String startdir, String enddir, Video videodata){
+		this.name=name;
+		this.startdir=startdir;
+		this.enddir=enddir;
+		this.videodata=videodata;
+	}
+	
+	
+	public String getName() {
+		return name;
+	}
+
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+
+	public Video getVideodata() {
+		return videodata;
+	}
+
+
+	public void setVideodata(Video videodata) {
+		this.videodata = videodata;
+	}
+
+
+	public String getStartdir() {
+		return startdir;
+	}
+
+
+	public void setStartdir(String startdir) {
+		this.startdir = startdir;
+	}
+
+
+	public String getEnddir() {
+		return enddir;
+	}
+
+
+	public void setEnddir(String enddir) {
+		this.enddir = enddir;
+	}
+
 	
 	@Override
 	public String toString(){

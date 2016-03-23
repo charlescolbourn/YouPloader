@@ -16,6 +16,9 @@ package at.becast.youploader.youtube.io;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -29,12 +32,14 @@ import at.becast.youploader.account.AccountManager;
 import at.becast.youploader.database.SQLite;
 import at.becast.youploader.gui.UploadItem;
 import at.becast.youploader.gui.frmMain;
+import at.becast.youploader.templates.TemplateManager;
 import at.becast.youploader.youtube.VisibilityType;
 import at.becast.youploader.youtube.data.Video;
 import at.becast.youploader.youtube.data.VideoUpdate;
 import at.becast.youploader.youtube.exceptions.UploadException;
 
 public class UploadManager {
+	private static UploadManager self;
 	private int upload_limit = 1;
 	public static enum Status{NOT_STARTED,PREPARED,STOPPED,UPLOADING,FINISHED,ABORTED};
 	private Status status;
@@ -44,34 +49,45 @@ public class UploadManager {
 	private int speed_limit = 0;
 	static Connection c = SQLite.getInstance();
 	
-	public UploadManager(frmMain parent){
+	private UploadManager(){
+		
+	}
+	
+	public static UploadManager getInstance(){
+		if(self==null){
+			self = new UploadManager();
+		}
+		return self;
+	}
+	
+	public void setParent(frmMain parent){
 		this.parent = parent;
 	}
 	
-	public void add_upload(UploadItem frame, File data, Video videodata, int acc_id){
+	public void add_upload(UploadItem frame, File data, Video videodata, int acc_id, String enddir){
 		if(frame.upload_id == -1){
 			int id = -1;
 			try {
-				id = SQLite.addUpload(acc_id, data, videodata);
+				id = SQLite.addUpload(acc_id, data, videodata, enddir);
 			} catch (SQLException | IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			if(id != -1){
 				frame.set_id(id);
-				UploadWorker worker = new UploadWorker(id, frame, acc_id, data, videodata, speed_limit);
+				UploadWorker worker = new UploadWorker(id, frame, acc_id, data, videodata, speed_limit, enddir);
 				_ToUpload.addLast(worker);
 			}else{
 				// TODO Error Handling
 			}
 		}else{
-			UploadWorker worker = new UploadWorker(frame.upload_id, frame, acc_id, data, videodata, speed_limit);
+			UploadWorker worker = new UploadWorker(frame.upload_id, frame, acc_id, data, videodata, speed_limit, enddir);
 			_ToUpload.addLast(worker);
 		}
 	}
 	
-	public void add_resumeable_upload(UploadItem frame, File data, Video videodata, int acc_id, String url, String yt_id){
-		UploadWorker worker = new UploadWorker(frame.upload_id, frame, acc_id, data, videodata, speed_limit, url, yt_id);
+	public void add_resumeable_upload(UploadItem frame, File data, Video videodata, int acc_id, String enddir, String url, String yt_id){
+		UploadWorker worker = new UploadWorker(frame.upload_id, frame, acc_id, data, videodata, speed_limit, enddir, url, yt_id);
 		_ToUpload.addFirst(worker);
 	}
 	
@@ -107,6 +123,24 @@ public class UploadManager {
 		this.upload_limit = limit;
 	}
 
+	public void finished(int upload_id) {
+		if(!_Uploading.isEmpty()){
+			for(int i=0;i<_Uploading.size();i++){
+				if(_Uploading.get(i).id == upload_id){
+					UploadWorker w = _Uploading.get(i);
+					if(w.enddir !=null && !w.enddir.equals("")){
+						try {
+							Files.move(w.file.toPath(), Paths.get(w.enddir));
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+					_Uploading.remove(i);
+				}
+			}
+		}
+	}
+	
 	public void cancel(int upload_id) {
 		if(!_Uploading.isEmpty()){
 			for(int i=0;i<_Uploading.size();i++){
@@ -116,7 +150,6 @@ public class UploadManager {
 				}
 			}
 		}
-		
 	}
 
 	public void delete(int upload_id) {

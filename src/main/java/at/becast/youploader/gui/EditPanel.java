@@ -75,8 +75,8 @@ public class EditPanel extends javax.swing.JPanel {
 
 		jLabel1 = new JLabel();
 		cmbTemplate = new JComboBox<Template>();
-		for (int i = 0; i < TemplateMgr.templates.size(); i++) {
-			cmbTemplate.addItem(TemplateMgr.templates.get(i));
+		for (Template e: TemplateMgr.templates.values()) {
+			cmbTemplate.addItem(e);
 		}
 		cmbTemplate.setSelectedIndex(-1);
 		cmbTemplate.addActionListener(new ActionListener() {
@@ -84,6 +84,7 @@ public class EditPanel extends javax.swing.JPanel {
 				if ("comboBoxEdited".equals(e.getActionCommand())) {
 					LOG.debug("AddTemplate " + cmbTemplate.getSelectedItem().toString());
 					cmbTemplate.setEditable(false);
+					parent.createTemplate(cmbTemplate.getSelectedItem().toString());
 
 				}
 			}
@@ -149,6 +150,16 @@ public class EditPanel extends javax.swing.JPanel {
 		txtEndDir.setColumns(10);
 
 		JButton btnEndDir = new JButton("");
+		btnEndDir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				JFileChooser chooser = new JFileChooser();
+				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				int returnVal = chooser.showOpenDialog(getParent());
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					txtEndDir.setText(chooser.getSelectedFile().getAbsolutePath().toString());
+				}
+			}
+		});
 		btnEndDir.setIcon(new ImageIcon(getClass().getResource("/folder.png")));
 		add(btnEndDir, "6, 6, fill, fill");
 

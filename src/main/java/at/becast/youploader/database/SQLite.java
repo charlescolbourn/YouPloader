@@ -24,6 +24,7 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import at.becast.youploader.gui.frmMain;
+import at.becast.youploader.templates.Template;
 import at.becast.youploader.youtube.data.Video;
 import at.becast.youploader.youtube.io.UploadManager;
 import at.becast.youploader.youtube.io.UploadManager.Status;
@@ -47,17 +48,18 @@ public class SQLite {
         return c;
     }
     
-    public static int addUpload(int account, File file, Video data) throws SQLException, JsonGenerationException, JsonMappingException, IOException{
+    public static int addUpload(int account, File file, Video data, String enddir) throws SQLException, JsonGenerationException, JsonMappingException, IOException{
     	PreparedStatement prest = null;
     	ObjectMapper mapper = new ObjectMapper();
-    	String sql	= "INSERT INTO `uploads` (`account`, `file`, `lenght`, `data`, `status`) " +
+    	String sql	= "INSERT INTO `uploads` (`account`, `file`, `lenght`, `data`,`enddir`, `status`) " +
     			"VALUES (?,?,?,?,?)";
     	prest = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     	prest.setInt(1, account);
     	prest.setString(2, file.getAbsolutePath());
     	prest.setLong(3, file.length());
     	prest.setString(4, mapper.writeValueAsString(data));
-    	prest.setString(5, UploadManager.Status.NOT_STARTED.toString());
+    	prest.setString(5, enddir);
+    	prest.setString(6, UploadManager.Status.NOT_STARTED.toString());
     	prest.execute();
         ResultSet rs = prest.getGeneratedKeys();
         prest.close();
@@ -153,14 +155,15 @@ public class SQLite {
 		}				
 	}
 	
-	public static Boolean updateUpload(int account, File file, Video data, int id) throws SQLException, JsonGenerationException, JsonMappingException, IOException{
+	public static Boolean updateUpload(int account, File file, Video data, String enddir, int id) throws SQLException, JsonGenerationException, JsonMappingException, IOException{
     	PreparedStatement prest = null;
-    	String sql	= "UPDATE `uploads` SET `account`=?, `file`=?, `lenght`=? WHERE `id`=?";
+    	String sql	= "UPDATE `uploads` SET `account`=?, `file`=?, `lenght`=?, `enddir`=? WHERE `id`=?";
     	prest = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     	prest.setInt(1, account);
     	prest.setString(2, file.getAbsolutePath());
     	prest.setLong(3, file.length());
-    	prest.setInt(4, id);
+    	prest.setString(4, enddir);
+    	prest.setInt(5, id);
     	prest.execute();
     	boolean res = prest.execute();
     	prest.close();
@@ -178,6 +181,26 @@ public class SQLite {
     	boolean res = prest.execute();
         prest.close();
         return res;
+    }
+    
+    public static int saveTemplate(Template template) throws SQLException, JsonGenerationException, JsonMappingException, IOException{
+    	PreparedStatement prest = null;
+    	ObjectMapper mapper = new ObjectMapper();
+    	String sql	= "INSERT INTO `templates` (`name`, `data`) " +
+    			"VALUES (?,?)";
+    	prest = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+    	prest.setString(1, template.getName());
+    	prest.setString(2, mapper.writeValueAsString(template));
+    	prest.execute();
+        ResultSet rs = prest.getGeneratedKeys();
+        prest.close();
+        if (rs.next()){
+        	int id = rs.getInt(1);
+        	rs.close();
+        	return id;
+        }else{
+        	return -1;
+        }
     }
 
     

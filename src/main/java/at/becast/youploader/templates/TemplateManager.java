@@ -10,13 +10,12 @@ import java.util.HashMap;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 
-import at.becast.youploader.account.AccountType;
 import at.becast.youploader.database.SQLite;
 import at.becast.youploader.youtube.data.Video;
 
 public class TemplateManager {
 	private static TemplateManager manager = null;
-	public HashMap<String, Template> templates = new HashMap<String, Template>();
+	public HashMap<Integer, Template> templates = new HashMap<Integer, Template>();
 	
 	private TemplateManager(){
 		this.load_templates();
@@ -33,7 +32,8 @@ public class TemplateManager {
 			if(rs.isBeforeFirst()){
 				while(rs.next()){
 					try {
-						templates.put(rs.getString("name"), mapper.readValue(rs.getString("data"), new TypeReference<Video>() {}));
+						System.out.println(rs.getString("data"));
+						templates.put(rs.getInt("id"), mapper.readValue(rs.getString("data"), new TypeReference<Template>() {}));
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -54,5 +54,14 @@ public class TemplateManager {
 			manager = new TemplateManager();
 		}
 		return manager;
+	}
+
+	public void save(Template t) {
+		try {
+			SQLite.saveTemplate(t);
+		} catch (SQLException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

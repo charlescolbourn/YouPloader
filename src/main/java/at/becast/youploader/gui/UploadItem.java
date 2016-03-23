@@ -200,14 +200,14 @@ public class UploadItem extends JPanel {
 	}
 	
 	public void edit(){
-		frmMain.UploadManager.editUpload(this.upload_id);
+		frmMain.UploadMgr.editUpload(this.upload_id);
 	}
 	
 	public void cancel(){
-		frmMain.UploadManager.cancel(this.upload_id);
+		frmMain.UploadMgr.cancel(this.upload_id);
 	}
 	
 	public void delete(){
-		frmMain.UploadManager.delete(this.upload_id);
+		frmMain.UploadMgr.delete(this.upload_id);
 	}
 }

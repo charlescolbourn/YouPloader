@@ -92,6 +92,7 @@ import at.becast.youploader.database.SQLite;
 import at.becast.youploader.gui.slider.SideBar;
 import at.becast.youploader.gui.slider.SidebarSection;
 import at.becast.youploader.settings.Settings;
+import at.becast.youploader.templates.Template;
 import at.becast.youploader.templates.TemplateManager;
 import at.becast.youploader.youtube.Categories;
 import at.becast.youploader.youtube.LicenseType;
@@ -114,7 +115,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 	public static final String DB_FILE = "data/data.db";
 	public static final String VERSION = "0.3";
 	private static final Logger LOG = LoggerFactory.getLogger(frmMain.class);
-	public static UploadManager UploadManager;
+	public static UploadManager UploadMgr;
 	public static TemplateManager TemplateMgr;
 	static Locale locale = Locale.getDefault();
 	private static final ResourceBundle LANG = ResourceBundle.getBundle("lang", locale);
@@ -157,7 +158,8 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 	public frmMain() {
 
 		self = this;
-		UploadManager = new UploadManager(this);
+		UploadMgr = UploadManager.getInstance();
+		UploadMgr.setParent(this);
 		TemplateMgr = TemplateManager.getInstance();
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -478,7 +480,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 		btnStart = new JButton("Start");
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				UploadManager.start();
+				UploadMgr.start();
 			}
 		});
 		buttonPanel.add(btnStart, "2, 4");
@@ -486,7 +488,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 		btnStop = new JButton("Stop");
 		btnStop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				UploadManager.stop();
+				UploadMgr.stop();
 			}
 		});
 		buttonPanel.add(btnStop, "6, 4");
@@ -498,7 +500,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 		slider.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				JSlider s = (JSlider) evt.getSource();
-				UploadManager.set_uploadlimit(s.getValue());
+				UploadMgr.set_uploadlimit(s.getValue());
 			}
 		});
 		slider.setMajorTickSpacing(1);
@@ -522,7 +524,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				JSpinner s = (JSpinner) e.getSource();
-				UploadManager.set_limit(Integer.parseInt(s.getValue().toString()));
+				UploadMgr.set_limit(Integer.parseInt(s.getValue().toString()));
 			}
 		});
 		buttonPanel.add(spinner, "26, 4");
@@ -627,17 +629,18 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 				File data = new File(rs.getString("file"));
 				int acc_id = rs.getInt("account");
 				String status = rs.getString("status");
+				String enddir = rs.getString("enddir");
 				long position = rs.getLong("uploaded");
 				long size = rs.getLong("lenght");
 				if (url != null && !url.equals("") && !status.equals("FINISHED")) {
-					UploadManager.add_resumeable_upload(f, data, v, acc_id, url, yt_id);
+					UploadMgr.add_resumeable_upload(f, data, v, acc_id, enddir, url, yt_id);
 					f.getProgressBar().setString(String.format("%6.2f%%", (float) position / size * 100));
 					f.getProgressBar().setValue((int) ((float) position / size * 100));
 					f.getProgressBar().revalidate();
 					f.revalidate();
 					f.repaint();
 				} else if (status.equals("NOT_STARTED")) {
-					UploadManager.add_upload(f, data, v, acc_id);
+					UploadMgr.add_upload(f, data, v, acc_id, enddir);
 				} else {
 					f.getBtnEdit().setEnabled(false);
 					f.getProgressBar().setValue(100);
@@ -704,7 +707,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 		LicenseType license = (LicenseType) edit.getCmbLicense().getSelectedItem();
 		v.status.license = license.getData();
 		File data = new File(File);
-		UploadManager.add_upload(f, data, v, acc_id);
+		UploadMgr.add_upload(f, data, v, acc_id, edit.getTxtEndDir().getText());
 		return f;
 	}
 
@@ -746,15 +749,16 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 					v.status.privacyStatus = visibility.getData();
 				}
 				LicenseType license = (LicenseType) edit.getCmbLicense().getSelectedItem();
+				String enddir = edit.getTxtEndDir().getText();
 				v.status.license = license.getData();
 				if (video_id != null && !video_id.equals("")) {
 					SQLite.updateUploadData(v, upload_id);
 				} else {
 					File data = new File(File);
-					SQLite.updateUpload(acc_id, data, v, upload_id);
+					SQLite.updateUpload(acc_id, data, v, enddir, upload_id);
 				}
 				File data = new File(File);
-				UploadManager.update_upload(upload_id, data, v, acc_id);
+				UploadMgr.update_upload(upload_id, data, v, acc_id);
 			}
 		}
 	}
@@ -886,5 +890,36 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 			prest.close();
 		}
 
+	}
+
+	public void createTemplate(String name) {
+		EditPanel edit = (EditPanel) ss1.contentPane;
+		Template t = new Template(name);
+		Video v = new Video();
+		v.snippet.title = txtTitle.getText();
+		CategoryType cat = (CategoryType) cmbCategory.getSelectedItem();
+		v.snippet.categoryId = cat.getValue();
+		v.snippet.description = txtDescription.getText();
+		if (txtTags != null && !txtTags.getText().equals("")) {
+			String[] tags = txtTags.getText().split(",");
+			String[] trimmedtags = new String[tags.length];
+			for (int i = 0; i < tags.length; i++) {
+				trimmedtags[i] = tags[i].trim();
+			}
+			v.snippet.tags = trimmedtags;
+		}
+		VisibilityType visibility = (VisibilityType) edit.getCmbVisibility().getSelectedItem();
+		v.status.privacyStatus = visibility.getData();
+		LicenseType license = (LicenseType) edit.getCmbLicense().getSelectedItem();
+		v.status.license = license.getData();
+		if (edit.getTxtStartDir() != null) {
+			t.setStartdir(edit.getTxtStartDir().getText());
+		}
+		if (edit.getTxtEndDir() != null) {
+			t.setEnddir(edit.getTxtEndDir().getText());
+		}
+		t.setVideodata(v);
+		TemplateMgr.save(t);
+		
 	}
 }
