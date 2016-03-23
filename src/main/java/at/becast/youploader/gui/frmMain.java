@@ -190,9 +190,9 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 		cmbCategory = new JComboBox<CategoryType>();
 		cmbCategory.setModel(new DefaultComboBoxModel<CategoryType>());
 		SideBar sideBar = new SideBar(SideBar.SideBarMode.TOP_LEVEL, true, 300, true);
-		ss1 = new SidebarSection(sideBar, "Settings", new EditPanel(this), null);
-		ss2 = new SidebarSection(sideBar, "Playlists", new PlaylistPanel(this), null);
-		ss3 = new SidebarSection(sideBar, "Monetisation", new MonetPanel(this), null);
+		ss1 = new SidebarSection(sideBar, LANG.getString("frmMain.Sidebar.Settings"), new EditPanel(this), null);
+		ss2 = new SidebarSection(sideBar, LANG.getString("frmMain.Sidebar.Playlists"), new PlaylistPanel(this), null);
+		ss3 = new SidebarSection(sideBar, LANG.getString("frmMain.Sidebar.Monetisation"), new MonetPanel(this), null);
 		sideBar.addSection(ss1, false);
 		sideBar.addSection(ss2);
 		sideBar.addSection(ss3);
@@ -258,11 +258,11 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 			}
 		});
 
-		JLabel lblCategory = new JLabel("Category");
+		JLabel lblCategory = new JLabel(LANG.getString("frmMain.Category"));
 		panel.add(lblCategory, "3, 9, 4, 1, left, top");
 		panel.add(cmbCategory, "3, 10, 14, 1, fill, fill");
 
-		JLabel lblDescription = new JLabel("Description");
+		JLabel lblDescription = new JLabel(LANG.getString("frmMain.Description"));
 		panel.add(lblDescription, "3, 12, 4, 1, left, bottom");
 
 		lblDesclenght = new JLabel("(0/1000)");
@@ -292,7 +292,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 			}
 		});
 
-		JLabel lblTags = new JLabel("Tags");
+		JLabel lblTags = new JLabel(LANG.getString("frmMain.Tags"));
 		panel.add(lblTags, "3, 14, left, top");
 
 		lblTagslenght = new JLabel("(0/500)");
@@ -323,7 +323,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 			}
 		});
 
-		JLabel lblAccount = new JLabel("Account");
+		JLabel lblAccount = new JLabel(LANG.getString("frmMain.Account"));
 		panel.add(lblAccount, "3, 18, 4, 1, left, top");
 		cmbAccount = new JComboBox<AccountType>();
 		panel.add(cmbAccount, "3, 19, 14, 1, fill, fill");
@@ -338,17 +338,17 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 		lblSelectVideo = new JLabel();
 		panel.add(lblSelectVideo, "3, 3, 4, 1, left, top");
 
-		lblSelectVideo.setText("Select Video File");
+		lblSelectVideo.setText(LANG.getString("frmMain.selectVideoFile"));
 		cmbFile = new JComboBox<String>();
 		panel.add(cmbFile, "3, 4, 14, 1, fill, fill");
 		btnSelectMovie = new JButton();
 		panel.add(btnSelectMovie, "18, 4, center, top");
 		btnSelectMovie.setIcon(new ImageIcon(getClass().getResource("/film_add.png")));
 
-		JLabel lblTitle = new JLabel("Title");
+		JLabel lblTitle = new JLabel(LANG.getString("frmMain.Title"));
 		panel.add(lblTitle, "3, 6, left, top");
 
-		JButton btnReset = new JButton("Reset");
+		JButton btnReset = new JButton(LANG.getString("frmMain.Reset"));
 		panel.add(btnReset, "11, 21, 6, 1, fill, fill");
 		btnSelectMovie.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -365,13 +365,13 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 			}
 		});
 		mainTab.setLayout(mainTabLayout);
-		TabbedPane.addTab("Video Settings", mainTab);
+		TabbedPane.addTab(LANG.getString("frmMain.Tabs.VideoSettings"), mainTab);
 
-		mnuFile.setText("File");
+		mnuFile.setText(LANG.getString("frmMain.menu.File"));
 
 		mnuQuit.setAccelerator(
 				javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_MASK));
-		mnuQuit.setText("Quit");
+		mnuQuit.setText(LANG.getString("frmMain.menu.Quit"));
 		mnuQuit.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				mnuQuitActionPerformed(evt);
@@ -381,11 +381,11 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 
 		mnuBar.add(mnuFile);
 
-		mnuAcc.setText("Account");
+		mnuAcc.setText(LANG.getString("frmMain.menu.Account"));
 		mnuBar.add(mnuAcc);
 
 		JSeparator separator = new JSeparator();
-		mntmAddAccount = new JMenuItem("Add Account");
+		mntmAddAccount = new JMenuItem(LANG.getString("frmMain.menu.AddAccount"));
 		mntmAddAccount.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				mntmAddAccountActionPerformed(evt);
@@ -400,7 +400,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 		menu = new JMenu("?");
 		mnuBar.add(menu);
 
-		mntmDonate = new JMenuItem("Donate");
+		mntmDonate = new JMenuItem(LANG.getString("frmMain.menu.Donate"));
 		menu.add(mntmDonate);
 		mntmDonate.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -409,13 +409,15 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 						Desktop.getDesktop().browse(new URI(
 								"https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=AZ42BHSUTGPT6"));
 					} catch (IOException | URISyntaxException e1) {
-						/* TODO: error handling */ }
+						LOG.error("Can't open browser"); 
+					}
 				} else {
-					/* TODO: error handling */ }
+					LOG.error("Desktop not supported."); 
+				}
 			}
 		});
 
-		mntmAbout = new JMenuItem("About");
+		mntmAbout = new JMenuItem(LANG.getString("frmMain.menu.About"));
 		mntmAbout.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				frmAbout about = new frmAbout();
@@ -529,7 +531,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 		buttonPanel.add(lblKbps, "28, 4");
 
 		TabQueue = new JPanel();
-		TabbedPane.addTab("Queue", null, TabQueue, null);
+		TabbedPane.addTab(LANG.getString("frmMain.Tabs.Queue"), null, TabQueue, null);
 		TabQueue.setLayout(new BorderLayout(0, 0));
 
 		TabQueue.add(buttonPanel, BorderLayout.SOUTH);
@@ -787,6 +789,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			btnAddToQueue.setText(LANG.getString("frmMain.addtoQueue"));
 			cmbFile.removeAllItems();
 		} else {
 			if (cmbFile.getSelectedItem() != null && !cmbFile.getSelectedItem().toString().equals("")) {
