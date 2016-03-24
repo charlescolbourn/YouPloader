@@ -114,6 +114,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 
 	private static final long serialVersionUID = 6965358827253585528L;
 	public static final String DB_FILE = "data/data.db";
+	public static final String APP_NAME = "YouPloader";
 	public static final String VERSION = "0.3";
 	private static final Logger LOG = LoggerFactory.getLogger(frmMain.class);
 	public static UploadManager UploadMgr;
@@ -157,7 +158,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 	 * Creates new form frmMain
 	 */
 	public frmMain() {
-
+		LOG.info(APP_NAME + " " + VERSION + " starting.", frmMain.class);
 		self = this;
 		UploadMgr = UploadManager.getInstance();
 		UploadMgr.setParent(this);
@@ -207,7 +208,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 		mnuAcc = new javax.swing.JMenu();
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-		setTitle("YouPloader " + VERSION);
+		setTitle(APP_NAME + " " + VERSION);
 		setName("frmMain");
 		for (Categories cat : Categories.values()) {
 			cmbCategory.addItem(new CategoryType(cat.getID(), cat.toString()));
