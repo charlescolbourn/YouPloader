@@ -20,6 +20,7 @@ public class Cookie {
 	private final boolean secure;
 	private final int     version;
 
+	@SuppressWarnings("unused")
 	private Cookie() {
 		name = null;
 		value = null;
