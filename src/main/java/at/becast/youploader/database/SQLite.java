@@ -52,7 +52,7 @@ public class SQLite {
     	PreparedStatement prest = null;
     	ObjectMapper mapper = new ObjectMapper();
     	String sql	= "INSERT INTO `uploads` (`account`, `file`, `lenght`, `data`,`enddir`, `status`) " +
-    			"VALUES (?,?,?,?,?)";
+    			"VALUES (?,?,?,?,?,?)";
     	prest = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     	prest.setInt(1, account);
     	prest.setString(2, file.getAbsolutePath());
@@ -202,6 +202,34 @@ public class SQLite {
         	return -1;
         }
     }
+
+	public static Boolean updateTemplate(int id, Template template) throws JsonGenerationException, JsonMappingException, SQLException, IOException {
+		PreparedStatement prest = null;
+    	ObjectMapper mapper = new ObjectMapper();
+    	String sql	= "UPDATE `templates` SET `data`=? WHERE `id`=?";
+    	prest = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+    	prest.setString(1, mapper.writeValueAsString(template));
+    	prest.setInt(2, id);
+    	prest.execute();
+    	boolean res = prest.execute();
+        prest.close();
+        return res;
+	}
+
+	public static Boolean deleteTemplate(int id) {
+		PreparedStatement prest = null;
+    	String sql	= "DELETE FROM `templates` WHERE `id`=?";
+    	try {
+			prest = c.prepareStatement(sql);
+	    	prest.setInt(1, id);
+	    	boolean res = prest.execute();
+	    	prest.close();
+	    	return res;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}			
+	}
 
     
 }

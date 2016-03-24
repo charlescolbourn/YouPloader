@@ -11,7 +11,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 
 import at.becast.youploader.database.SQLite;
-import at.becast.youploader.youtube.data.Video;
 
 public class TemplateManager {
 	private static TemplateManager manager = null;
@@ -32,7 +31,6 @@ public class TemplateManager {
 			if(rs.isBeforeFirst()){
 				while(rs.next()){
 					try {
-						System.out.println(rs.getString("data"));
 						templates.put(rs.getInt("id"), mapper.readValue(rs.getString("data"), new TypeReference<Template>() {}));
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -55,10 +53,30 @@ public class TemplateManager {
 		}
 		return manager;
 	}
-
+	
+	public Template get(int id) {
+		return templates.get(id);
+	}
+	
+	public void update(int id, Template t) {
+		try {
+			SQLite.updateTemplate(id, t);
+			templates.put(id, t);
+		} catch (SQLException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void delete(int id) {
+		SQLite.deleteTemplate(id);
+		templates.remove(id);
+	}
+	
 	public void save(Template t) {
 		try {
-			SQLite.saveTemplate(t);
+			int id = SQLite.saveTemplate(t);
+			templates.put(id, t);
 		} catch (SQLException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

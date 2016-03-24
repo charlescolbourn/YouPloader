@@ -21,6 +21,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map.Entry;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -38,6 +39,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
+import at.becast.youploader.templates.Item;
 import at.becast.youploader.templates.Template;
 import at.becast.youploader.templates.TemplateManager;
 import at.becast.youploader.youtube.LicenseType;
@@ -53,11 +55,12 @@ public class EditPanel extends javax.swing.JPanel {
 	 */
 	private static final long serialVersionUID = -2023946504262191056L;
 	private static final Logger LOG = LoggerFactory.getLogger(EditPanel.class);
-	private JComboBox<Template> cmbTemplate;
+	private JComboBox<Item> cmbTemplate;
 	private JLabel jLabel1;
 	private JTextField txtStartDir;
 	private JTextField txtEndDir;
 	private frmMain parent;
+	private Boolean adding = false;
 	private JComboBox<VisibilityType> cmbVisibility;
 	private DateTimePicker dateTimePicker;
 	private JComboBox<LicenseType> cmbLicense;
@@ -72,21 +75,12 @@ public class EditPanel extends javax.swing.JPanel {
 	}
 
 	private void initComponents() {
-
 		jLabel1 = new JLabel();
-		cmbTemplate = new JComboBox<Template>();
-		for (Template e: TemplateMgr.templates.values()) {
-			cmbTemplate.addItem(e);
-		}
-		cmbTemplate.setSelectedIndex(-1);
+		cmbTemplate = new JComboBox<Item>();
+		load_templates();
 		cmbTemplate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if ("comboBoxEdited".equals(e.getActionCommand())) {
-					LOG.debug("AddTemplate " + cmbTemplate.getSelectedItem().toString());
-					cmbTemplate.setEditable(false);
-					parent.createTemplate(cmbTemplate.getSelectedItem().toString());
-
-				}
+				TemplateCmbChanged(e);
 			}
 		});
 		setLayout(new FormLayout(
@@ -114,10 +108,20 @@ public class EditPanel extends javax.swing.JPanel {
 		add(btnNewTemplate, "6, 2, fill, fill");
 
 		JButton btnSaveTemplate = new JButton("");
+		btnSaveTemplate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				saveTemplate();
+			}
+		});
 		btnSaveTemplate.setIcon(new ImageIcon(getClass().getResource("/disk.png")));
 		add(btnSaveTemplate, "8, 2, fill, fill");
 
 		JButton btnDeleteTemplate = new JButton("");
+		btnDeleteTemplate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				deleteTemplate();
+			}
+		});
 		btnDeleteTemplate.setIcon(new ImageIcon(getClass().getResource("/cross.png")));
 		add(btnDeleteTemplate, "10, 2, fill, fill");
 
@@ -202,7 +206,38 @@ public class EditPanel extends javax.swing.JPanel {
 		add(cmbLicense, "4, 12, fill, fill");
 	}
 
+	protected void TemplateCmbChanged(ActionEvent e) {
+		if(cmbTemplate.getSelectedItem() != null){
+			String temp = cmbTemplate.getSelectedItem().toString();
+			if ("comboBoxEdited".equals(e.getActionCommand())) {
+				LOG.debug("AddTemplate " + temp);
+				cmbTemplate.setEditable(false);
+				parent.createTemplate(temp);
+				this.adding = false;
+			}else if("comboBoxChanged".equals(e.getActionCommand())){
+				if(!this.adding){
+					LOG.debug("Load Template " + temp);
+					Item t = (Item) cmbTemplate.getSelectedItem();
+					parent.loadTemplate(t);
+				}
+			}
+		}
+	}
+
+	protected void saveTemplate() {
+		LOG.debug("Saving Template " + cmbTemplate.getSelectedItem());
+		Item t = (Item) cmbTemplate.getSelectedItem();
+		parent.saveTemplate(t.getId());
+	}
+	
+	protected void deleteTemplate() {
+		LOG.debug("Deleting Template" + cmbTemplate.getSelectedItem());
+		Item t = (Item) cmbTemplate.getSelectedItem();
+		parent.deleteTemplate(t.getId());
+	}
+
 	public void addTemplate() {
+		this.adding = true;
 		cmbTemplate.setEditable(true);
 		cmbTemplate.grabFocus();
 	}
@@ -215,6 +250,31 @@ public class EditPanel extends javax.swing.JPanel {
 		return txtEndDir;
 	}
 
+	public void load_templates(){
+		for (Entry<Integer,Template> e: TemplateMgr.templates.entrySet()) {
+			cmbTemplate.addItem(new Item(e.getKey(),e.getValue()));
+		}
+	}
+	
+	public void refresh_templates(){
+		this.adding = true;
+		cmbTemplate.removeAllItems();
+		load_templates();
+		this.adding = false;
+	}
+	
+	public void refresh_templates(String name){
+		this.adding = true;
+		cmbTemplate.removeAllItems();
+		load_templates();
+		for (int i=0; i<cmbTemplate.getItemCount();i++) {
+			if(cmbTemplate.getItemAt(i).getTemplate().name.equals(name)){
+				cmbTemplate.setSelectedIndex(i);
+			}
+		}
+		this.adding = false;
+	}
+	
 	public JComboBox<VisibilityType> getCmbVisibility() {
 		return cmbVisibility;
 	}
@@ -223,7 +283,7 @@ public class EditPanel extends javax.swing.JPanel {
 		return dateTimePicker;
 	}
 
-	public JComboBox<Template> getCmbTemplate() {
+	public JComboBox<Item> getCmbTemplate() {
 		return cmbTemplate;
 	}
 

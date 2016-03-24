@@ -111,10 +111,9 @@ public class UploadStream extends FileInputStream {
   
   @Override
   public void close() throws IOException {
+    super.close();
     if (this.event != null) {
       this.event.onClose();
     }
-
-    super.close();
   }
 }

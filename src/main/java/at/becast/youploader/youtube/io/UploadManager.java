@@ -130,7 +130,7 @@ public class UploadManager {
 					UploadWorker w = _Uploading.get(i);
 					if(w.enddir !=null && !w.enddir.equals("")){
 						try {
-							Files.move(w.file.toPath(), Paths.get(w.enddir));
+							Files.move(w.file.toPath(), Paths.get(w.enddir).resolve(w.file.getName()));
 						} catch (IOException e) {
 							e.printStackTrace();
 						}

@@ -92,6 +92,7 @@ import at.becast.youploader.database.SQLite;
 import at.becast.youploader.gui.slider.SideBar;
 import at.becast.youploader.gui.slider.SidebarSection;
 import at.becast.youploader.settings.Settings;
+import at.becast.youploader.templates.Item;
 import at.becast.youploader.templates.Template;
 import at.becast.youploader.templates.TemplateManager;
 import at.becast.youploader.youtube.Categories;
@@ -180,6 +181,8 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 		} catch (SQLException | IOException e) {
 			LOG.error(e.getMessage(), frmMain.class);
 		}
+		EditPanel edit = (EditPanel) ss1.contentPane;
+		edit.getCmbTemplate().setSelectedIndex(0);
 	}
 
 	/**
@@ -247,16 +250,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 		txtTitle.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				if (txtTitle.getText().length() > 90) {
-					lbltitlelenght.setForeground(Color.RED);
-				} else {
-					lbltitlelenght.setForeground(Color.BLACK);
-				}
-				if (txtTitle.getText().length() >= 101) {
-					txtTitle.setText(txtTitle.getText().substring(0, 100));
-
-				}
-				lbltitlelenght.setText("(" + txtTitle.getText().length() + "/100)");
+				calcNotifies();
 			}
 		});
 
@@ -281,16 +275,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 		txtDescription.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				if (txtDescription.getText().length() > 900) {
-					lblDesclenght.setForeground(Color.RED);
-				} else {
-					lblDesclenght.setForeground(Color.BLACK);
-				}
-				if (txtDescription.getText().length() >= 1001) {
-					txtDescription.setText(txtDescription.getText().substring(0, 1000));
-
-				}
-				lblDesclenght.setText("(" + txtDescription.getText().length() + "/1000)");
+				calcNotifies();
 			}
 		});
 
@@ -312,16 +297,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 		txtTags.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				if (txtTags.getText().length() > 450) {
-					lblTagslenght.setForeground(Color.RED);
-				} else {
-					lblTagslenght.setForeground(Color.BLACK);
-				}
-				if (txtTags.getText().length() >= 501) {
-					txtTags.setText(txtTags.getText().substring(0, 500));
-
-				}
-				lblTagslenght.setText("(" + txtTags.getText().length() + "/500)");
+				calcNotifies();
 			}
 		});
 
@@ -920,6 +896,127 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 		}
 		t.setVideodata(v);
 		TemplateMgr.save(t);
+		edit.refresh_templates(t.name);
+	}
+	
+	public void loadTemplate(Item item) {
+		EditPanel edit = (EditPanel) ss1.contentPane;
+		Template t = item.getTemplate();
+		for (int i = 0; i < cmbCategory.getItemCount(); i++) {
+			if (cmbCategory.getItemAt(i).getValue() == t.videodata.snippet.categoryId) {
+				cmbCategory.setSelectedIndex(i);
+			}
+		}
+		txtTitle.setText(t.videodata.snippet.title);
+		txtDescription.setText(t.videodata.snippet.description);
+		String tags = "";
+		for (int i = 0; i < t.videodata.snippet.tags.length; i++) {
+			if (i == 0) {
+				tags = t.videodata.snippet.tags[i];
+			} else {
+				tags += "," + t.videodata.snippet.tags[i];
+			}
+		}
+		txtTags.setText(tags);
+		for (int i = 0; i < edit.getCmbLicense().getItemCount(); i++) {
+			if (edit.getCmbLicense().getItemAt(i).getData().equals(t.videodata.status.license)) {
+				edit.getCmbLicense().setSelectedIndex(i);
+			}
+		}
+		if(t.videodata.status.publishAt != null && t.videodata.status.publishAt.equals("1") && t.videodata.status.privacyStatus.equals("private")){
+			edit.getCmbVisibility().setSelectedItem(VisibilityType.SCHEDULED);
+		}else if(t.videodata.status.publishAt != null && t.videodata.status.publishAt.equals("0") && t.videodata.status.privacyStatus.equals("private")){
+			edit.getCmbVisibility().setSelectedItem(VisibilityType.PRIVATE);
+		}else{
+			for (int i = 0; i < edit.getCmbVisibility().getItemCount(); i++) {
+				if (edit.getCmbVisibility().getItemAt(i).getData().equals(t.videodata.status.privacyStatus)) {
+					edit.getCmbVisibility().setSelectedIndex(i);
+				}
+			}
+		}
+		if(t.enddir != null){
+			edit.getTxtEndDir().setText(t.enddir);
+		}
 		
+		if(t.startdir != null){
+			edit.getTxtStartDir().setText(t.startdir);
+		}
+		calcNotifies();
+	}
+
+	private void calcNotifies(){
+		if (txtTags.getText().length() > 450) {
+			lblTagslenght.setForeground(Color.RED);
+		} else {
+			lblTagslenght.setForeground(Color.BLACK);
+		}
+		if (txtTags.getText().length() >= 501) {
+			txtTags.setText(txtTags.getText().substring(0, 500));
+
+		}
+		lblTagslenght.setText("(" + txtTags.getText().length() + "/500)");
+		
+		if (txtDescription.getText().length() > 900) {
+			lblDesclenght.setForeground(Color.RED);
+		} else {
+			lblDesclenght.setForeground(Color.BLACK);
+		}
+		if (txtDescription.getText().length() >= 1001) {
+			txtDescription.setText(txtDescription.getText().substring(0, 1000));
+
+		}
+		lblDesclenght.setText("(" + txtDescription.getText().length() + "/1000)");
+		
+		if (txtTitle.getText().length() > 90) {
+			lbltitlelenght.setForeground(Color.RED);
+		} else {
+			lbltitlelenght.setForeground(Color.BLACK);
+		}
+		if (txtTitle.getText().length() >= 101) {
+			txtTitle.setText(txtTitle.getText().substring(0, 100));
+
+		}
+		lbltitlelenght.setText("(" + txtTitle.getText().length() + "/100)");
+	}
+	public void saveTemplate(int id) {
+		EditPanel edit = (EditPanel) ss1.contentPane;
+		Video v = new Video();
+		Template t = TemplateMgr.get(id);
+		v.snippet.title = txtTitle.getText();
+		CategoryType cat = (CategoryType) cmbCategory.getSelectedItem();
+		v.snippet.categoryId = cat.getValue();
+		v.snippet.description = txtDescription.getText();
+		if (txtTags != null && !txtTags.getText().equals("")) {
+			String[] tags = txtTags.getText().split(",");
+			String[] trimmedtags = new String[tags.length];
+			for (int i = 0; i < tags.length; i++) {
+				trimmedtags[i] = tags[i].trim();
+			}
+			v.snippet.tags = trimmedtags;
+		}
+		VisibilityType visibility = (VisibilityType) edit.getCmbVisibility().getSelectedItem();
+		if(visibility == VisibilityType.SCHEDULED){
+			v.status.publishAt = "1";
+		}else{
+			v.status.publishAt = "0";
+		}
+		v.status.privacyStatus = visibility.getData();
+		LicenseType license = (LicenseType) edit.getCmbLicense().getSelectedItem();
+		v.status.license = license.getData();
+		if (edit.getTxtStartDir() != null) {
+			t.setStartdir(edit.getTxtStartDir().getText());
+		}
+		if (edit.getTxtEndDir() != null) {
+			t.setEnddir(edit.getTxtEndDir().getText());
+		}
+		t.setVideodata(v);
+		TemplateMgr.update(id, t);
+		edit.refresh_templates(t.name);
+	}
+
+	public void deleteTemplate(int id) {
+		EditPanel edit = (EditPanel) ss1.contentPane;
+		TemplateMgr.delete(id);
+		edit.refresh_templates();
 	}
 }
