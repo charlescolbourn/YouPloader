@@ -50,6 +50,7 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -123,6 +124,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 	private static final ResourceBundle LANG = ResourceBundle.getBundle("lang", locale);
 	public Settings s = Settings.getInstance();
 	public AccountManager accMng = AccountManager.getInstance();
+	private Boolean tos;
 	private ModalDialog modal;
 	private IMainMenu self;
 	private JTextArea txtDescription;
@@ -160,6 +162,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 	public frmMain() {
 		LOG.info(APP_NAME + " " + VERSION + " starting.", frmMain.class);
 		self = this;
+		this.tos = false;
 		UploadMgr = UploadManager.getInstance();
 		UploadMgr.setParent(this);
 		TemplateMgr = TemplateManager.getInstance();
@@ -180,7 +183,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 		try {
 			load_queue();
 		} catch (SQLException | IOException e) {
-			LOG.error(e.getMessage(), frmMain.class);
+			LOG.error("Error: ", e);
 		}
 		EditPanel edit = (EditPanel) ss1.contentPane;
 		edit.getCmbTemplate().setSelectedIndex(0);
@@ -417,21 +420,6 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 		TabQueues.setViewportView(QueuePanel);
 		getContentPane().setLayout(layout);
 		QueuePanel.setLayout(new MigLayout("", "[875px,grow,fill]", "[][][][]"));
-		/*
-		 * UploadItem i = new UploadItem(); panel.add(i, new CC().wrap());
-		 * panel.revalidate(); UploadItem s = new UploadItem(); panel.add(s, new
-		 * CC().wrap()); panel.revalidate(); UploadItem r = new UploadItem();
-		 * panel.add(r, new CC().wrap()); panel.revalidate(); UploadItem f = new
-		 * UploadItem(); panel.add(f, new CC().wrap());
-		 */
-
-		/*
-		 * GridBagConstraints gbc_scrollPane = new GridBagConstraints();
-		 * gbc_scrollPane.insets = new Insets(0, 0, 5, 0); gbc_scrollPane.fill =
-		 * GridBagConstraints.BOTH; gbc_scrollPane.gridx = 0;
-		 * gbc_scrollPane.gridy = 0;
-		 */
-
 		JPanel buttonPanel = new JPanel();
 		GridBagConstraints gbc_panel_2 = new GridBagConstraints();
 		gbc_panel_2.fill = GridBagConstraints.BOTH;
@@ -457,7 +445,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 		btnStart = new JButton("Start");
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				UploadMgr.start();
+				start_uploads();					
 			}
 		});
 		buttonPanel.add(btnStart, "2, 4");
@@ -524,6 +512,28 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 		load_accounts();
 		pack();
 		ss1.expand();
+	}
+
+	protected void start_uploads() {
+		if(s.setting.get("tos_agreed").equals("0") && !this.tos){
+			JCheckBox checkbox = new JCheckBox(LANG.getString("frmMain.tos.Remember"));
+			String message = LANG.getString("frmMain.tos.Message");
+			Object[] params = {message, checkbox};
+			int n;
+			do {
+				n = JOptionPane.showConfirmDialog(null, params, LANG.getString("frmMain.tos.Title"), JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
+			} while(n == JOptionPane.CLOSED_OPTION);
+			if(n == JOptionPane.OK_OPTION){
+				if(checkbox.isSelected()){
+					s.setting.put("tos_agreed", "1");
+					s.save("tos_agreed");
+				}
+				this.tos = true;
+				UploadMgr.start();
+			}
+		} else {
+			UploadMgr.start();
+		}
 	}
 
 	private void mnuQuitActionPerformed(ActionEvent evt) {
@@ -767,8 +777,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 			try {
 				update(cmbFile.getSelectedItem().toString(), acc.getValue(), this.editItem);
 			} catch (IOException | SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOG.error("Error: ", e);
 			}
 			btnAddToQueue.setText(LANG.getString("frmMain.addtoQueue"));
 			cmbFile.removeAllItems();
@@ -778,8 +787,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 					create_upload(cmbFile.getSelectedItem().toString(), txtTitle.getText(), acc.getValue());
 					cmbFile.removeAllItems();
 				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					LOG.error("Error: ", e1);
 				}
 			} else {
 				JOptionPane.showMessageDialog(null, "You have to select a file.", "Give me something to work with!",
@@ -852,8 +860,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 						date = formatter.parse(v.status.publishAt);
 						edit.getDateTimePicker().setDate(date);
 					} catch (ParseException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						LOG.error("Error: ", e);
 					}
 				}
 				edit.revalidate();

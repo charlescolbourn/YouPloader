@@ -19,9 +19,9 @@
 				<pattern>%d{HH:mm:ss.SSS}%thread%level%logger%msg</pattern>
 			</layout>
 		</encoder>
-		<file>${user.home}/YouPloader/applog.html</file>
+		<file>${user.home}/YouPloader/logfile.html</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-			<fileNamePattern>${user.home}/YouPloader/applog-%i.html
+			<fileNamePattern>${user.home}/YouPloader/logfile-%i.html
 			</fileNamePattern>
 			<minIndex>1</minIndex>
 			<maxIndex>3</maxIndex>

@@ -15,6 +15,7 @@
 package at.becast.youploader.settings;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -24,6 +25,7 @@ import java.util.Map;
 import javax.swing.JOptionPane;
 
 import at.becast.youploader.database.SQLite;
+import at.becast.youploader.youtube.io.UploadManager;
 
 public class Settings {
 	public Map<String, String> setting = new HashMap<String, String>();
@@ -54,5 +56,22 @@ public class Settings {
 		}
 		stmt.close();
 		return true;
+	}
+
+	public boolean save(String name) {
+		PreparedStatement prest = null;
+    	String sql	= "UPDATE `settings` SET `value`=? WHERE `name`=?";
+    	try {
+			prest = c.prepareStatement(sql);
+	    	prest.setString(1, this.setting.get(name));
+	    	prest.setString(2, name);
+	    	boolean res = prest.execute();
+	    	prest.close();
+	    	return res;     
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
 	}
 }
