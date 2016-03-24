@@ -37,13 +37,7 @@ public class AccountManager {
 	public static AccountManager getInstance(){
         if(accMng == null)
         	accMng = new AccountManager();
-        
-        try {
-			currentaccount=accMng.load_active();
-		} catch (SQLException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+ 
         return accMng;
     }
 	

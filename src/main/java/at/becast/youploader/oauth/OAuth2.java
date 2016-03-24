@@ -14,6 +14,7 @@
  */
 package at.becast.youploader.oauth;
 
+import at.becast.youploader.gui.frmMain;
 import at.becast.youploader.oauth.io.SimpleHTTP;
 import at.becast.youploader.oauth.json.Auth;
 import at.becast.youploader.oauth.json.Code;
@@ -23,6 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class OAuth2 {
   private String clientId;
@@ -32,7 +35,7 @@ public class OAuth2 {
   private String refreshToken;
   private String tokenType;
   private long expires;
-
+  private static final Logger LOG = LoggerFactory.getLogger(OAuth2.class);
   private String deviceCode;
 
 
@@ -54,7 +57,7 @@ public class OAuth2 {
   private OAuth2 refresh() throws IOException {
     if (this.expires < System.currentTimeMillis()) {
       SimpleHTTP http = new SimpleHTTP();
-
+      LOG.info("Token expired. Refreshing.");
       Map<String, String> post = new HashMap<>();
       post.put("client_id", this.clientId);
       post.put("client_secret", this.clientSecret);
@@ -69,13 +72,15 @@ public class OAuth2 {
         Auth.class
       );
       http.close();
-
+      
+      LOG.info("Got Access Token: {}", auth.access_token);
       this.accessToken = auth.access_token;
       this.tokenType = auth.token_type;
       this.expires = System.currentTimeMillis() + (auth.expires_in - 60) * 1000;
 
       if (auth.refresh_token != null) {
         this.refreshToken = auth.refresh_token;
+        LOG.info("Got Refresh Token: {}", auth.refresh_token);
       }
     }
 

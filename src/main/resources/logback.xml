@@ -5,7 +5,7 @@
 		<!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder 
 			by default -->
 		<encoder>
-			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%ex%n
 			</pattern>
 		</encoder>
 	</appender>
@@ -16,7 +16,7 @@
 		</filter>
 		<encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
 			<layout class="ch.qos.logback.classic.html.HTMLLayout">
-				<pattern>%d{HH:mm:ss.SSS}%thread%level%logger%msg</pattern>
+				<pattern>%d{HH:mm:ss.SSS}%thread%level%logger%msg%ex</pattern>
 			</layout>
 		</encoder>
 		<file>${user.home}/YouPloader/logfile.html</file>

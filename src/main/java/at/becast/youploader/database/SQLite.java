@@ -22,6 +22,8 @@ import java.sql.*;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import at.becast.youploader.gui.frmMain;
 import at.becast.youploader.templates.Template;
@@ -32,13 +34,13 @@ import at.becast.youploader.youtube.io.UploadManager.Status;
 public class SQLite {
 	
 	public static Connection c;
-	
+	private static final Logger LOG = LoggerFactory.getLogger(SQLite.class);
 	private SQLite( String database ){
 		try {
 			Class.forName("org.sqlite.JDBC");
 			c = DriverManager.getConnection("jdbc:sqlite:"+database);
 		} catch ( Exception e ) {
-		  System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+			LOG.error("SQLite", e);
 		}
 	}
 	
