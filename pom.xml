@@ -99,6 +99,7 @@
 	        <filtering>false</filtering>
 	    </resource>
 	</resources>
+	    <finalName>YouPloader</finalName>
 	    <plugins>
 	    <plugin>
 			<groupId>org.codehaus.mojo</groupId>
@@ -162,7 +163,7 @@
                     </goals>
                     <configuration>
                         <headerType>gui</headerType>
-                        <jar>${project.build.directory}/${project.artifactId}-${project.version}.jar</jar>
+                        <jar>${project.build.directory}/${project.artifactId}.jar</jar>
                         <outfile>${project.build.directory}/${project.artifactId}.exe</outfile>
                         <downloadUrl>http://java.com/download</downloadUrl>
                         <classPath>
@@ -184,7 +185,7 @@
                             <productName>${project.name}</productName>
                             <companyName>becast.at</companyName>
                             <internalName>YouPloader</internalName>
-                            <originalFilename>${project.artifactId}-${project.version}.exe</originalFilename>
+                            <originalFilename>${project.artifactId}.exe</originalFilename>
                         </versionInfo>
                     </configuration>
                 </execution>
