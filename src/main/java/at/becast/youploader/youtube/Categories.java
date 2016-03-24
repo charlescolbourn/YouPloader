@@ -14,17 +14,18 @@
  */
 package at.becast.youploader.youtube;
 
-public enum Categories {
-	FILM(1,"Film", "Film & Animation"), AUTOS(2,"Autos", "Autos & Vehicles"), MUSIC(10,"Music", "Music"), ANIMALS(15, "Animals", "Pets & Animals"), SPORTS(17, "Sports", "Sports"), TRAVEL(19,"Travel", "Travel & Events"), GAMES(20,"Games", "Gaming"), PEOPLE(22,"People", "People & Blogs"), COMEDY(23,"Comedy", "Comedy"), ENTERTAINMENT(24,"Entertainment", "Entertainment"), NEWS(25,"News", "News & Politics"), HOWTO(26,"Howto", "Howto & Style"), EDUCATION(27,"Education", "Education"), TECH(28,"Tech", "Science & Technology");
+import java.util.Locale;
+import java.util.ResourceBundle;
 
+public enum Categories {
+	FILM(1, "Category.film"), AUTOS(2, "Category.autos"), MUSIC(10, "Category.music"), ANIMALS(15, "Category.animals"), SPORTS(17, "Category.sports"), TRAVEL(19, "Category.travel"), GAMES(20, "Category.games"), PEOPLE(22, "Category.people"), COMEDY(23, "Category.comedy"), ENTERTAINMENT(24, "Category.entertainment"), NEWS(25, "Category.news"), HOWTO(26, "Category.howto"), EDUCATION(27, "Category.education"), TECH(28, "Category.tech");
+	private final ResourceBundle LANG = ResourceBundle.getBundle("lang", Locale.getDefault());
 	private final int number;
-	private final String term;
 	private final String label;
 
-	Categories(final int number, final String term, final String label) {
+	Categories(final int number, final String label) {
 		this.number = number;
-		this.term = term;
-		this.label = label;
+		this.label = LANG.getString(label);
 	}
 
 	@Override

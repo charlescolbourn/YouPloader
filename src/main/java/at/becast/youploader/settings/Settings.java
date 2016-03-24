@@ -25,33 +25,33 @@ import java.util.Map;
 import javax.swing.JOptionPane;
 
 import at.becast.youploader.database.SQLite;
-import at.becast.youploader.youtube.io.UploadManager;
 
 public class Settings {
 	public Map<String, String> setting = new HashMap<String, String>();
 	static Settings instance = null;
 	Connection c = SQLite.getInstance();
-	private Settings(){
+
+	private Settings() {
 		try {
 			load();
 		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(null,"Unable to load settings!","Uh oh...", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Unable to load settings!", "Uh oh...", JOptionPane.ERROR_MESSAGE);
 		}
 	}
-	
-	public static Settings getInstance(){
-		if(Settings.instance==null){
+
+	public static Settings getInstance() {
+		if (Settings.instance == null) {
 			return new Settings();
-		}else{
+		} else {
 			return Settings.instance;
 		}
 	}
-	
-	public boolean load() throws SQLException{
+
+	public boolean load() throws SQLException {
 		Statement stmt = c.createStatement();
-		String sql = "SELECT * FROM `settings`"; 
+		String sql = "SELECT * FROM `settings`";
 		ResultSet rs = stmt.executeQuery(sql);
-		while ( rs.next() ) {
+		while (rs.next()) {
 			setting.put(rs.getString("name"), rs.getString("value"));
 		}
 		stmt.close();
@@ -60,18 +60,18 @@ public class Settings {
 
 	public boolean save(String name) {
 		PreparedStatement prest = null;
-    	String sql	= "UPDATE `settings` SET `value`=? WHERE `name`=?";
-    	try {
+		String sql = "UPDATE `settings` SET `value`=? WHERE `name`=?";
+		try {
 			prest = c.prepareStatement(sql);
-	    	prest.setString(1, this.setting.get(name));
-	    	prest.setString(2, name);
-	    	boolean res = prest.execute();
-	    	prest.close();
-	    	return res;     
+			prest.setString(1, this.setting.get(name));
+			prest.setString(2, name);
+			boolean res = prest.execute();
+			prest.close();
+			return res;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
 		}
-		
+
 	}
 }
