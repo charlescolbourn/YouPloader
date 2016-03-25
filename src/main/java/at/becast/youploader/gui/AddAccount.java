@@ -50,7 +50,7 @@ public class AddAccount extends javax.swing.JDialog {
 	private JTextField AccName;
 	private JButton btnOk;
 	private JLabel jLabel1;
-	private static final Logger LOG = LoggerFactory.getLogger(frmMain.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AddAccount.class);
 	private static final ResourceBundle LANG = ResourceBundle.getBundle("lang", Locale.getDefault());
 
 	/**

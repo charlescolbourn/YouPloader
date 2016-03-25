@@ -21,6 +21,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import at.becast.youploader.database.SQLite;
 import at.becast.youploader.oauth.OAuth2;
 import at.becast.youploader.settings.Settings;
@@ -30,6 +34,7 @@ public class AccountManager {
 	public static AccountManager accMng;
 	Settings s = Settings.getInstance();
 	public static OAuth2 currentaccount;
+	private static final Logger LOG = LoggerFactory.getLogger(AccountManager.class);
 	
 	private AccountManager(){
 		
@@ -51,8 +56,9 @@ public class AccountManager {
 			stmt.executeUpdate(sql);
 			sql = "UPDATE `accounts` SET `active`=1 WHERE `name`='"+Username+"'"; 
 			stmt.executeUpdate(sql);
+			stmt.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			LOG.error("Error in set_active", e);
 		}
     }
 	
@@ -77,7 +83,7 @@ public class AccountManager {
 				return new HashMap<AccountType, Integer>();
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			LOG.error("Error in load", e);
 			return new HashMap<AccountType, Integer>();
 		}
 	}
@@ -86,6 +92,7 @@ public class AccountManager {
 		try {
 			return new OAuth2(s.setting.get("client_id"),s.setting.get("clientSecret"), Account.read(acc).refreshToken);
 		} catch (IOException e) {
+			LOG.error("Error in getAuth", e);
 			return null;
 		}
 	}
@@ -94,6 +101,7 @@ public class AccountManager {
 		try {
 			return new OAuth2(s.setting.get("client_id"),s.setting.get("clientSecret"), Account.read(id).refreshToken);
 		} catch (IOException e) {
+			LOG.error("Error in getAuth", e);
 			return null;
 		}
 	}
@@ -106,9 +114,10 @@ public class AccountManager {
 			stmt = c.prepareStatement(sql);
 			stmt.setString(1, name);
 			stmt.setInt(2, id);
-			stmt.executeUpdate(sql);
+			stmt.executeUpdate();
+			stmt.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			LOG.error("Error in rename", e);
 		}		
 	}
 
@@ -117,7 +126,7 @@ public class AccountManager {
 		try {
 			auth.revoke();
 		} catch (IOException e1) {
-			e1.printStackTrace();
+			LOG.error("Error in delete while revoking", e1);
 		}
 		Connection c = SQLite.getInstance();
 		PreparedStatement stmt = null;
@@ -125,10 +134,33 @@ public class AccountManager {
 		try {
 			stmt = c.prepareStatement(sql);
 			stmt.setInt(1, id);
-			stmt.executeUpdate(sql);
+			stmt.executeUpdate();
+			stmt.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			LOG.error("Error in delete during DB Delete", e);
 		}		
 		
+	}
+
+	public int getId(String name) {
+		Connection c = SQLite.getInstance();
+		PreparedStatement stmt = null;
+		int id = 0;
+		String sql = "SELECT `id` FROM `accounts` WHERE `name`=? LIMIT 1";
+		try {
+			stmt = c.prepareStatement(sql);
+			stmt.setString(1, name);
+			ResultSet rs = stmt.executeQuery();
+			if(rs.isBeforeFirst()){
+				rs.next();
+				id = rs.getInt("id");
+			}
+			rs.close();
+			stmt.close();
+			return id;
+		} catch (SQLException e) {
+			LOG.error("Error in getId", e);
+			return id;
+		}	
 	}
 }

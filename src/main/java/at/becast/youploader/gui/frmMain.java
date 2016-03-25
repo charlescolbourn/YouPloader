@@ -607,8 +607,9 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 
 	}
 
-	protected void editAccount(String id) {
-		EditAccount accedit = new EditAccount(this, Integer.parseInt(id));
+	protected void editAccount(String name) {
+		int id = accMng.getId(name);
+		EditAccount accedit = new EditAccount(this, name, id);
 		accedit.setVisible(true);
 	}
 

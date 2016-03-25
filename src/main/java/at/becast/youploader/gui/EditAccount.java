@@ -48,17 +48,20 @@ public class EditAccount extends javax.swing.JDialog {
 	frmMain parent;
 	AccountManager AccMng = AccountManager.getInstance();
 	private int id;
+	private String name;
 	private JTextField AccName;
 	private JButton btnOk;
 	private JLabel jLabel1;
-	private static final Logger LOG = LoggerFactory.getLogger(frmMain.class);
+	private static final Logger LOG = LoggerFactory.getLogger(EditAccount.class);
 	private static final ResourceBundle LANG = ResourceBundle.getBundle("lang", Locale.getDefault());
 	/**
 	 * Creates new form AddAccount
+	 * @param name 
 	 */
-	public EditAccount(frmMain parent, int id) {
+	public EditAccount(frmMain parent, String name, int id) {
 		this.parent = parent;
 		this.id = id;
+		this.name = name;
 		initComponents();
 		this.setLocationRelativeTo(null);
 		this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/yp.png")));
@@ -66,7 +69,7 @@ public class EditAccount extends javax.swing.JDialog {
 
 	private void initComponents() {
 
-		AccName = new JTextField();
+		AccName = new JTextField(this.name);
 		jLabel1 = new JLabel();
 		btnOk = new JButton();
 
@@ -138,7 +141,7 @@ public class EditAccount extends javax.swing.JDialog {
 
 	private void btnOkActionPerformed(ActionEvent e) {
 		if (AccName.getText() != null && !AccName.getText().equals("")) {
-			LOG.info("Remaning Account {} to {}",  this.id, AccName.getText());
+			LOG.info("Renaming Account {} to {}",  this.id, AccName.getText());
 			AccMng.rename(AccName.getText(), this.id);
 			parent.refresh_accounts();
 			LOG.info("Account renamed");
@@ -160,7 +163,7 @@ public class EditAccount extends javax.swing.JDialog {
 			this.setVisible(false);
 			this.dispose();
 		}
-		LOG.info("Account delete cancelled");
+		LOG.info("Account delete canceled");
 	}
 	
 	private void btnCancelActionPerformed(ActionEvent e) {
