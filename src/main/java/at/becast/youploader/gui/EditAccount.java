@@ -142,10 +142,10 @@ public class EditAccount extends javax.swing.JDialog {
 	private void btnOkActionPerformed(ActionEvent e) {
 		if (AccName.getText() != null && !AccName.getText().equals("")) {
 			LOG.info("Renaming Account {} to {}",  this.id, AccName.getText());
+			this.setVisible(false);
 			AccMng.rename(AccName.getText(), this.id);
 			parent.refresh_accounts();
 			LOG.info("Account renamed");
-			this.setVisible(false);
 			this.dispose();
 		} else {
 			JOptionPane.showMessageDialog(this, "The Accountname can not be empty.", "Error",
@@ -157,10 +157,10 @@ public class EditAccount extends javax.swing.JDialog {
 		LOG.info("Deleting Account");
 		int n= JOptionPane.showConfirmDialog(this, LANG.getString("EditAccount.confirmdelete.message"),LANG.getString("EditAccount.confirmdelete.title"),JOptionPane.OK_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE);
 		if (n == JOptionPane.OK_OPTION) {
+			this.setVisible(false);
 			AccMng.delete(this.id);
 			parent.refresh_accounts();
 			LOG.info("Account deleted");
-			this.setVisible(false);
 			this.dispose();
 		}else{
 			LOG.info("Account delete canceled");

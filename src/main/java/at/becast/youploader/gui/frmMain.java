@@ -357,6 +357,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 		panel.add(cmbAccount, "3, 19, 14, 1, fill, fill");
 
 		btnAddToQueue = new JButton(LANG.getString("frmMain.addtoQueue"));
+		btnAddToQueue.setEnabled(false);
 		panel.add(btnAddToQueue, "3, 21, 6, 1, fill, fill");
 		btnAddToQueue.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -610,6 +611,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 			_accounts.remove(i);
 		}
 		cmbAccount.removeAllItems();
+		btnAddToQueue.setEnabled(false);
 		load_accounts();
 	}
 	
@@ -633,6 +635,9 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 			_accounts.put(i, rdoBtn);
 			mnuAcc.add(rdoBtn);
 			i++;
+		}
+		if(!accounts.isEmpty()){
+			btnAddToQueue.setEnabled(true);
 		}
 
 	}
