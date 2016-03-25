@@ -17,11 +17,16 @@ package at.becast.youploader.gui;
 
 import java.awt.Toolkit;
 import java.io.IOException;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import at.becast.youploader.account.Account;
 import at.becast.youploader.account.AccountManager;
@@ -38,11 +43,15 @@ public class AddAccount extends javax.swing.JDialog {
 	 * 
 	 */
 	private static final long serialVersionUID = 4804877236112916847L;
-
 	Settings s = Settings.getInstance();
 	OAuth2 o2;
 	frmMain parent;
 	AccountManager AccMng = AccountManager.getInstance();
+	private JTextField AccName;
+	private JButton btnOk;
+	private JLabel jLabel1;
+	private static final Logger LOG = LoggerFactory.getLogger(frmMain.class);
+	private static final ResourceBundle LANG = ResourceBundle.getBundle("lang", Locale.getDefault());
 
 	/**
 	 * Creates new form AddAccount
@@ -61,22 +70,23 @@ public class AddAccount extends javax.swing.JDialog {
 		btnOk = new JButton();
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-		setTitle("Add Account");
+		setTitle(LANG.getString("AddAccount.title"));
 		setMinimumSize(new java.awt.Dimension(350, 130));
 		setName("Add Account"); // NOI18N
 		setPreferredSize(new java.awt.Dimension(350, 130));
 		setType(java.awt.Window.Type.POPUP);
 
-		jLabel1.setText("Account Name:");
+		jLabel1.setText(LANG.getString("Account.name"));
 
-		btnOk.setText("OK");
+		btnOk.setText(LANG.getString("Button.ok"));
 		btnOk.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				try {
 					btnOkActionPerformed(evt);
 				} catch (InterruptedException | IOException e) {
+					LOG.error("Error linking Account", e);
 					JOptionPane.showMessageDialog(null,
-							"Something went wrong with the Authorisation. Please try again.", "Uh oh...",
+							LANG.getString("AddAccount.autherror.message"), LANG.getString("AddAccount.autherror.title"),
 							JOptionPane.ERROR_MESSAGE);
 				}
 			}
@@ -105,16 +115,13 @@ public class AddAccount extends javax.swing.JDialog {
 	private void btnOkActionPerformed(java.awt.event.ActionEvent evt) throws InterruptedException, IOException {
 		if (AccName.getText() != null && !AccName.getText().equals("")) {
 			this.setVisible(false);
+			LOG.info("Linking Account {}", AccName.getText());
 			if (!Account.exists(AccName.getText())) {
+				LOG.info("Account does not exist");
 				o2 = new OAuth2(s.setting.get("client_id"), s.setting.get("clientSecret"));
-				/*
-				 * if (Desktop.isDesktopSupported()) { try {
-				 * Desktop.getDesktop().browse(new
-				 * URI("https://google.com/device")); } catch (IOException |
-				 * URISyntaxException e) { } } else { }
-				 */
 				Account account = new Account(AccName.getText());
 				String code = o2.getCode();
+				LOG.info("Created Auth code {}", code);
 				Browser browser = new Browser(account);
 				browser.setVisible(true);
 				browser.loadURL("https://google.com/device");
@@ -125,30 +132,27 @@ public class AddAccount extends javax.swing.JDialog {
 							do {
 								Thread.sleep(5050);
 							} while (!o2.check());
+							LOG.info("Got refresh token {}", o2.getRefreshToken());
 							account.setRefreshToken(o2.getRefreshToken());
 							account.save();
-							AccMng.set_active(AccName.getText());
 							parent.refresh_accounts();
 							parent.close_modal();
 						} catch (InterruptedException | IOException e) {
-							e.printStackTrace();
+							LOG.error("Error while linking", e);
 						}
 					}
 				};
 				new Thread(runnable).start();
 				parent.show_modal();
 			} else {
-				o2 = new OAuth2(s.setting.get("client_id"), s.setting.get("client_secret"),
-						Account.read(AccName.getText()).refreshToken);
-				AccMng.set_active(AccName.getText());
+				LOG.info("Account {} already exists", AccName.getText());
+				JOptionPane.showMessageDialog(this, LANG.getString("AddAccount.nameexists.message"), LANG.getString("AddAccount.nameexists.title"),
+						JOptionPane.INFORMATION_MESSAGE);
 			}
 		} else {
-			JOptionPane.showMessageDialog(this, "The Accountname can not be empty.", "Error",
+			JOptionPane.showMessageDialog(this, LANG.getString("AddAccount.nameerror.message"), LANG.getString("AddAccount.nameerror.title"),
 					JOptionPane.WARNING_MESSAGE);
 		}
 	}
 
-	private javax.swing.JTextField AccName;
-	private javax.swing.JButton btnOk;
-	private javax.swing.JLabel jLabel1;
 }

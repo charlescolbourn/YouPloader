@@ -156,6 +156,22 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 	private JScrollPane TagScrollPane;
 	private int editItem = -1;
 
+	
+	/**
+	 * @param args
+	 *            the command line arguments
+	 */
+	public static void main(String args[]) {
+		if (args.length > 0 && args[0].equalsIgnoreCase("debug")) {
+
+		}
+		java.awt.EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				new frmMain().setVisible(true);
+			}
+		});
+	}
+	
 	/**
 	 * Creates new form frmMain
 	 */
@@ -407,7 +423,6 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 			}
 		});
 		menu.add(mntmAbout);
-		// https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=AZ42BHSUTGPT6
 
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 		layout.setHorizontalGroup(layout.createParallelGroup(Alignment.LEADING)
@@ -546,21 +561,6 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 
 	}
 
-	/**
-	 * @param args
-	 *            the command line arguments
-	 */
-	public static void main(String args[]) {
-		if (args.length > 0 && args[0].equalsIgnoreCase("debug")) {
-
-		}
-		java.awt.EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				new frmMain().setVisible(true);
-			}
-		});
-	}
-
 	public void prep_modal(Account Account, String code) {
 		modal = new ModalDialog((Frame) this, Account, code);
 	}
@@ -572,7 +572,17 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 	public void close_modal() {
 		modal.success();
 	}
-
+	
+	public void refresh_accounts() {
+		int s = _accounts.size();
+		for (int i = 0; i < s; i++) {
+			mnuAcc.remove(_accounts.get(i));
+			_accounts.remove(i);
+		}
+		cmbAccount.removeAllItems();
+		load_accounts();
+	}
+	
 	public void load_accounts() {
 		int i = 0;
 		HashMap<AccountType, Integer> accounts = accMng.load();
@@ -587,7 +597,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 			rdoBtn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					// accMng.change_user(e.getActionCommand());
+					editAccount(e.getActionCommand());
 				}
 			});
 			_accounts.put(i, rdoBtn);
@@ -595,6 +605,11 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 			i++;
 		}
 
+	}
+
+	protected void editAccount(String id) {
+		EditAccount accedit = new EditAccount(this, Integer.parseInt(id));
+		accedit.setVisible(true);
 	}
 
 	private void load_queue() throws JsonParseException, JsonMappingException, SQLException, IOException {
@@ -748,27 +763,6 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 				UploadMgr.update_upload(upload_id, data, v, acc_id);
 			}
 		}
-	}
-
-	private JPanel getQueuePanel() {
-		return QueuePanel;
-	}
-
-	public void refresh_accounts() {
-		int s = _accounts.size();
-		for (int i = 0; i < s; i++) {
-			mnuAcc.remove(_accounts.get(i));
-			_accounts.remove(i);
-		}
-		load_accounts();
-	}
-
-	public JTextArea getTxtTags() {
-		return txtTags;
-	}
-
-	public JTextArea getTxtDescription() {
-		return txtDescription;
 	}
 
 	private void QueueButton() {
@@ -1026,5 +1020,17 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 		EditPanel edit = (EditPanel) ss1.contentPane;
 		TemplateMgr.delete(id);
 		edit.refresh_templates();
+	}
+	
+	private JPanel getQueuePanel() {
+		return QueuePanel;
+	}
+
+	public JTextArea getTxtTags() {
+		return txtTags;
+	}
+
+	public JTextArea getTxtDescription() {
+		return txtDescription;
 	}
 }

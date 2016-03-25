@@ -37,7 +37,6 @@ public class UploadWorker extends Thread {
 	private UploadEvent event;
 	private Uploader uploader;
 	public String url, enddir;
-	private Boolean threadSuspended;
 	private AccountManager AccMgr;
 	
 	public UploadWorker(int id, UploadItem frame, int acc_id, File file, Video videodata, int speed_limit, String enddir){
@@ -49,7 +48,6 @@ public class UploadWorker extends Thread {
 		this.file = file;
 		this.videodata = videodata;
 		this.enddir = enddir;
-		this.threadSuspended = false;
 		this.AccMgr = AccountManager.getInstance();
 		this.uploader = new Uploader(this.AccMgr.getAuth(acc_id));
 		this.event = new GuiUploadEvent(frame);
@@ -64,7 +62,6 @@ public class UploadWorker extends Thread {
 		this.upload = new Upload(url,file,yt_id,videodata);
 		this.videodata = videodata;
 		this.enddir = enddir;
-		this.threadSuspended = false;
 		this.AccMgr = AccountManager.getInstance();
 		this.uploader = new Uploader(this.AccMgr.getAuth(acc_id));
 		this.event = new GuiUploadEvent(frame);

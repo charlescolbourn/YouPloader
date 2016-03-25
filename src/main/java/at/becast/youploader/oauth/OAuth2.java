@@ -14,7 +14,6 @@
  */
 package at.becast.youploader.oauth;
 
-import at.becast.youploader.gui.frmMain;
 import at.becast.youploader.oauth.io.SimpleHTTP;
 import at.becast.youploader.oauth.json.Auth;
 import at.becast.youploader.oauth.json.Code;
@@ -126,7 +125,10 @@ public class OAuth2 {
   }
   
   public void revoke() throws IOException {
-	    //https://accounts.google.com/o/oauth2/revoke?token=
+	  	SimpleHTTP http = new SimpleHTTP();
+	  	Map<String, String> post = new HashMap<>();
+	    post.put("token", this.getAccessToken());
+	    http.post("https://accounts.google.com/o/oauth2/revoke",post);
 	  }
 
   public boolean check() throws IOException {

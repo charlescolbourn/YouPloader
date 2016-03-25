@@ -160,7 +160,7 @@ public class SQLite {
 	public static Boolean updateUpload(int account, File file, Video data, String enddir, int id) throws SQLException, JsonGenerationException, JsonMappingException, IOException{
     	PreparedStatement prest = null;
     	String sql	= "UPDATE `uploads` SET `account`=?, `file`=?, `lenght`=?, `enddir`=? WHERE `id`=?";
-    	prest = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+    	prest = c.prepareStatement(sql);
     	prest.setInt(1, account);
     	prest.setString(2, file.getAbsolutePath());
     	prest.setLong(3, file.length());
@@ -176,7 +176,7 @@ public class SQLite {
     	PreparedStatement prest = null;
     	ObjectMapper mapper = new ObjectMapper();
     	String sql	= "UPDATE `uploads` SET `data`=? WHERE `id`=?";
-    	prest = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+    	prest = c.prepareStatement(sql);
     	prest.setString(1, mapper.writeValueAsString(data));
     	prest.setInt(2, id);
     	prest.execute();

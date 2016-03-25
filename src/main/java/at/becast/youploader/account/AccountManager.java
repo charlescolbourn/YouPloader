@@ -16,6 +16,7 @@ package at.becast.youploader.account;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -41,20 +42,6 @@ public class AccountManager {
         return accMng;
     }
 	
-	private OAuth2 load_active() throws SQLException, IOException {
-		Connection c = SQLite.getInstance();
-		Statement stmt;
-		stmt = c.createStatement();
-		String sql = "SELECT * FROM `accounts` WHERE `active`"; 
-		ResultSet rs = stmt.executeQuery(sql);
-		if(rs.isBeforeFirst()){
-			return new OAuth2(s.setting.get("client_id"),s.setting.get("clientSecret"), Account.read(rs.getString("name")).refreshToken);
-		}else{
-			stmt.close();
-			return null;
-		}
-	}
-
 	public void set_active(String Username){
 		Connection c = SQLite.getInstance();
 		Statement stmt;
@@ -109,5 +96,39 @@ public class AccountManager {
 		} catch (IOException e) {
 			return null;
 		}
+	}
+
+	public void rename(String name, int id) {
+		Connection c = SQLite.getInstance();
+		PreparedStatement stmt = null;
+		String sql = "UPDATE `accounts` SET `name`=? WHERE `id`=?";
+		try {
+			stmt = c.prepareStatement(sql);
+			stmt.setString(1, name);
+			stmt.setInt(2, id);
+			stmt.executeUpdate(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}		
+	}
+
+	public void delete(int id) {
+		OAuth2 auth = this.getAuth(id);
+		try {
+			auth.revoke();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		Connection c = SQLite.getInstance();
+		PreparedStatement stmt = null;
+		String sql = "DELETE FROM `accounts` WHERE `id`=?";
+		try {
+			stmt = c.prepareStatement(sql);
+			stmt.setInt(1, id);
+			stmt.executeUpdate(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}		
+		
 	}
 }
