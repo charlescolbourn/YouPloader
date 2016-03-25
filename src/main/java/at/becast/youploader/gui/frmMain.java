@@ -170,6 +170,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 
 			
 		}
+		System.out.println(DB_FILE);
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
