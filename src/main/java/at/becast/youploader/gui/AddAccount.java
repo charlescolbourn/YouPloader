@@ -32,6 +32,8 @@ import at.becast.youploader.account.Account;
 import at.becast.youploader.account.AccountManager;
 import at.becast.youploader.oauth.OAuth2;
 import at.becast.youploader.settings.Settings;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 /**
  *
@@ -66,6 +68,18 @@ public class AddAccount extends javax.swing.JDialog {
 	private void initComponents() {
 
 		AccName = new JTextField();
+		AccName.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				if(arg0.getKeyCode() == KeyEvent.VK_ENTER){
+					try {
+						btnOkActionPerformed();
+					} catch (InterruptedException | IOException e) {
+						LOG.error("Error linking Account", e);
+					}
+				}
+			}
+		});
 		jLabel1 = new JLabel();
 		btnOk = new JButton();
 
@@ -82,7 +96,7 @@ public class AddAccount extends javax.swing.JDialog {
 		btnOk.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				try {
-					btnOkActionPerformed(evt);
+					btnOkActionPerformed();
 				} catch (InterruptedException | IOException e) {
 					LOG.error("Error linking Account", e);
 					JOptionPane.showMessageDialog(null,
@@ -112,7 +126,7 @@ public class AddAccount extends javax.swing.JDialog {
 						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 	}
 
-	private void btnOkActionPerformed(java.awt.event.ActionEvent evt) throws InterruptedException, IOException {
+	private void btnOkActionPerformed() throws InterruptedException, IOException {
 		if (AccName.getText() != null && !AccName.getText().equals("")) {
 			this.setVisible(false);
 			LOG.info("Linking Account {}", AccName.getText());
@@ -132,9 +146,10 @@ public class AddAccount extends javax.swing.JDialog {
 							do {
 								Thread.sleep(5050);
 							} while (!o2.check());
-							LOG.info("Got refresh token {}", o2.getRefreshToken());
 							account.setRefreshToken(o2.getRefreshToken());
+							LOG.info("Got refresh token {}", account.refreshToken);
 							account.save();
+							browser.dispose();
 							parent.refresh_accounts();
 							parent.close_modal();
 						} catch (InterruptedException | IOException e) {

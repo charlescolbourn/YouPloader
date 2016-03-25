@@ -162,8 +162,9 @@ public class EditAccount extends javax.swing.JDialog {
 			LOG.info("Account deleted");
 			this.setVisible(false);
 			this.dispose();
+		}else{
+			LOG.info("Account delete canceled");
 		}
-		LOG.info("Account delete canceled");
 	}
 	
 	private void btnCancelActionPerformed(ActionEvent e) {

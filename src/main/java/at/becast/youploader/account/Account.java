@@ -26,6 +26,8 @@ import java.util.List;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import at.becast.youploader.youtube.data.Cookie;
 
@@ -35,7 +37,7 @@ public class Account {
 	public String name;
 	public List<Cookie> cdata;
 	static Connection c = SQLite.getInstance();
-
+	private static final Logger LOG = LoggerFactory.getLogger(Account.class);
 
 	public Account(int id, String name, String refreshToken, List<Cookie> cdata) {
 		this.id = id;
@@ -73,8 +75,7 @@ public class Account {
 			stmt.close();
 			return new Account(id,name,token,c);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.error("Account read error!",e);
 			return null;
 		}
 	}
@@ -92,31 +93,33 @@ public class Account {
 			stmt.close();
 			return new Account(id,name,token,c);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.error("Account read error!",e);
 			return null;
 		}
 	}
   
 	public int save() throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
+		LOG.info("Saving account");
 	  	try {
 			PreparedStatement stmt = c.prepareStatement("INSERT INTO `accounts` (`name`,`refresh_token`,`cookie`) VALUES(?,?,?)");
 			stmt.setString(1, this.name);
 			stmt.setString(2, this.refreshToken);
 			stmt.setString(3, mapper.writeValueAsString(this.cdata));
+			stmt.execute();
 		    ResultSet rs = stmt.getGeneratedKeys();
 		    stmt.close();
 	        if (rs.next()){
 	        	int id = rs.getInt(1);
 	        	rs.close();
+	        	LOG.info("Account saved");
 	        	return id;
 	        }else{
+	        	LOG.error("Could not save account {}!",this.name);
 	        	return -1;
 	        }
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.error("Could not save account Ex:",e);
 			return -1;
 		}
 	}
@@ -136,8 +139,7 @@ public class Account {
 				return false;
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.error("Account exists error!",e);
 			return false;
 		}
 	}
