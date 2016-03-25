@@ -114,7 +114,7 @@ import net.miginfocom.swing.MigLayout;
 public class frmMain extends javax.swing.JFrame implements IMainMenu {
 
 	private static final long serialVersionUID = 6965358827253585528L;
-	public static final String DB_FILE = "data/data.db";
+	public static final String DB_FILE = System.getProperty("user.home") + "/YouPloader/data/data.db";
 	public static final String APP_NAME = "YouPloader";
 	public static final String VERSION = "0.3";
 	private static final Logger LOG = LoggerFactory.getLogger(frmMain.class);
@@ -122,8 +122,9 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 	public static TemplateManager TemplateMgr;
 	static Locale locale = Locale.getDefault();
 	private static final ResourceBundle LANG = ResourceBundle.getBundle("lang", locale);
-	public Settings s = Settings.getInstance();
-	public AccountManager accMng = AccountManager.getInstance();
+	private static Settings s;
+	private static Boolean firstlaunch = false;
+	private AccountManager accMng = AccountManager.getInstance();
 	private Boolean tos;
 	private ModalDialog modal;
 	private IMainMenu self;
@@ -164,7 +165,24 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 	public static void main(String args[]) {
 		if (args.length > 0 && args[0].equalsIgnoreCase("debug")) {
 
+			
 		}
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+				| UnsupportedLookAndFeelException e) {
+			LOG.error("Look and Feel exception", e);
+		}
+		File dataDir = new File(System.getProperty("user.home") + "/YouPloader/data/");
+		if(!dataDir.exists()){
+			LOG.info(APP_NAME + " " + VERSION + " first launch. Database folder not found.", frmMain.class);
+			dataDir.mkdirs();
+			if(!SQLite.set_up()){
+				JOptionPane.showMessageDialog(null,  String.format(LANG.getString("frmMain.errordatabase.Message"),System.getProperty("user.home") + "/YouPloader/data/"), LANG.getString("frmMain.errordatabase.title"), JOptionPane.ERROR_MESSAGE);
+			}
+			firstlaunch = true;
+		}
+		s = Settings.getInstance();
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				new frmMain().setVisible(true);
@@ -182,17 +200,6 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 		UploadMgr = UploadManager.getInstance();
 		UploadMgr.setParent(this);
 		TemplateMgr = TemplateManager.getInstance();
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (ClassNotFoundException e1) {
-			LOG.error(e1.getMessage(), frmMain.class);
-		} catch (InstantiationException e1) {
-			LOG.error(e1.getMessage(), frmMain.class);
-		} catch (IllegalAccessException e1) {
-			LOG.error(e1.getMessage(), frmMain.class);
-		} catch (UnsupportedLookAndFeelException e1) {
-			LOG.error(e1.getMessage(), frmMain.class);
-		}
 		initComponents();
 		this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/yp.png")));
 		this.setLocationRelativeTo(null);
@@ -202,7 +209,12 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 			LOG.error("Error: ", e);
 		}
 		EditPanel edit = (EditPanel) ss1.contentPane;
-		edit.getCmbTemplate().setSelectedIndex(0);
+		if(edit.getCmbTemplate().getModel().getSize()>0){
+			edit.getCmbTemplate().setSelectedIndex(0);
+		}
+		if(firstlaunch){
+			
+		}
 	}
 
 	/**

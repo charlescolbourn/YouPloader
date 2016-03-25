@@ -50,6 +50,57 @@ public class SQLite {
         return c;
     }
     
+
+    public static Boolean set_up(){
+        if(c == null)
+            new SQLite(frmMain.DB_FILE);
+        
+        PreparedStatement prest = null;
+        try {
+			prest = c.prepareStatement("CREATE TABLE `settings` (`name` VARCHAR, `value` VARCHAR)");
+			prest.executeUpdate();
+			prest = c.prepareStatement("INSERT INTO `settings` VALUES('client_id','581650568827-44vbqcoujflbo87hbirjdi6jcj3hlnbu.apps.googleusercontent.com')");
+			prest.executeUpdate();
+			prest = c.prepareStatement("INSERT INTO `settings` VALUES('clientSecret','l2M4y-lu9uCkSgBdCKp1YAxX')");
+			prest.executeUpdate();
+			prest = c.prepareStatement("INSERT INTO `settings` VALUES('tos_agreed','0')");
+			prest.executeUpdate();
+			prest = c.prepareStatement("CREATE TABLE `accounts` (`id` INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , `name` VARCHAR NOT NULL , `refresh_token` VARCHAR, `cookie` VARCHAR, `active` INTEGER DEFAULT 0)");
+			prest.executeUpdate();
+			prest = c.prepareStatement("CREATE TABLE `templates` (`id` INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , `name` VARCHAR, `data` VARCHAR)");
+			prest.executeUpdate();
+			prest = c.prepareStatement("CREATE TABLE `uploads` (`id` INTEGER PRIMARY KEY  NOT NULL ,`file` VARCHAR,`account` INTEGER DEFAULT (null),`yt_id` VARCHAR, `enddir` VARCHAR ,`url` VARCHAR,`uploaded` INTEGER DEFAULT (null) ,`lenght` INTEGER DEFAULT (null) ,`data` VARCHAR,`status` VARCHAR)");
+			prest.executeUpdate();
+			setVersion(3);
+		} catch (SQLException e) {
+			LOG.error("Error creating Database",e);
+			return false;
+		}
+                
+        return true;
+    }
+    
+    public static int getVersion() throws SQLException{
+    	PreparedStatement prest = null;
+    	String sql	= "PRAGMA `user_version`";
+    	prest = c.prepareStatement(sql);
+    	ResultSet rs = prest.executeQuery();
+    	if (rs.next()){
+        	int version = rs.getInt(1);
+        	rs.close();
+        	return version;
+    	}else{
+    		return 0;
+    	}
+    }
+    
+    public static void setVersion(int version) throws SQLException{
+    	PreparedStatement prest = null;
+    	String sql	= "PRAGMA `user_version`="+version;
+    	prest = c.prepareStatement(sql);
+    	prest.executeUpdate();
+    }
+    
     public static int addUpload(int account, File file, Video data, String enddir) throws SQLException, JsonGenerationException, JsonMappingException, IOException{
     	PreparedStatement prest = null;
     	ObjectMapper mapper = new ObjectMapper();

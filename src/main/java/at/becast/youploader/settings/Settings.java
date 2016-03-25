@@ -24,10 +24,14 @@ import java.util.Map;
 
 import javax.swing.JOptionPane;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import at.becast.youploader.database.SQLite;
 
 public class Settings {
 	public Map<String, String> setting = new HashMap<String, String>();
+	private static final Logger LOG = LoggerFactory.getLogger(SQLite.class);
 	static Settings instance = null;
 	Connection c = SQLite.getInstance();
 
@@ -35,7 +39,9 @@ public class Settings {
 		try {
 			load();
 		} catch (SQLException e) {
+			LOG.error("Error loading settings!", e);
 			JOptionPane.showMessageDialog(null, "Unable to load settings!", "Uh oh...", JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
 		}
 	}
 
