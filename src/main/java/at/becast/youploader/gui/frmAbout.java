@@ -39,6 +39,7 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import javax.swing.JTextPane;
 
 public class frmAbout extends JDialog {
 
@@ -79,7 +80,11 @@ public class frmAbout extends JDialog {
 				FormSpecs.RELATED_GAP_ROWSPEC,
 				RowSpec.decode("20px"),
 				FormSpecs.RELATED_GAP_ROWSPEC,
-				RowSpec.decode("11px"),
+				FormSpecs.DEFAULT_ROWSPEC,
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("20px"),
 				FormSpecs.PARAGRAPH_GAP_ROWSPEC,
 				RowSpec.decode("103px"),}));
 		
@@ -123,7 +128,11 @@ public class frmAbout extends JDialog {
 		contentPanel.add(lblHttpsgithubcombecastyouploader, "3, 10");
 		
 		JScrollPane scrollPane = new JScrollPane();
-		contentPanel.add(scrollPane, "1, 14, 3, 1, fill, fill");
+		contentPanel.add(scrollPane, "1, 18, 3, 1, fill, fill");
+		
+		JTextPane textPane = new JTextPane();
+		textPane.setEditable(false);
+		scrollPane.setViewportView(textPane);
 		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
