@@ -27,6 +27,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -103,6 +105,7 @@ import at.becast.youploader.youtube.data.CategoryType;
 import at.becast.youploader.youtube.data.Video;
 import at.becast.youploader.youtube.exceptions.UploadException;
 import at.becast.youploader.youtube.io.UploadManager;
+import ch.qos.logback.classic.LoggerContext;
 import net.miginfocom.layout.CC;
 import net.miginfocom.swing.MigLayout;
 
@@ -197,6 +200,17 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 		LOG.info(APP_NAME + " " + VERSION + " starting.", frmMain.class);
 		self = this;
 		this.tos = false;
+		addWindowListener(new WindowAdapter()
+        {
+            @Override
+            public void windowClosing(WindowEvent e)
+            {
+            	LOG.info(APP_NAME + " " + VERSION + " closing.", frmMain.class);
+            	LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+            	loggerContext.stop();
+                e.getWindow().dispose();
+            }
+        });
 		UploadMgr = UploadManager.getInstance();
 		UploadMgr.setParent(this);
 		TemplateMgr = TemplateManager.getInstance();
@@ -212,8 +226,12 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 		if(edit.getCmbTemplate().getModel().getSize()>0){
 			edit.getCmbTemplate().setSelectedIndex(0);
 		}
+		this.setVisible(true);
 		if(firstlaunch){
-			
+			int n = JOptionPane.showConfirmDialog(null,  LANG.getString("frmMain.initialAccount.Message"), LANG.getString("frmMain.initialAccount.title"),JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+			if(n==JOptionPane.YES_OPTION){
+				mntmAddAccountActionPerformed();
+			}
 		}
 	}
 
@@ -398,7 +416,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 		mntmAddAccount = new JMenuItem(LANG.getString("frmMain.menu.AddAccount"));
 		mntmAddAccount.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				mntmAddAccountActionPerformed(evt);
+				mntmAddAccountActionPerformed();
 			}
 		});
 
@@ -567,7 +585,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 		System.exit(0);
 	}
 
-	private void mntmAddAccountActionPerformed(ActionEvent evt) {
+	private void mntmAddAccountActionPerformed() {
 		AddAccount acc = new AddAccount(this);
 		acc.setVisible(true);
 

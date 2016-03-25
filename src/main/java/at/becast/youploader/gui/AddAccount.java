@@ -59,6 +59,7 @@ public class AddAccount extends javax.swing.JDialog {
 	 * Creates new form AddAccount
 	 */
 	public AddAccount(frmMain parent) {
+		setAlwaysOnTop(true);
 		this.parent = parent;
 		initComponents();
 		this.setLocationRelativeTo(null);
@@ -88,7 +89,7 @@ public class AddAccount extends javax.swing.JDialog {
 		setMinimumSize(new java.awt.Dimension(350, 130));
 		setName("Add Account"); // NOI18N
 		setPreferredSize(new java.awt.Dimension(350, 130));
-		setType(java.awt.Window.Type.POPUP);
+		setType(Type.UTILITY);
 
 		jLabel1.setText(LANG.getString("Account.name"));
 

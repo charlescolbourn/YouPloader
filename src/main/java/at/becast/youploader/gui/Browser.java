@@ -43,6 +43,7 @@ public class Browser extends JFrame {
  
     public Browser(Account acc) {
         super();
+        setAlwaysOnTop(true);
         Platform.setImplicitExit(false);
     	this.acc = acc;
     	initComponents();
