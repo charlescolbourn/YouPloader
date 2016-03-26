@@ -61,7 +61,6 @@ public class SideBar extends JPanel{
     	currentSection.setMaximumSize(new Dimension(Integer.MAX_VALUE, this.getHeight()));
     	currentSection.contentPane.setVisible(true);
     	currentSection.revalidate();
-		
 	}
    
 	public void addSection(SidebarSection newSection) {

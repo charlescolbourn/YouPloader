@@ -155,6 +155,7 @@ public class OAuth2 {
       return true;
     }
     else {
+      LOG.info("Auth access error: {}", auth.error);
       return false;
     }
   }

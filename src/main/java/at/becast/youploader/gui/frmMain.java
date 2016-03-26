@@ -242,6 +242,10 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 		LOG.debug("init Components", frmMain.class);
 		TabbedPane = new JTabbedPane();
 		mainTab = new JPanel();
+		mnuBar = new JMenuBar();
+		mnuFile = new JMenu();
+		mnuQuit = new JMenuItem();
+		mnuAcc = new JMenu();
 		cmbCategory = new JComboBox<CategoryType>();
 		cmbCategory.setModel(new DefaultComboBoxModel<CategoryType>());
 		SideBar sideBar = new SideBar(SideBar.SideBarMode.TOP_LEVEL, true, 300, true);
@@ -251,11 +255,6 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 		sideBar.addSection(ss1, false);
 		sideBar.addSection(ss2);
 		sideBar.addSection(ss3);
-		mnuBar = new javax.swing.JMenuBar();
-		mnuFile = new javax.swing.JMenu();
-		mnuQuit = new javax.swing.JMenuItem();
-		mnuAcc = new javax.swing.JMenu();
-
 		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		setTitle(APP_NAME + " " + VERSION);
 		setName("frmMain");
@@ -1068,5 +1067,8 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 
 	public JTextArea getTxtDescription() {
 		return txtDescription;
+	}
+	public JSpinner getSpinner() {
+		return spinner;
 	}
 }

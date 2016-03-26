@@ -17,6 +17,9 @@ package at.becast.youploader.youtube.io;
 import java.io.File;
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import at.becast.youploader.account.AccountManager;
 import at.becast.youploader.database.SQLite;
 import at.becast.youploader.gui.UploadItem;
@@ -38,6 +41,7 @@ public class UploadWorker extends Thread {
 	private Uploader uploader;
 	public String url, enddir;
 	private AccountManager AccMgr;
+	private static final Logger LOG = LoggerFactory.getLogger(UploadWorker.class);
 	
 	public UploadWorker(int id, UploadItem frame, int acc_id, File file, Video videodata, int speed_limit, String enddir){
 		this.id = id;
@@ -71,8 +75,7 @@ public class UploadWorker extends Thread {
 		try {
 			this.upload = this.uploader.prepareUpload(this.file, this.videodata);
 		} catch (IOException | UploadException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.error("Could not prepare upload",e);
 		}
 		SQLite.prepareUpload(this.id,this.upload.url,this.upload.id);
 		this.frame.getlblUrl().setText("https://www.youtube.com/watch?v="+this.upload.id);
@@ -91,8 +94,7 @@ public class UploadWorker extends Thread {
 			}
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.error("Could not run upload",e);
 		}
 	}
 	

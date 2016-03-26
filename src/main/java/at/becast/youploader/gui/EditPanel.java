@@ -44,6 +44,8 @@ import at.becast.youploader.templates.Template;
 import at.becast.youploader.templates.TemplateManager;
 import at.becast.youploader.youtube.LicenseType;
 import at.becast.youploader.youtube.VisibilityType;
+import javax.swing.JCheckBox;
+import javax.swing.SwingConstants;
 
 /**
  *
@@ -65,6 +67,8 @@ public class EditPanel extends javax.swing.JPanel {
 	private DateTimePicker dateTimePicker;
 	private JComboBox<LicenseType> cmbLicense;
 	private TemplateManager TemplateMgr = TemplateManager.getInstance();
+	private JTextField txtThumbnail;
+	private JTextField txtGameTitle;
 
 	/**
 	 * Creates new form editPanel
@@ -83,20 +87,48 @@ public class EditPanel extends javax.swing.JPanel {
 				TemplateCmbChanged(e);
 			}
 		});
-		setLayout(new FormLayout(
-				new ColumnSpec[] { FormSpecs.RELATED_GAP_COLSPEC, ColumnSpec.decode("87px"),
-						FormSpecs.LABEL_COMPONENT_GAP_COLSPEC, ColumnSpec.decode("center:max(140dlu;pref):grow"),
-						ColumnSpec.decode("2dlu"), ColumnSpec.decode("right:30px"), ColumnSpec.decode("2dlu"),
-						ColumnSpec.decode("right:30px"), ColumnSpec.decode("2dlu"), ColumnSpec.decode("right:30px"), },
-				new RowSpec[] { FormSpecs.RELATED_GAP_ROWSPEC, RowSpec.decode("25px"),
-						FormSpecs.LABEL_COMPONENT_GAP_ROWSPEC, RowSpec.decode("25px"), FormSpecs.RELATED_GAP_ROWSPEC,
-						RowSpec.decode("25px"), FormSpecs.RELATED_GAP_ROWSPEC, RowSpec.decode("25px"),
-						FormSpecs.RELATED_GAP_ROWSPEC, RowSpec.decode("25px"), FormSpecs.RELATED_GAP_ROWSPEC,
-						RowSpec.decode("25px"), }));
+		setLayout(new FormLayout(new ColumnSpec[] {
+				FormSpecs.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("79px"),
+				FormSpecs.LABEL_COMPONENT_GAP_COLSPEC,
+				ColumnSpec.decode("center:max(51dlu;default):grow"),
+				FormSpecs.LABEL_COMPONENT_GAP_COLSPEC,
+				ColumnSpec.decode("center:max(10dlu;pref):grow"),
+				FormSpecs.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("center:max(10dlu;pref):grow"),
+				FormSpecs.LABEL_COMPONENT_GAP_COLSPEC,
+				ColumnSpec.decode("right:30px"),
+				ColumnSpec.decode("2dlu"),
+				ColumnSpec.decode("right:30px"),
+				ColumnSpec.decode("2dlu"),
+				ColumnSpec.decode("right:30px"),},
+			new RowSpec[] {
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("25px"),
+				FormSpecs.LABEL_COMPONENT_GAP_ROWSPEC,
+				RowSpec.decode("25px"),
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("25px"),
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("25px"),
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("25px"),
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("25px"),
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("25px"),
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("25px"),
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("25px"),
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
+				FormSpecs.LABEL_COMPONENT_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,}));
 
 		jLabel1.setText("Template:");
 		add(jLabel1, "2, 2, right, center");
-		add(cmbTemplate, "4, 2, fill, fill");
+		add(cmbTemplate, "4, 2, 5, 1, fill, fill");
 
 		JButton btnNewTemplate = new JButton("");
 		btnNewTemplate.addActionListener(new ActionListener() {
@@ -105,7 +137,7 @@ public class EditPanel extends javax.swing.JPanel {
 			}
 		});
 		btnNewTemplate.setIcon(new ImageIcon(getClass().getResource("/add.png")));
-		add(btnNewTemplate, "6, 2, fill, fill");
+		add(btnNewTemplate, "10, 2, fill, fill");
 
 		JButton btnSaveTemplate = new JButton("");
 		btnSaveTemplate.addActionListener(new ActionListener() {
@@ -114,7 +146,7 @@ public class EditPanel extends javax.swing.JPanel {
 			}
 		});
 		btnSaveTemplate.setIcon(new ImageIcon(getClass().getResource("/disk.png")));
-		add(btnSaveTemplate, "8, 2, fill, fill");
+		add(btnSaveTemplate, "12, 2, fill, fill");
 
 		JButton btnDeleteTemplate = new JButton("");
 		btnDeleteTemplate.addActionListener(new ActionListener() {
@@ -123,13 +155,13 @@ public class EditPanel extends javax.swing.JPanel {
 			}
 		});
 		btnDeleteTemplate.setIcon(new ImageIcon(getClass().getResource("/cross.png")));
-		add(btnDeleteTemplate, "10, 2, fill, fill");
+		add(btnDeleteTemplate, "14, 2, fill, fill");
 
 		JLabel lblStartDirectory = new JLabel("Start Directory:");
 		add(lblStartDirectory, "2, 4, right, center");
 
 		txtStartDir = new JTextField();
-		add(txtStartDir, "4, 4, fill, fill");
+		add(txtStartDir, "4, 4, 5, 1, fill, fill");
 		txtStartDir.setColumns(10);
 
 		JButton btnStartDir = new JButton("");
@@ -144,13 +176,13 @@ public class EditPanel extends javax.swing.JPanel {
 			}
 		});
 		btnStartDir.setIcon(new ImageIcon(getClass().getResource("/folder.png")));
-		add(btnStartDir, "6, 4, fill, fill");
+		add(btnStartDir, "10, 4, fill, fill");
 
 		JLabel lblEndDirectory = new JLabel("End Directory:");
 		add(lblEndDirectory, "2, 6, right, center");
 
 		txtEndDir = new JTextField();
-		add(txtEndDir, "4, 6, fill, fill");
+		add(txtEndDir, "4, 6, 5, 1, fill, fill");
 		txtEndDir.setColumns(10);
 
 		JButton btnEndDir = new JButton("");
@@ -165,7 +197,7 @@ public class EditPanel extends javax.swing.JPanel {
 			}
 		});
 		btnEndDir.setIcon(new ImageIcon(getClass().getResource("/folder.png")));
-		add(btnEndDir, "6, 6, fill, fill");
+		add(btnEndDir, "10, 6, fill, fill");
 
 		JLabel lblVisibility = new JLabel("Visibility:");
 		add(lblVisibility, "2, 8, right, default");
@@ -191,19 +223,69 @@ public class EditPanel extends javax.swing.JPanel {
 			}
 		});
 		cmbVisibility.setModel(new DefaultComboBoxModel<VisibilityType>(VisibilityType.values()));
-		add(cmbVisibility, "4, 8, fill, fill");
+		add(cmbVisibility, "4, 8, 5, 1, fill, fill");
 
 		JLabel lblReleaseAt = new JLabel("Release at:");
 		add(lblReleaseAt, "2, 10, right, default");
 
-		add(dateTimePicker, "4, 10, fill, fill");
+		add(dateTimePicker, "4, 10, 5, 1, fill, fill");
 
 		JLabel lblLicense = new JLabel("License:");
 		add(lblLicense, "2, 12, right, default");
 
 		cmbLicense = new JComboBox<LicenseType>();
 		cmbLicense.setModel(new DefaultComboBoxModel<LicenseType>(LicenseType.values()));
-		add(cmbLicense, "4, 12, fill, fill");
+		add(cmbLicense, "4, 12, 5, 1, fill, fill");
+		
+		JLabel lblThumbnail = new JLabel("Thumbnail:");
+		lblThumbnail.setEnabled(false);
+		add(lblThumbnail, "2, 14, right, default");
+		
+		txtThumbnail = new JTextField();
+		txtThumbnail.setEnabled(false);
+		txtThumbnail.setEditable(false);
+		add(txtThumbnail, "4, 14, 5, 1, fill, fill");
+		txtThumbnail.setColumns(10);
+		
+		JButton btnThumbnail = new JButton("");
+		btnThumbnail.setEnabled(false);
+		btnThumbnail.setIcon(new ImageIcon(getClass().getResource("/folder.png")));
+		add(btnThumbnail, "10, 14, fill, fill");
+		
+		JLabel lblStartUploadAt = new JLabel("Start upload at:");
+		lblStartUploadAt.setEnabled(false);
+		add(lblStartUploadAt, "2, 16, right, default");
+		
+		DateTimePicker dateTimePickerStart = new DateTimePicker();
+		dateTimePickerStart.setEnabled(false);
+		dateTimePickerStart.setEditable(false);
+		add(dateTimePickerStart, "4, 16, 5, 1, fill, fill");
+		
+		JLabel lblGameTitle = new JLabel("Game title:");
+		lblGameTitle.setEnabled(false);
+		add(lblGameTitle, "2, 18, right, default");
+		
+		txtGameTitle = new JTextField();
+		txtGameTitle.setEditable(false);
+		txtGameTitle.setEnabled(false);
+		add(txtGameTitle, "4, 18, 5, 1, fill, fill");
+		txtGameTitle.setColumns(10);
+		
+		JLabel lblAdditionalSettings = new JLabel("Other Settings:");
+		add(lblAdditionalSettings, "2, 20, right, default");
+		
+		JCheckBox chckbxAllowEmbedding = new JCheckBox("Allow embedding");
+		add(chckbxAllowEmbedding, "4, 20, 3, 1");
+		
+		JCheckBox chckbxAgeRestriction = new JCheckBox("Age restriction");
+		add(chckbxAgeRestriction, "8, 20, 3, 1, left, default");
+		
+		JCheckBox chckbxMakeStatisticsPublic = new JCheckBox("Make statistics publicly visible");
+		chckbxMakeStatisticsPublic.setVerticalAlignment(SwingConstants.TOP);
+		add(chckbxMakeStatisticsPublic, "4, 22, 3, 1, left, default");
+		
+		JCheckBox chckbxAllowComments = new JCheckBox("Allow comments");
+		add(chckbxAllowComments, "8, 22, 3, 1, left, default");
 	}
 
 	protected void TemplateCmbChanged(ActionEvent e) {

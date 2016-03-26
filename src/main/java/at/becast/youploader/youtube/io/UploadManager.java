@@ -27,6 +27,9 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.Locale;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import at.becast.youploader.account.AccountManager;
 import at.becast.youploader.database.SQLite;
 import at.becast.youploader.gui.UploadItem;
@@ -39,6 +42,7 @@ import at.becast.youploader.youtube.exceptions.UploadException;
 public class UploadManager {
 	private static UploadManager self;
 	private int upload_limit = 1;
+	private static final Logger LOG = LoggerFactory.getLogger(UploadManager.class);
 	public static enum Status{NOT_STARTED,PREPARED,STOPPED,UPLOADING,FINISHED,ABORTED};
 	private frmMain parent;
 	private LinkedList<UploadWorker> _ToUpload = new LinkedList<UploadWorker>();
@@ -62,49 +66,57 @@ public class UploadManager {
 	}
 	
 	public void add_upload(UploadItem frame, File data, Video videodata, int acc_id, String enddir){
+		LOG.info("Adding upload");
+		this.speed_limit = Integer.parseInt(parent.getSpinner().getValue().toString());
 		if(frame.upload_id == -1){
 			int id = -1;
+			LOG.info("Upload is not a preexisting upload: Inserting to Database");
 			try {
 				id = SQLite.addUpload(acc_id, data, videodata, enddir);
 			} catch (SQLException | IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOG.error("Upload cound not be added", e);
 			}
 			if(id != -1){
+				LOG.info("Upload is not a preexisting upload: Adding Upload");
 				frame.set_id(id);
 				UploadWorker worker = new UploadWorker(id, frame, acc_id, data, videodata, speed_limit, enddir);
 				_ToUpload.addLast(worker);
 			}else{
-				// TODO Error Handling
+				LOG.info("Upload could not be added to database.");
 			}
 		}else{
+			LOG.info("Upload is a preexisting upload: Adding Upload");
 			UploadWorker worker = new UploadWorker(frame.upload_id, frame, acc_id, data, videodata, speed_limit, enddir);
 			_ToUpload.addLast(worker);
 		}
 	}
 	
 	public void add_resumeable_upload(UploadItem frame, File data, Video videodata, int acc_id, String enddir, String url, String yt_id){
+		this.speed_limit = Integer.parseInt(parent.getSpinner().getValue().toString());
+		LOG.info("Adding resumed Upload");
 		UploadWorker worker = new UploadWorker(frame.upload_id, frame, acc_id, data, videodata, speed_limit, enddir, url, yt_id);
 		_ToUpload.addFirst(worker);
 	}
 	
 	public void start(){
+		LOG.info("Starting uploads");
 		if(!_ToUpload.isEmpty()){
 			for(int i=0;i<=upload_limit-_Uploading.size();i++){
-				if(!_ToUpload.isEmpty()){
 					UploadWorker w = _ToUpload.removeFirst();
 					w.start();
+					LOG.info("Upload {} started",w.videodata.snippet.title);
 					_Uploading.add(w);
-				}
 			}
 		}
 	}
 	
 	public void stop(){
+		LOG.info("Stopping uploads");
 		if(!_Uploading.isEmpty()){
 			for(int i=0;i<_Uploading.size();i++){
 				UploadWorker w = _Uploading.get(i);
 				w.abort();
+				LOG.info("Upload {} stopped",w.videodata.snippet.title);
 				_Uploading.remove(i);
 			}
 		}
@@ -125,11 +137,13 @@ public class UploadManager {
 			for(int i=0;i<_Uploading.size();i++){
 				if(_Uploading.get(i).id == upload_id){
 					UploadWorker w = _Uploading.get(i);
+					LOG.info("Upload {} finished",w.videodata.snippet.title);
 					if(w.enddir !=null && !w.enddir.equals("")){
+						LOG.info("Moving file {}",w.file.getName());
 						try {
 							Files.move(w.file.toPath(), Paths.get(w.enddir).resolve(w.file.getName()));
 						} catch (IOException e) {
-							e.printStackTrace();
+							LOG.error("Could not move file {}",w.file.getName(), e);
 						}
 					}
 					_Uploading.remove(i);
@@ -165,8 +179,7 @@ public class UploadManager {
 		try {
 			this.parent.editUpload(upload_id);
 		} catch (SQLException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.error("Could not edit upload", e);
 		}
 	}
 
@@ -188,8 +201,7 @@ public class UploadManager {
 								DateFormat formatters = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, Locale.getDefault());
 								release = formatters.format(date);
 							} catch (ParseException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
+								LOG.error("Date parse exception at editing Upload", e);
 							}
 			        	}else{
 			        		release = VisibilityType.PRIVATE.toString();
@@ -205,8 +217,7 @@ public class UploadManager {
 					try {
 						updater.updateUpload(s);
 					} catch (IOException | UploadException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						LOG.error("Error while sending update to YouTube", e);
 					}
 					return;
 				}
@@ -228,8 +239,7 @@ public class UploadManager {
 									DateFormat formatters = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, Locale.getDefault());
 									release = formatters.format(date);
 								} catch (ParseException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
+									LOG.error("Date parse exception at editing Upload", e);
 								}
 				        	}else{
 				        		release = VisibilityType.PRIVATE.toString();
