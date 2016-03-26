@@ -80,14 +80,11 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.FormSpecs;
@@ -653,7 +650,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		accedit.setVisible(true);
 	}
 
-	private void loadQueue() throws JsonParseException, JsonMappingException, SQLException, IOException {
+	private void loadQueue() throws SQLException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		PreparedStatement prest = null;
 		Connection c = SQLite.getInstance();
@@ -764,7 +761,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 	 * @throws JsonMappingException
 	 * @throws IOException
 	 */
-	public void update(String File, int acc_id, int upload_id) throws SQLException, JsonGenerationException, JsonMappingException, IOException {
+	public void update(String File, int acc_id, int upload_id) throws SQLException, IOException {
 		EditPanel edit = (EditPanel) ss1.contentPane;
 		String sql = "SELECT `yt_id` FROM `uploads` WHERE `id`=" + upload_id;
 		PreparedStatement prest = null;
@@ -846,7 +843,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		}
 	}
 
-	public void editUpload(int upload_id) throws SQLException, JsonParseException, JsonMappingException, IOException {
+	public void editUpload(int upload_id) throws SQLException, IOException {
 		this.editItem = upload_id;
 		Connection c = SQLite.getInstance();
 		btnAddToQueue.setText(LANG.getString("frmMain.updateUpload"));

@@ -19,11 +19,10 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.*;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import at.becast.youploader.gui.FrmMain;
 import at.becast.youploader.templates.Template;
@@ -101,7 +100,7 @@ public class SQLite {
     	prest.executeUpdate();
     }
     
-    public static int addUpload(int account, File file, Video data, String enddir) throws SQLException, JsonGenerationException, JsonMappingException, IOException{
+    public static int addUpload(int account, File file, Video data, String enddir) throws SQLException, IOException{
     	PreparedStatement prest = null;
     	ObjectMapper mapper = new ObjectMapper();
     	String sql	= "INSERT INTO `uploads` (`account`, `file`, `lenght`, `data`,`enddir`, `status`) " +
@@ -208,7 +207,7 @@ public class SQLite {
 		}				
 	}
 	
-	public static Boolean updateUpload(int account, File file, Video data, String enddir, int id) throws SQLException, JsonGenerationException, JsonMappingException, IOException{
+	public static Boolean updateUpload(int account, File file, Video data, String enddir, int id) throws SQLException, IOException{
     	PreparedStatement prest = null;
     	String sql	= "UPDATE `uploads` SET `account`=?, `file`=?, `lenght`=?, `enddir`=? WHERE `id`=?";
     	prest = c.prepareStatement(sql);
@@ -223,7 +222,7 @@ public class SQLite {
     	return res && updateUploadData(data, id);
     }
 	
-    public static Boolean updateUploadData(Video data, int id) throws SQLException, JsonGenerationException, JsonMappingException, IOException{
+    public static Boolean updateUploadData(Video data, int id) throws SQLException, IOException{
     	PreparedStatement prest = null;
     	ObjectMapper mapper = new ObjectMapper();
     	String sql	= "UPDATE `uploads` SET `data`=? WHERE `id`=?";
@@ -236,7 +235,7 @@ public class SQLite {
         return res;
     }
     
-    public static int saveTemplate(Template template) throws SQLException, JsonGenerationException, JsonMappingException, IOException{
+    public static int saveTemplate(Template template) throws SQLException, IOException{
     	PreparedStatement prest = null;
     	ObjectMapper mapper = new ObjectMapper();
     	String sql	= "INSERT INTO `templates` (`name`, `data`) " +
@@ -256,7 +255,7 @@ public class SQLite {
         }
     }
 
-	public static Boolean updateTemplate(int id, Template template) throws JsonGenerationException, JsonMappingException, SQLException, IOException {
+	public static Boolean updateTemplate(int id, Template template) throws SQLException, IOException {
 		PreparedStatement prest = null;
     	ObjectMapper mapper = new ObjectMapper();
     	String sql	= "UPDATE `templates` SET `data`=? WHERE `id`=?";

@@ -89,13 +89,13 @@ public class MonetPanel extends javax.swing.JPanel {
     	chckbxSkippableVideoads.setEnabled(false);
     	add(chckbxSkippableVideoads, "6, 4");
     	
-    	JLabel lblContentSyndication = new JLabel(LANG.getString("Content Syndication"));
+    	JLabel lblContentSyndication = new JLabel(LANG.getString("MonetPanel.Syndication"));
     	add(lblContentSyndication, "2, 6");
     	
     	cmbContentSyndication = new JComboBox<SyndicationType>();
     	add(cmbContentSyndication, "2, 8, 5, 1, fill, fill");
     	
-    	chckbxMonetize = new JCheckBox(LANG.getString("Monetise with ads"));
+    	chckbxMonetize = new JCheckBox(LANG.getString("MonetPanel.Monetize"));
     	chckbxMonetize.addChangeListener(new ChangeListener() {
     		public void stateChanged(ChangeEvent e) {
     			if(chckbxMonetize.isSelected()){

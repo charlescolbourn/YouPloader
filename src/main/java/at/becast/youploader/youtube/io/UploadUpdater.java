@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import at.becast.youploader.oauth.OAuth2;
 import at.becast.youploader.youtube.data.VideoUpdate;
