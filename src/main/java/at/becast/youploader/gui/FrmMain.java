@@ -107,6 +107,7 @@ import at.becast.youploader.youtube.data.CategoryType;
 import at.becast.youploader.youtube.data.Video;
 import at.becast.youploader.youtube.io.UploadManager;
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.util.StatusPrinter;
 import net.miginfocom.layout.CC;
 import net.miginfocom.swing.MigLayout;
 
@@ -158,6 +159,10 @@ public class FrmMain extends JFrame implements IMainMenu {
 		 * 
 		 * }
 		 */
+		  LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+		  // print logback's internal status
+		  StatusPrinter.print(lc);
+
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
@@ -540,7 +545,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		JMenuItem mntmShowLogfile = new JMenuItem(LANG.getString("frmMain.menu.ShowLogfile"));
 		mntmShowLogfile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				
+				openDir(new File(System.getProperty("user.home")+"/YouPloader"));
 			}
 		});
 		menu.add(mntmShowLogfile);
@@ -549,16 +554,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 	}
 
 	protected void donateButton() {
-		if (Desktop.isDesktopSupported()) {
-			try {
-				Desktop.getDesktop().browse(new URI(
-						"https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=AZ42BHSUTGPT6"));
-			} catch (IOException | URISyntaxException e1) {
-				LOG.error("Can't open browser");
-			}
-		} else {
-			LOG.error("Desktop not supported.");
-		}		
+		openBrowser("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=AZ42BHSUTGPT6");
 	}
 
 	protected void startUploads() {
@@ -649,7 +645,31 @@ public class FrmMain extends JFrame implements IMainMenu {
 		EditAccount accedit = new EditAccount(this, name, id);
 		accedit.setVisible(true);
 	}
+	
+	protected void openBrowser(String url) {
+		if (Desktop.isDesktopSupported()) {
+			try {
+				Desktop.getDesktop().browse(new URI(url));
+			} catch (IOException | URISyntaxException e1) {
+				LOG.error("Can't open browser");
+			}
+		} else {
+			LOG.error("Desktop not supported.");
+		}		
+	}
 
+	protected void openDir(File dir) {
+		if (Desktop.isDesktopSupported() && dir.isDirectory()) {
+			try {
+				Desktop.getDesktop().open(dir);
+			} catch (IOException e) {
+				LOG.error("Can't open Directory", e);
+			}
+		} else {
+			LOG.error("Desktop not supported.");
+		}		
+	}
+	
 	private void loadQueue() throws SQLException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		PreparedStatement prest = null;
