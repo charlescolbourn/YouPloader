@@ -78,4 +78,5 @@ public class CookieJar implements CookieStore{
 	public boolean removeAll() {
 		return store.removeAll();
 	}
+
 }

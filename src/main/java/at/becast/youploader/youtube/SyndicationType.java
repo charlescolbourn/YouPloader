@@ -12,22 +12,26 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * 
  */
-package at.becast.youploader.youtube.data;
+package at.becast.youploader.youtube;
 
-public class VideoMetadata {
-	private String video_monetization_style;
-	private String syndication;
-	private boolean overlay;
-	private boolean trueview;
-	private boolean instream;
-	private boolean product;
-	
-	public VideoMetadata(){
-		
+public enum SyndicationType {
+	EVERYWHERE("everywhere", "Everywhere"), MONEZIZED("monetized", "Monetised platforms");
+
+	private final String term;
+	private final String label;
+
+	SyndicationType(final String term, final String label) {
+		this.term = term;
+		this.label = label;
+	}
+
+	@Override
+	public String toString() {
+		return label;
 	}
 	
-	public VideoMetadata(String video_monetization_style, String syndication){
-		this.video_monetization_style = video_monetization_style;
-		this.syndication = syndication;
+	public String getData() {
+		return term;
 	}
 }
+

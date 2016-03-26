@@ -14,15 +14,22 @@
  */
 package at.becast.youploader.gui;
 import javax.swing.JLabel;
-import javax.swing.GroupLayout.Alignment;
+
+import java.util.Locale;
+import java.util.ResourceBundle;
+
 import javax.swing.JCheckBox;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.RowSpec;
 
-import javax.swing.GroupLayout;
-import javax.swing.SwingConstants;
-import java.awt.Font;
+import at.becast.youploader.youtube.SyndicationType;
+
+import com.jgoodies.forms.layout.FormSpecs;
+import javax.swing.JComboBox;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 
 /**
  *
@@ -34,52 +41,92 @@ public class MonetPanel extends javax.swing.JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private static final Logger LOG = LoggerFactory.getLogger(MonetPanel.class);
-	private FrmMain parent;
+	private static final ResourceBundle LANG = ResourceBundle.getBundle("lang", Locale.getDefault());
+	private JCheckBox chckbxMonetize;
+	private JComboBox<SyndicationType> cmbContentSyndication;
+	private JCheckBox chckbxOverlayads;
+	private JCheckBox chckbxSponsoredCards;
+	private JCheckBox chckbxSkippableVideoads;
 
 	/**
      * Creates new form editPanel
      */
-    public MonetPanel(FrmMain parent) {
-    	this.parent = parent;
+    public MonetPanel() {
         initComponents();
     }
 
     private void initComponents() {
-        JCheckBox jCheckBox1 = new JCheckBox();
-        jCheckBox1.setEnabled(false);
+    	setLayout(new FormLayout(new ColumnSpec[] {
+    			FormSpecs.RELATED_GAP_COLSPEC,
+    			ColumnSpec.decode("max(80dlu;default)"),
+    			FormSpecs.RELATED_GAP_COLSPEC,
+    			ColumnSpec.decode("80dlu"),
+    			FormSpecs.RELATED_GAP_COLSPEC,
+    			FormSpecs.DEFAULT_COLSPEC,
+    			FormSpecs.RELATED_GAP_COLSPEC,
+    			ColumnSpec.decode("default:grow"),},
+    		new RowSpec[] {
+    			FormSpecs.RELATED_GAP_ROWSPEC,
+    			FormSpecs.DEFAULT_ROWSPEC,
+    			FormSpecs.RELATED_GAP_ROWSPEC,
+    			FormSpecs.DEFAULT_ROWSPEC,
+    			FormSpecs.RELATED_GAP_ROWSPEC,
+    			RowSpec.decode("25px"),
+    			FormSpecs.RELATED_GAP_ROWSPEC,
+    			RowSpec.decode("25px"),}));
+    	
 
-        jCheckBox1.setText("Overlay ads");
-        
-        JLabel lblNotYetImplemented = new JLabel("Not yet implemented :( Sorry");
-        lblNotYetImplemented.setFont(new Font("Tahoma", Font.BOLD, 17));
-        lblNotYetImplemented.setHorizontalAlignment(SwingConstants.CENTER);
-
-        GroupLayout layout = new GroupLayout(this);
-        layout.setHorizontalGroup(
-        	layout.createParallelGroup(Alignment.LEADING)
-        		.addGroup(layout.createSequentialGroup()
-        			.addGroup(layout.createParallelGroup(Alignment.LEADING)
-        				.addGroup(layout.createSequentialGroup()
-        					.addContainerGap()
-        					.addComponent(jCheckBox1))
-        				.addGroup(layout.createSequentialGroup()
-        					.addGap(92)
-        					.addComponent(lblNotYetImplemented, GroupLayout.PREFERRED_SIZE, 273, GroupLayout.PREFERRED_SIZE)))
-        			.addContainerGap(85, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-        	layout.createParallelGroup(Alignment.LEADING)
-        		.addGroup(layout.createSequentialGroup()
-        			.addContainerGap()
-        			.addComponent(jCheckBox1)
-        			.addGap(71)
-        			.addComponent(lblNotYetImplemented, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
-        			.addContainerGap(167, Short.MAX_VALUE))
-        );
-        this.setLayout(layout);
+    	
+    	chckbxOverlayads = new JCheckBox(LANG.getString("MonetPanel.Overlayads"));
+    	chckbxOverlayads.setEnabled(false);
+    	add(chckbxOverlayads, "2, 4");
+    	
+    	chckbxSponsoredCards = new JCheckBox(LANG.getString("MonetPanel.SponsoredCards"));
+    	chckbxSponsoredCards.setEnabled(false);
+    	add(chckbxSponsoredCards, "4, 4");
+    	
+    	chckbxSkippableVideoads = new JCheckBox(LANG.getString("MonetPanel.Videoads"));
+    	chckbxSkippableVideoads.setEnabled(false);
+    	add(chckbxSkippableVideoads, "6, 4");
+    	
+    	JLabel lblContentSyndication = new JLabel(LANG.getString("Content Syndication"));
+    	add(lblContentSyndication, "2, 6");
+    	
+    	cmbContentSyndication = new JComboBox<SyndicationType>();
+    	add(cmbContentSyndication, "2, 8, 5, 1, fill, fill");
+    	
+    	chckbxMonetize = new JCheckBox(LANG.getString("Monetise with ads"));
+    	chckbxMonetize.addChangeListener(new ChangeListener() {
+    		public void stateChanged(ChangeEvent e) {
+    			if(chckbxMonetize.isSelected()){
+    				chckbxOverlayads.setEnabled(true);
+    				chckbxSkippableVideoads.setEnabled(true);
+    				chckbxSponsoredCards.setEnabled(true);
+    			}else{
+    				chckbxOverlayads.setEnabled(false);
+    				chckbxSkippableVideoads.setEnabled(false);
+    				chckbxSponsoredCards.setEnabled(false);
+    			}
+    		}
+    	});
+    	add(chckbxMonetize, "2, 2");
     }
 
 
 
+	public JCheckBox getChckbxMonetize() {
+		return chckbxMonetize;
+	}
+	public JComboBox<SyndicationType> getCmbContentSyndication() {
+		return cmbContentSyndication;
+	}
+	public JCheckBox getChckbxOverlayads() {
+		return chckbxOverlayads;
+	}
+	public JCheckBox getChckbxSponsoredCards() {
+		return chckbxSponsoredCards;
+	}
+	public JCheckBox getChckbxSkippableVideoads() {
+		return chckbxSkippableVideoads;
+	}
 }

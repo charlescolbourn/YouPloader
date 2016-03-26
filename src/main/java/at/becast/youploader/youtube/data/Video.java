@@ -39,13 +39,15 @@ public class Video {
   public static class Status {
     public String privacyStatus;
     public boolean embeddable;
+    public boolean publicStatsViewable;
     public String license;
     public String publishAt;
 
-    public Status(String privacyStatus, boolean embeddable, String license) {
+    public Status(String privacyStatus, boolean embeddable, String license, boolean publicStatsViewable) {
       this.privacyStatus = privacyStatus;
       this.embeddable = embeddable;
       this.license = license;
+      this.publicStatsViewable = publicStatsViewable;
     }
     
     public Status(){
@@ -71,7 +73,8 @@ public class Video {
     this.status = new Status(
       "private",
       true,
-      "youtube"
+      "youtube",
+      true
     );
   }
 }

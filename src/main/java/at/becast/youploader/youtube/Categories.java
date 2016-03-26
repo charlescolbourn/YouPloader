@@ -18,7 +18,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 public enum Categories {
-	FILM(1, "Category.film"), AUTOS(2, "Category.autos"), MUSIC(10, "Category.music"), ANIMALS(15, "Category.animals"), SPORTS(17, "Category.sports"), TRAVEL(19, "Category.travel"), GAMES(20, "Category.games"), PEOPLE(22, "Category.people"), COMEDY(23, "Category.comedy"), ENTERTAINMENT(24, "Category.entertainment"), NEWS(25, "Category.news"), HOWTO(26, "Category.howto"), EDUCATION(27, "Category.education"), TECH(28, "Category.tech");
+	FILM(1, "Category.film"), AUTOS(2, "Category.autos"), MUSIC(10, "Category.music"), ANIMALS(15, "Category.animals"), SPORTS(17, "Category.sports"), TRAVEL(19, "Category.travel"), GAMES(20, "Category.games"), PEOPLE(22, "Category.people"), COMEDY(23, "Category.comedy"), ENTERTAINMENT(24, "Category.entertainment"), NEWS(25, "Category.news"), HOWTO(26, "Category.howto"), EDUCATION(27, "Category.education"), TECH(28, "Category.tech"),NONPROFIT(29, "Category.nonprofit");
 	private final ResourceBundle LANG = ResourceBundle.getBundle("lang", Locale.getDefault());
 	private final int number;
 	private final String label;

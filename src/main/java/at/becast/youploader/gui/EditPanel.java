@@ -21,6 +21,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.Map.Entry;
 
 import javax.swing.DefaultComboBoxModel;
@@ -59,6 +61,7 @@ public class EditPanel extends javax.swing.JPanel {
 	 */
 	private static final long serialVersionUID = -2023946504262191056L;
 	private static final Logger LOG = LoggerFactory.getLogger(EditPanel.class);
+	private static final ResourceBundle LANG = ResourceBundle.getBundle("lang", Locale.getDefault());
 	private JComboBox<Item> cmbTemplate;
 	private JTextField txtStartDir;
 	private JTextField txtEndDir;
@@ -71,6 +74,8 @@ public class EditPanel extends javax.swing.JPanel {
 	private JTextField txtThumbnail;
 	private JTextField txtGameTitle;
 	private DateTimePicker dateTimePickerStart;
+	private JCheckBox chckbxAllowEmbedding;
+	private JCheckBox chckbxMakeStatisticsPublic;
 
 	/**
 	 * Creates new form editPanel
@@ -136,7 +141,7 @@ public class EditPanel extends javax.swing.JPanel {
 				FormSpecs.LABEL_COMPONENT_GAP_ROWSPEC,
 				RowSpec.decode("20px"),}));
 
-		lblTemplate.setText("Template:");
+		lblTemplate.setText(LANG.getString("EditPanel.Template")+":");
 		add(lblTemplate, "2, 2, right, center");
 		add(cmbTemplate, "4, 2, 5, 1, fill, fill");
 
@@ -167,7 +172,7 @@ public class EditPanel extends javax.swing.JPanel {
 		btnDeleteTemplate.setIcon(new ImageIcon(getClass().getResource("/cross.png")));
 		add(btnDeleteTemplate, "14, 2, fill, fill");
 
-		JLabel lblStartDirectory = new JLabel("Start Directory:");
+		JLabel lblStartDirectory = new JLabel(LANG.getString("EditPanel.StartDir")+":");
 		add(lblStartDirectory, "2, 4, right, center");
 
 		txtStartDir = new JTextField();
@@ -188,7 +193,7 @@ public class EditPanel extends javax.swing.JPanel {
 		btnStartDir.setIcon(new ImageIcon(getClass().getResource("/folder.png")));
 		add(btnStartDir, "10, 4, fill, fill");
 
-		JLabel lblEndDirectory = new JLabel("End Directory:");
+		JLabel lblEndDirectory = new JLabel(LANG.getString("EditPanel.EndDir")+":");
 		add(lblEndDirectory, "2, 6, right, center");
 
 		txtEndDir = new JTextField();
@@ -209,7 +214,7 @@ public class EditPanel extends javax.swing.JPanel {
 		btnEndDir.setIcon(new ImageIcon(getClass().getResource("/folder.png")));
 		add(btnEndDir, "10, 6, fill, fill");
 
-		JLabel lblVisibility = new JLabel("Visibility:");
+		JLabel lblVisibility = new JLabel(LANG.getString("EditPanel.Visibility")+":");
 		add(lblVisibility, "2, 8, right, default");
 
 		dateTimePicker = new DateTimePicker();
@@ -235,7 +240,7 @@ public class EditPanel extends javax.swing.JPanel {
 		cmbVisibility.setModel(new DefaultComboBoxModel<VisibilityType>(VisibilityType.values()));
 		add(cmbVisibility, "4, 8, 5, 1, fill, fill");
 
-		JLabel lblReleaseAt = new JLabel("Release at:");
+		JLabel lblReleaseAt = new JLabel(LANG.getString("EditPanel.Relase")+":");
 		add(lblReleaseAt, "2, 10, right, default");
 
 		add(dateTimePicker, "4, 10, 5, 1, fill, fill");
@@ -247,7 +252,7 @@ public class EditPanel extends javax.swing.JPanel {
 		cmbLicense.setModel(new DefaultComboBoxModel<LicenseType>(LicenseType.values()));
 		add(cmbLicense, "4, 12, 5, 1, fill, fill");
 		
-		JLabel lblThumbnail = new JLabel("Thumbnail:");
+		JLabel lblThumbnail = new JLabel(LANG.getString("EditPanel.Thumbnail")+":");
 		lblThumbnail.setEnabled(false);
 		add(lblThumbnail, "2, 14, right, default");
 		
@@ -261,7 +266,7 @@ public class EditPanel extends javax.swing.JPanel {
 		btnThumbnail.setIcon(new ImageIcon(getClass().getResource("/folder.png")));
 		add(btnThumbnail, "10, 14, fill, fill");
 		
-		JLabel lblStartUploadAt = new JLabel("Start upload at:");
+		JLabel lblStartUploadAt = new JLabel(LANG.getString("EditPanel.StartUpload")+":");
 		lblStartUploadAt.setEnabled(false);
 		add(lblStartUploadAt, "2, 16, right, default");
 		
@@ -269,7 +274,7 @@ public class EditPanel extends javax.swing.JPanel {
 		dateTimePickerStart.setEnabled(false);
 		add(dateTimePickerStart, "4, 16, 5, 1, fill, fill");
 		
-		JLabel lblGameTitle = new JLabel("Game title:");
+		JLabel lblGameTitle = new JLabel(LANG.getString("EditPanel.Gametitle")+":");
 		lblGameTitle.setEnabled(false);
 		add(lblGameTitle, "2, 18, right, default");
 		
@@ -281,13 +286,13 @@ public class EditPanel extends javax.swing.JPanel {
 		JLabel lblAdditionalSettings = new JLabel("Other Settings:");
 		add(lblAdditionalSettings, "2, 20, right, default");
 		
-		JCheckBox chckbxAllowEmbedding = new JCheckBox("Allow embedding");
+		chckbxAllowEmbedding = new JCheckBox("Allow embedding");
 		add(chckbxAllowEmbedding, "4, 20, 3, 1");
 		
 		JCheckBox chckbxAgeRestriction = new JCheckBox("Age restriction");
 		add(chckbxAgeRestriction, "8, 20, 3, 1, left, default");
 		
-		JCheckBox chckbxMakeStatisticsPublic = new JCheckBox("Make statistics publicly visible");
+		chckbxMakeStatisticsPublic = new JCheckBox("Make statistics publicly visible");
 		chckbxMakeStatisticsPublic.setVerticalAlignment(SwingConstants.TOP);
 		add(chckbxMakeStatisticsPublic, "4, 22, 3, 1, left, default");
 		
@@ -423,5 +428,11 @@ public class EditPanel extends javax.swing.JPanel {
 	}
 	public DateTimePicker getDateTimePickerStart() {
 		return dateTimePickerStart;
+	}
+	public JCheckBox getChckbxAllowEmbedding() {
+		return chckbxAllowEmbedding;
+	}
+	public JCheckBox getChckbxMakeStatisticsPublic() {
+		return chckbxMakeStatisticsPublic;
 	}
 }

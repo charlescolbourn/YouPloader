@@ -80,6 +80,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -107,7 +108,6 @@ import at.becast.youploader.youtube.LicenseType;
 import at.becast.youploader.youtube.VisibilityType;
 import at.becast.youploader.youtube.data.CategoryType;
 import at.becast.youploader.youtube.data.Video;
-import at.becast.youploader.youtube.exceptions.UploadException;
 import at.becast.youploader.youtube.io.UploadManager;
 import ch.qos.logback.classic.LoggerContext;
 import net.miginfocom.layout.CC;
@@ -123,7 +123,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 	private static final long serialVersionUID = 6965358827253585528L;
 	public static final String DB_FILE = System.getProperty("user.home") + "/YouPloader/data/data.db";
 	public static final String APP_NAME = "YouPloader";
-	public static final String VERSION = "0.3";
+	public static final String VERSION = "0.4";
 	private static final Logger LOG = LoggerFactory.getLogger(FrmMain.class);
 	public static UploadManager UploadMgr;
 	public static TemplateManager TemplateMgr;
@@ -208,6 +208,8 @@ public class FrmMain extends JFrame implements IMainMenu {
 		});
 		UploadMgr.setParent(this);
 		initComponents();
+		initMenuBar();
+		loadAccounts();
 		this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/yp.png")));
 		this.setLocationRelativeTo(null);
 		try {
@@ -236,17 +238,12 @@ public class FrmMain extends JFrame implements IMainMenu {
 	public void initComponents() {
 		LOG.debug("init Components", FrmMain.class);
 		TabbedPane = new JTabbedPane();
-		JPanel mainTab = new JPanel();
-		JMenuBar mnuBar = new JMenuBar();
-		JMenu mnuFile = new JMenu();
-		JMenuItem mnuQuit = new JMenuItem();
-		mnuAcc = new JMenu();
 		cmbCategory = new JComboBox<CategoryType>();
 		cmbCategory.setModel(new DefaultComboBoxModel<CategoryType>());
 		SideBar sideBar = new SideBar(SideBar.SideBarMode.TOP_LEVEL, true, 300, true);
 		ss1 = new SidebarSection(sideBar, LANG.getString("frmMain.Sidebar.Settings"), new EditPanel(this), null);
-		ss2 = new SidebarSection(sideBar, LANG.getString("frmMain.Sidebar.Playlists"), new PlaylistPanel(this), null);
-		ss3 = new SidebarSection(sideBar, LANG.getString("frmMain.Sidebar.Monetisation"), new MonetPanel(this), null);
+		ss2 = new SidebarSection(sideBar, LANG.getString("frmMain.Sidebar.Playlists"), new PlaylistPanel(), null);
+		ss3 = new SidebarSection(sideBar, LANG.getString("frmMain.Sidebar.Monetisation"), new MonetPanel(), null);
 		sideBar.addSection(ss1, false);
 		sideBar.addSection(ss2);
 		sideBar.addSection(ss3);
@@ -256,7 +253,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		for (Categories cat : Categories.values()) {
 			cmbCategory.addItem(new CategoryType(cat.getID(), cat.toString()));
 		}
-
+		JPanel mainTab = new JPanel();
 		JPanel panel = new JPanel();
 		GroupLayout mainTabLayout = new GroupLayout(mainTab);
 		mainTabLayout
@@ -390,64 +387,6 @@ public class FrmMain extends JFrame implements IMainMenu {
 		mainTab.setLayout(mainTabLayout);
 		TabbedPane.addTab(LANG.getString("frmMain.Tabs.VideoSettings"), mainTab);
 
-		mnuFile.setText(LANG.getString("frmMain.menu.File"));
-
-		mnuQuit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, InputEvent.ALT_MASK));
-		mnuQuit.setText(LANG.getString("frmMain.menu.Quit"));
-		mnuQuit.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				mnuQuitActionPerformed();
-			}
-		});
-		mnuFile.add(mnuQuit);
-
-		mnuBar.add(mnuFile);
-
-		mnuAcc.setText(LANG.getString("frmMain.menu.Account"));
-		mnuBar.add(mnuAcc);
-
-		JSeparator separator = new JSeparator();
-		JMenuItem mntmAddAccount = new JMenuItem(LANG.getString("frmMain.menu.AddAccount"));
-		mntmAddAccount.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				mntmAddAccountActionPerformed();
-			}
-		});
-
-		mnuAcc.add(mntmAddAccount);
-		mnuAcc.add(separator);
-
-		setJMenuBar(mnuBar);
-
-		JMenu menu = new JMenu("?");
-		mnuBar.add(menu);
-
-		JMenuItem mntmDonate = new JMenuItem(LANG.getString("frmMain.menu.Donate"));
-		menu.add(mntmDonate);
-		mntmDonate.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				if (Desktop.isDesktopSupported()) {
-					try {
-						Desktop.getDesktop().browse(new URI(
-								"https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=AZ42BHSUTGPT6"));
-					} catch (IOException | URISyntaxException e1) {
-						LOG.error("Can't open browser");
-					}
-				} else {
-					LOG.error("Desktop not supported.");
-				}
-			}
-		});
-
-		JMenuItem mntmAbout = new JMenuItem(LANG.getString("frmMain.menu.About"));
-		mntmAbout.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				FrmAbout about = new FrmAbout();
-				about.setVisible(true);
-			}
-		});
-		menu.add(mntmAbout);
-
 		GroupLayout layout = new GroupLayout(getContentPane());
 		layout.setHorizontalGroup(layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(layout.createSequentialGroup().addContainerGap().addComponent(TabbedPane).addContainerGap()));
@@ -545,9 +484,84 @@ public class FrmMain extends JFrame implements IMainMenu {
 		TabQueue.add(TabQueues, BorderLayout.CENTER);
 
 		QueuePanel.revalidate();
-		loadAccounts();
 		pack();
 		ss1.expand();
+	}
+	
+	public void initMenuBar(){
+		JMenuBar mnuBar = new JMenuBar();
+		JMenu mnuFile = new JMenu();
+		JMenuItem mnuQuit = new JMenuItem();
+		mnuAcc = new JMenu();
+		
+		mnuFile.setText(LANG.getString("frmMain.menu.File"));
+
+		mnuQuit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, InputEvent.ALT_MASK));
+		mnuQuit.setText(LANG.getString("frmMain.menu.Quit"));
+		mnuQuit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				mnuQuitActionPerformed();
+			}
+		});
+		mnuFile.add(mnuQuit);
+
+		mnuBar.add(mnuFile);
+
+		mnuAcc.setText(LANG.getString("frmMain.menu.Account"));
+		mnuBar.add(mnuAcc);
+				
+		JSeparator separator = new JSeparator();
+		JMenuItem mntmAddAccount = new JMenuItem(LANG.getString("frmMain.menu.AddAccount"));
+		mntmAddAccount.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				mntmAddAccountActionPerformed();
+			}
+		});
+		mnuAcc.add(mntmAddAccount);
+		mnuAcc.add(separator);
+
+		JMenu menu = new JMenu("?");
+		mnuBar.add(menu);
+
+		JMenuItem mntmDonate = new JMenuItem(LANG.getString("frmMain.menu.Donate"));
+		menu.add(mntmDonate);
+		mntmDonate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				donateButton();
+			}
+		});
+
+		JMenuItem mntmAbout = new JMenuItem(LANG.getString("frmMain.menu.About"));
+		mntmAbout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				FrmAbout about = new FrmAbout();
+				about.setVisible(true);
+			}
+		});
+		menu.add(mntmAbout);
+		
+		JMenuItem mntmShowLogfile = new JMenuItem(LANG.getString("frmMain.menu.ShowLogfile"));
+		mntmShowLogfile.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				
+			}
+		});
+		menu.add(mntmShowLogfile);
+		
+		setJMenuBar(mnuBar);
+	}
+
+	protected void donateButton() {
+		if (Desktop.isDesktopSupported()) {
+			try {
+				Desktop.getDesktop().browse(new URI(
+						"https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=AZ42BHSUTGPT6"));
+			} catch (IOException | URISyntaxException e1) {
+				LOG.error("Can't open browser");
+			}
+		} else {
+			LOG.error("Desktop not supported.");
+		}		
 	}
 
 	protected void startUploads() {
@@ -649,8 +663,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		if (rs.isBeforeFirst()) {
 			while (rs.next()) {
 				UploadItem f = new UploadItem();
-				Video v = mapper.readValue(rs.getString("data"), new TypeReference<Video>() {
-				});
+				Video v = mapper.readValue(rs.getString("data"), new TypeReference<Video>() {});
 				f.upload_id = rs.getInt("id");
 				String url = rs.getString("url");
 				String yt_id = rs.getString("yt_id");
@@ -686,17 +699,19 @@ public class FrmMain extends JFrame implements IMainMenu {
 	}
 
 	/**
-	 * @param String
-	 *            File
-	 * @param String
-	 *            Name
-	 * @param String
-	 *            Account
-	 * @return UploadItem
-	 * @throws IOException
-	 * @throws UploadException
+	 * Creates the Upload and the Uploadframe
+	 * 
+	 * 
+	 * @param File path to the file that should be uploaded
+	 * 
+	 * @param Name The title of the upload
+	 * 
+	 * @param acc_id The Account id of the Account that should upload the Video
+	 * 
+	 * @return UploadItem The Upload Frame
+	 *  
 	 */
-	public UploadItem createUpload(String File, String Name, int acc_id) throws IOException {
+	public UploadItem createUpload(String File, String Name, int acc_id) {
 		UploadItem f = new UploadItem();
 		EditPanel edit = (EditPanel) ss1.contentPane;
 		f.getlblName().setText(Name);
@@ -708,12 +723,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		v.snippet.categoryId = cat.getValue();
 		v.snippet.description = txtDescription.getText();
 		if (txtTags != null && !txtTags.getText().equals("")) {
-			String[] tags = txtTags.getText().split(",");
-			String[] trimmedtags = new String[tags.length];
-			for (int i = 0; i < tags.length; i++) {
-				trimmedtags[i] = tags[i].trim();
-			}
-			v.snippet.tags = trimmedtags;
+			v.snippet.tags = trimTags(txtTags.getText());
 		}
 		VisibilityType visibility = (VisibilityType) edit.getCmbVisibility().getSelectedItem();
 		if (visibility == VisibilityType.SCHEDULED) {
@@ -734,6 +744,8 @@ public class FrmMain extends JFrame implements IMainMenu {
 				f.getlblRelease().setText("public");
 			}
 		}
+		v.status.embeddable = edit.getChckbxAllowEmbedding().isSelected();
+		v.status.publicStatsViewable = edit.getChckbxMakeStatisticsPublic().isSelected();
 		LicenseType license = (LicenseType) edit.getCmbLicense().getSelectedItem();
 		v.status.license = license.getData();
 		File data = new File(File);
@@ -741,7 +753,18 @@ public class FrmMain extends JFrame implements IMainMenu {
 		return f;
 	}
 
-	public void update(String File, int acc_id, int upload_id) throws IOException, SQLException {
+	/**
+	 * Updates an existing upload 
+	 * 
+	 * @param File File path to the file that should be uploaded
+	 * @param acc_id The Account id of the Account that should upload the Video
+	 * @param upload_id The id of the Upload that should be updated
+	 * @throws SQLException
+	 * @throws JsonGenerationException
+	 * @throws JsonMappingException
+	 * @throws IOException
+	 */
+	public void update(String File, int acc_id, int upload_id) throws SQLException, JsonGenerationException, JsonMappingException, IOException {
 		EditPanel edit = (EditPanel) ss1.contentPane;
 		String sql = "SELECT `yt_id` FROM `uploads` WHERE `id`=" + upload_id;
 		PreparedStatement prest = null;
@@ -757,12 +780,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 				v.snippet.categoryId = cat.getValue();
 				v.snippet.description = txtDescription.getText();
 				if (txtTags != null && !txtTags.getText().equals("")) {
-					String[] tags = txtTags.getText().split(",");
-					String[] trimmedtags = new String[tags.length];
-					for (int i = 0; i < tags.length; i++) {
-						trimmedtags[i] = tags[i].trim();
-					}
-					v.snippet.tags = trimmedtags;
+					v.snippet.tags = trimTags(txtTags.getText());
 				}
 				VisibilityType visibility = (VisibilityType) edit.getCmbVisibility().getSelectedItem();
 				if (visibility == VisibilityType.SCHEDULED) {
@@ -781,6 +799,8 @@ public class FrmMain extends JFrame implements IMainMenu {
 				}
 				LicenseType license = (LicenseType) edit.getCmbLicense().getSelectedItem();
 				String enddir = edit.getTxtEndDir().getText();
+				v.status.embeddable = edit.getChckbxAllowEmbedding().isSelected();
+				v.status.publicStatsViewable = edit.getChckbxMakeStatisticsPublic().isSelected();
 				v.status.license = license.getData();
 				if (video_id != null && !video_id.equals("")) {
 					SQLite.updateUploadData(v, upload_id);
@@ -799,19 +819,15 @@ public class FrmMain extends JFrame implements IMainMenu {
 		if (this.editItem != -1) {
 			try {
 				update(cmbFile.getSelectedItem().toString(), acc.getValue(), this.editItem);
-			} catch (IOException | SQLException e) {
-				LOG.error("Error: ", e);
+			} catch (SQLException | IOException e) {
+				LOG.error("Error updating upload",e);
 			}
 			btnAddToQueue.setText(LANG.getString("frmMain.addtoQueue"));
 			cmbFile.removeAllItems();
 		} else {
 			if (cmbFile.getSelectedItem() != null && !cmbFile.getSelectedItem().toString().equals("")) {
-				try {
-					createUpload(cmbFile.getSelectedItem().toString(), txtTitle.getText(), acc.getValue());
-					cmbFile.removeAllItems();
-				} catch (IOException e1) {
-					LOG.error("Error: ", e1);
-				}
+				createUpload(cmbFile.getSelectedItem().toString(), txtTitle.getText(), acc.getValue());
+				cmbFile.removeAllItems();
 			} else {
 				JOptionPane.showMessageDialog(null, "You have to select a file.", "Give me something to work with!",
 						JOptionPane.ERROR_MESSAGE);
@@ -854,6 +870,8 @@ public class FrmMain extends JFrame implements IMainMenu {
 				txtTags.setText(prepareTagsfromArray(v.snippet.tags));
 				edit.setLicence(v.status.license);
 				edit.setVisibility(v.status.privacyStatus);
+				edit.getChckbxAllowEmbedding().setSelected(v.status.embeddable);
+				edit.getChckbxMakeStatisticsPublic().setSelected(v.status.publicStatsViewable);
 				if (v.status.publishAt != null && !v.status.publishAt.equals("")) {
 					edit.getDateTimePicker().setEnabled(true);
 					edit.getDateTimePicker().getEditor().setEnabled(true);
@@ -889,17 +907,14 @@ public class FrmMain extends JFrame implements IMainMenu {
 		v.snippet.categoryId = cat.getValue();
 		v.snippet.description = txtDescription.getText();
 		if (txtTags != null && !txtTags.getText().equals("")) {
-			String[] tags = txtTags.getText().split(",");
-			String[] trimmedtags = new String[tags.length];
-			for (int i = 0; i < tags.length; i++) {
-				trimmedtags[i] = tags[i].trim();
-			}
-			v.snippet.tags = trimmedtags;
+			v.snippet.tags = trimTags(txtTags.getText());
 		}
 		VisibilityType visibility = (VisibilityType) edit.getCmbVisibility().getSelectedItem();
 		v.status.privacyStatus = visibility.getData();
 		LicenseType license = (LicenseType) edit.getCmbLicense().getSelectedItem();
 		v.status.license = license.getData();
+		v.status.embeddable = edit.getChckbxAllowEmbedding().isSelected();
+		v.status.publicStatsViewable = edit.getChckbxMakeStatisticsPublic().isSelected();
 		if (edit.getTxtStartDir() != null) {
 			t.setStartdir(edit.getTxtStartDir().getText());
 		}
@@ -922,6 +937,15 @@ public class FrmMain extends JFrame implements IMainMenu {
 		}
 		return tags;
 	}
+	
+	private String[] trimTags(String in){
+		String[] tags = in.split(",");
+		String[] trimmedtags = new String[tags.length];
+		for (int i = 0; i < tags.length; i++) {
+			trimmedtags[i] = tags[i].trim();
+		}
+		return trimmedtags;
+	}
 
 	public void loadTemplate(Item item) {
 		EditPanel edit = (EditPanel) ss1.contentPane;
@@ -940,6 +964,8 @@ public class FrmMain extends JFrame implements IMainMenu {
 		} else {
 			edit.setVisibility(t.videodata.status.privacyStatus);
 		}
+		edit.getChckbxAllowEmbedding().setSelected(t.videodata.status.embeddable);
+		edit.getChckbxMakeStatisticsPublic().setSelected(t.videodata.status.publicStatsViewable);
 		if (t.enddir != null) {
 			edit.getTxtEndDir().setText(t.enddir);
 		}
@@ -994,12 +1020,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		v.snippet.categoryId = cat.getValue();
 		v.snippet.description = txtDescription.getText();
 		if (txtTags != null && !txtTags.getText().equals("")) {
-			String[] tags = txtTags.getText().split(",");
-			String[] trimmedtags = new String[tags.length];
-			for (int i = 0; i < tags.length; i++) {
-				trimmedtags[i] = tags[i].trim();
-			}
-			v.snippet.tags = trimmedtags;
+			v.snippet.tags = trimTags(txtTags.getText());
 		}
 		VisibilityType visibility = (VisibilityType) edit.getCmbVisibility().getSelectedItem();
 		if (visibility == VisibilityType.SCHEDULED) {
@@ -1010,6 +1031,8 @@ public class FrmMain extends JFrame implements IMainMenu {
 		v.status.privacyStatus = visibility.getData();
 		LicenseType license = (LicenseType) edit.getCmbLicense().getSelectedItem();
 		v.status.license = license.getData();
+		v.status.embeddable = edit.getChckbxAllowEmbedding().isSelected();
+		v.status.publicStatsViewable = edit.getChckbxMakeStatisticsPublic().isSelected();
 		if (edit.getTxtStartDir() != null) {
 			t.setStartdir(edit.getTxtStartDir().getText());
 		}
