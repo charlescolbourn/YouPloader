@@ -18,7 +18,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -48,7 +47,6 @@ public class UploadManager {
 	private LinkedList<UploadWorker> _ToUpload = new LinkedList<UploadWorker>();
 	private LinkedList<UploadWorker> _Uploading = new LinkedList<UploadWorker>();
 	private int speed_limit = 0;
-	static Connection c = SQLite.getInstance();
 	
 	private UploadManager(){
 		

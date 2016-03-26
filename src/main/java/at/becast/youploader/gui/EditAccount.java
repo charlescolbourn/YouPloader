@@ -99,7 +99,7 @@ public class EditAccount extends JDialog {
 			}
 		});
 
-		javax.swing.GroupLayout layout = new GroupLayout(getContentPane());
+		GroupLayout layout = new GroupLayout(getContentPane());
 		layout.setHorizontalGroup(
 			layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(layout.createSequentialGroup()

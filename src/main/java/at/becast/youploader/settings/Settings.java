@@ -32,8 +32,8 @@ import at.becast.youploader.database.SQLite;
 public class Settings {
 	public Map<String, String> setting = new HashMap<String, String>();
 	private static final Logger LOG = LoggerFactory.getLogger(SQLite.class);
-	static Settings instance = null;
-	Connection c = SQLite.getInstance();
+	private static Settings instance = null;
+	private Connection c = SQLite.getInstance();
 
 	private Settings() {
 		try {

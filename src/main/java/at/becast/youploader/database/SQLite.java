@@ -33,7 +33,7 @@ import at.becast.youploader.youtube.io.UploadManager.Status;
 
 public class SQLite {
 	
-	public static Connection c;
+	private static Connection c;
 	private static final Logger LOG = LoggerFactory.getLogger(SQLite.class);
 	private SQLite( String database ){
 		try {

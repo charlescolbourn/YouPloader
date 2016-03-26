@@ -18,12 +18,12 @@ public class SideBar extends JPanel{
 	/** the currently expanded section */
 	private SidebarSection currentSection = null;
 
-	SideBarMode thisMode;
-	int preferredWidth;
+	private SideBarMode thisMode;
+	public int preferredWidth;
 
-	boolean showArrow;
+	public boolean showArrow;
 
-	boolean animate = false;
+	public boolean animate = false;
 	
 	public SideBar(SideBarMode mode, boolean showArrow, int preferredWidth, boolean animate) {
 

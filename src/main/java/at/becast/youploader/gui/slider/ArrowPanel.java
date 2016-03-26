@@ -170,6 +170,8 @@ public class ArrowPanel extends JPanel implements SwingConstants{
 				j++;
 			}
 			break;
+		default:
+			break;
 		}
 		g.translate(-x, -y);
 		g.setColor(oldColor);

@@ -32,7 +32,7 @@ import at.becast.youploader.settings.Settings;
 public class AccountManager {
 	
 	public static AccountManager accMng;
-	Settings s = Settings.getInstance();
+	private Settings s = Settings.getInstance();
 	public static OAuth2 currentaccount;
 	private static final Logger LOG = LoggerFactory.getLogger(AccountManager.class);
 	

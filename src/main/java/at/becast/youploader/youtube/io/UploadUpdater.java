@@ -12,7 +12,7 @@ import at.becast.youploader.youtube.exceptions.UploadException;
 
 public class UploadUpdater {
 	  private OAuth2 oAuth2;
-	  SimpleHTTP http;
+	  private SimpleHTTP http;
 	  public UploadUpdater(OAuth2 oAuth2) {
 	    this.oAuth2 = oAuth2;
 	  }

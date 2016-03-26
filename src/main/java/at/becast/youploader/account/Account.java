@@ -36,7 +36,7 @@ public class Account {
 	public String refreshToken;
 	public String name;
 	public List<Cookie> cdata;
-	static Connection c = SQLite.getInstance();
+	private static Connection c = SQLite.getInstance();
 	private static final Logger LOG = LoggerFactory.getLogger(Account.class);
 
 	public Account(int id, String name, String refreshToken, List<Cookie> cdata) {

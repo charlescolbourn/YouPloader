@@ -38,16 +38,12 @@ import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
 import at.becast.youploader.account.Account;
-import at.becast.youploader.oauth.OAuth2;
-import at.becast.youploader.settings.Settings;
 
 public class ModalDialog extends JDialog {
 	private static final long serialVersionUID = -49240475185934236L;
 	private final JPanel contentPanel = new JPanel();
 	private JTextField labelcode;
 	private JLabel check_label;
-	Settings s = Settings.getInstance();
-	OAuth2 o2;
 
 	/**
 	 * Create the dialog.

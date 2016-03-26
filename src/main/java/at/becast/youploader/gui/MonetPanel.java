@@ -15,6 +15,7 @@
 package at.becast.youploader.gui;
 import javax.swing.JLabel;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.JCheckBox;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,8 +46,7 @@ public class MonetPanel extends javax.swing.JPanel {
     }
 
     private void initComponents() {
-
-        jCheckBox1 = new javax.swing.JCheckBox();
+        JCheckBox jCheckBox1 = new JCheckBox();
         jCheckBox1.setEnabled(false);
 
         jCheckBox1.setText("Overlay ads");
@@ -55,7 +55,7 @@ public class MonetPanel extends javax.swing.JPanel {
         lblNotYetImplemented.setFont(new Font("Tahoma", Font.BOLD, 17));
         lblNotYetImplemented.setHorizontalAlignment(SwingConstants.CENTER);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        GroupLayout layout = new GroupLayout(this);
         layout.setHorizontalGroup(
         	layout.createParallelGroup(Alignment.LEADING)
         		.addGroup(layout.createSequentialGroup()
@@ -81,5 +81,5 @@ public class MonetPanel extends javax.swing.JPanel {
     }
 
 
-    private javax.swing.JCheckBox jCheckBox1;
+
 }

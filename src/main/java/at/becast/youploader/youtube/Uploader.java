@@ -32,7 +32,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 public class Uploader {
   private OAuth2 oAuth2;
   private UploadStream stream;
-  SimpleHTTP http;
+  private SimpleHTTP http;
+  
   public Uploader(OAuth2 oAuth2) {
     this.oAuth2 = oAuth2;
   }

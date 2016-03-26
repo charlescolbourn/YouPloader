@@ -57,7 +57,7 @@ public class SidebarSection extends JPanel {
 			JComponent titleComponent, 
 			JComponent component, Icon icon) {
 		
-		if (owner.thisMode == SideBar.SideBarMode.INNER_LEVEL)
+		if (owner.getMode() == SideBar.SideBarMode.INNER_LEVEL)
 			minComponentHeight = 30;
 		else
 			minComponentHeight = 30;
@@ -133,7 +133,7 @@ public class SidebarSection extends JPanel {
 			anim.setEndValue(calculatedHeight);
 			anim.start();
 		} else {
-			if (sideBarOwner.thisMode == SideBarMode.INNER_LEVEL) {
+			if (sideBarOwner.getMode() == SideBarMode.INNER_LEVEL) {
 				calculatedHeight = 1000;
 				Dimension d = new Dimension(Integer.MAX_VALUE, calculatedHeight);
 				setMaximumSize(d);
@@ -165,7 +165,7 @@ public class SidebarSection extends JPanel {
 			anim.setEndValue(minComponentHeight);
 			anim.start();
 		} else {
-			if (sideBarOwner.thisMode == SideBarMode.INNER_LEVEL) {
+			if (sideBarOwner.getMode() == SideBarMode.INNER_LEVEL) {
 				setMaximumSize(new Dimension(Integer.MAX_VALUE, titlePanel.getPreferredSize().height));
 				contentPane.setVisible(false);
 				revalidate();

@@ -36,6 +36,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -445,7 +446,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		});
 		menu.add(mntmAbout);
 
-		javax.swing.GroupLayout layout = new GroupLayout(getContentPane());
+		GroupLayout layout = new GroupLayout(getContentPane());
 		layout.setHorizontalGroup(layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(layout.createSequentialGroup().addContainerGap().addComponent(TabbedPane).addContainerGap()));
 		layout.setVerticalGroup(layout.createParallelGroup(Alignment.LEADING).addComponent(TabbedPane,
@@ -638,8 +639,9 @@ public class FrmMain extends JFrame implements IMainMenu {
 	private void loadQueue() throws JsonParseException, JsonMappingException, SQLException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		PreparedStatement prest = null;
+		Connection c = SQLite.getInstance();
 		String sql = "SELECT * FROM `uploads` ORDER BY `id`";
-		prest = SQLite.c.prepareStatement(sql);
+		prest = c.prepareStatement(sql);
 		ResultSet rs = prest.executeQuery();
 		if (rs.isBeforeFirst()) {
 			while (rs.next()) {
@@ -657,14 +659,14 @@ public class FrmMain extends JFrame implements IMainMenu {
 				String enddir = rs.getString("enddir");
 				long position = rs.getLong("uploaded");
 				long size = rs.getLong("lenght");
-				if (url != null && !url.equals("") && !status.equals("FINISHED")) {
+				if (url != null && !url.equals("") && !"FINISHED".equals(status)) {
 					UploadMgr.add_resumeable_upload(f, data, v, acc_id, enddir, url, yt_id);
 					f.getProgressBar().setString(String.format("%6.2f%%", (float) position / size * 100));
 					f.getProgressBar().setValue((int) ((float) position / size * 100));
 					f.getProgressBar().revalidate();
 					f.revalidate();
 					f.repaint();
-				} else if (status.equals("NOT_STARTED")) {
+				} else if ("NOT_STARTED".equals(status)) {
 					UploadMgr.add_upload(f, data, v, acc_id, enddir);
 				} else {
 					f.getBtnEdit().setEnabled(false);
@@ -740,7 +742,8 @@ public class FrmMain extends JFrame implements IMainMenu {
 		EditPanel edit = (EditPanel) ss1.contentPane;
 		String sql = "SELECT `yt_id` FROM `uploads` WHERE `id`=" + upload_id;
 		PreparedStatement prest = null;
-		prest = SQLite.c.prepareStatement(sql);
+		Connection c = SQLite.getInstance();
+		prest = c.prepareStatement(sql);
 		ResultSet rs = prest.executeQuery();
 		if (rs.isBeforeFirst()) {
 			while (rs.next()) {
@@ -826,13 +829,14 @@ public class FrmMain extends JFrame implements IMainMenu {
 
 	public void editUpload(int upload_id) throws SQLException, JsonParseException, JsonMappingException, IOException {
 		this.editItem = upload_id;
+		Connection c = SQLite.getInstance();
 		btnAddToQueue.setText(LANG.getString("frmMain.updateUpload"));
 		TabbedPane.setSelectedIndex(0);
 		ObjectMapper mapper = new ObjectMapper();
 		PreparedStatement prest = null;
 		EditPanel edit = (EditPanel) ss1.contentPane;
 		String sql = "SELECT * FROM `uploads` WHERE `id`=" + upload_id;
-		prest = SQLite.c.prepareStatement(sql);
+		prest = c.prepareStatement(sql);
 		ResultSet rs = prest.executeQuery();
 		if (rs.isBeforeFirst()) {
 			while (rs.next()) {
