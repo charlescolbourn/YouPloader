@@ -132,6 +132,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 	private static Boolean firstlaunch = false;
 	private AccountManager accMng = AccountManager.getInstance();
 	private Boolean tos;
+	private JButton btnAddToQueue;
 	private ModalDialog modal;
 	private IMainMenu self;
 	private JTextArea txtDescription;
@@ -141,7 +142,6 @@ public class FrmMain extends JFrame implements IMainMenu {
 	private JTextField txtTitle;
 	private JLabel lblTagslenght, lbltitlelenght, lblDesclenght;
 	private JSpinner spinner;
-	private JButton btnSelectMovie, btnAddToQueue;
 	private JPanel QueuePanel;
 	private JComboBox<CategoryType> cmbCategory;
 	private JTextArea txtTags;
@@ -364,7 +364,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		lblSelectVideo.setText(LANG.getString("frmMain.selectVideoFile"));
 		cmbFile = new JComboBox<String>();
 		panel.add(cmbFile, "3, 4, 14, 1, fill, fill");
-		btnSelectMovie = new JButton();
+		JButton btnSelectMovie = new JButton();
 		panel.add(btnSelectMovie, "18, 4, center, top");
 		btnSelectMovie.setIcon(new ImageIcon(getClass().getResource("/film_add.png")));
 
