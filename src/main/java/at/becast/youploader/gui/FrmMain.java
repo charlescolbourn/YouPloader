@@ -17,7 +17,6 @@ package at.becast.youploader.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
@@ -34,8 +33,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -100,6 +97,7 @@ import at.becast.youploader.settings.Settings;
 import at.becast.youploader.templates.Item;
 import at.becast.youploader.templates.Template;
 import at.becast.youploader.templates.TemplateManager;
+import at.becast.youploader.util.DesktopUtil;
 import at.becast.youploader.youtube.Categories;
 import at.becast.youploader.youtube.LicenseType;
 import at.becast.youploader.youtube.VisibilityType;
@@ -153,15 +151,11 @@ public class FrmMain extends JFrame implements IMainMenu {
 	 *            the command line arguments
 	 */
 	public static void main(String args[]) {
-		/*
-		 * if (args.length > 0 && args[0].equalsIgnoreCase("debug")) {
-		 * 
-		 * 
-		 * }
-		 */
-		  LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-		  // print logback's internal status
-		  StatusPrinter.print(lc);
+		if (args.length > 0 && args[0].equalsIgnoreCase("debug")) {
+			LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+			// print logback's internal status
+			StatusPrinter.print(lc);
+		}
 
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -545,7 +539,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		JMenuItem mntmShowLogfile = new JMenuItem(LANG.getString("frmMain.menu.ShowLogfile"));
 		mntmShowLogfile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				openDir(new File(System.getProperty("user.home")+"/YouPloader"));
+				DesktopUtil.openDir(new File(System.getProperty("user.home")+"/YouPloader"));
 			}
 		});
 		menu.add(mntmShowLogfile);
@@ -554,7 +548,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 	}
 
 	protected void donateButton() {
-		openBrowser("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=AZ42BHSUTGPT6");
+		DesktopUtil.openBrowser("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=AZ42BHSUTGPT6");
 	}
 
 	protected void startUploads() {
@@ -644,30 +638,6 @@ public class FrmMain extends JFrame implements IMainMenu {
 		int id = accMng.getId(name);
 		EditAccount accedit = new EditAccount(this, name, id);
 		accedit.setVisible(true);
-	}
-	
-	protected void openBrowser(String url) {
-		if (Desktop.isDesktopSupported()) {
-			try {
-				Desktop.getDesktop().browse(new URI(url));
-			} catch (IOException | URISyntaxException e1) {
-				LOG.error("Can't open browser");
-			}
-		} else {
-			LOG.error("Desktop not supported.");
-		}		
-	}
-
-	protected void openDir(File dir) {
-		if (Desktop.isDesktopSupported() && dir.isDirectory()) {
-			try {
-				Desktop.getDesktop().open(dir);
-			} catch (IOException e) {
-				LOG.error("Can't open Directory", e);
-			}
-		} else {
-			LOG.error("Desktop not supported.");
-		}		
 	}
 	
 	private void loadQueue() throws SQLException, IOException {

@@ -25,9 +25,6 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.JScrollPane;
@@ -35,14 +32,13 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
+
+import at.becast.youploader.util.DesktopUtil;
+
 import java.awt.Font;
 import java.awt.Color;
-import java.awt.Desktop;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import javax.swing.JTextPane;
 
 public class FrmAbout extends JDialog {
@@ -52,7 +48,6 @@ public class FrmAbout extends JDialog {
 	 */
 	private static final long serialVersionUID = -8005016163820525203L;
 	private final JPanel contentPanel = new JPanel();
-	private static final Logger LOG = LoggerFactory.getLogger(FrmAbout.class);
 
 	/**
 	 * Create the dialog.
@@ -118,16 +113,7 @@ public class FrmAbout extends JDialog {
 		lblHttpsgithubcombecastyouploader.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-					if (Desktop.isDesktopSupported()) {
-						try {
-							Desktop.getDesktop().browse(new URI(
-									"https://github.com/becast/youploader"));
-						} catch (IOException | URISyntaxException e) { 
-		      		    	  LOG.error("Browser error", e);
-		      		      }
-		      		    } else { 
-		      		    	LOG.error("Browser error");
-		      		    }
+				DesktopUtil.openBrowser("https://github.com/becast/youploader");
 			}
 		});
 		lblHttpsgithubcombecastyouploader.setForeground(Color.BLUE);
