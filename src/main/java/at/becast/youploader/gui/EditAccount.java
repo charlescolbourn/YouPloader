@@ -140,7 +140,7 @@ public class EditAccount extends JDialog {
 			LOG.info("Renaming Account {} to {}",  this.id, AccName.getText());
 			this.setVisible(false);
 			AccMng.rename(AccName.getText(), this.id);
-			parent.refresh_accounts();
+			parent.refreshAccounts();
 			LOG.info("Account renamed");
 			this.dispose();
 		} else {
@@ -155,7 +155,7 @@ public class EditAccount extends JDialog {
 		if (n == JOptionPane.OK_OPTION) {
 			this.setVisible(false);
 			AccMng.delete(this.id);
-			parent.refresh_accounts();
+			parent.refreshAccounts();
 			LOG.info("Account deleted");
 			this.dispose();
 		}else{

@@ -386,6 +386,22 @@ public class EditPanel extends javax.swing.JPanel {
 		this.adding = false;
 	}
 	
+	public void setLicence(String license){
+		for (int i = 0; i < cmbLicense.getItemCount(); i++) {
+			if (cmbLicense.getItemAt(i).getData().equals(license)) {
+				cmbLicense.setSelectedIndex(i);
+			}
+		}
+	}
+	
+	public void setVisibility(String visibility){
+		for (int i = 0; i < cmbVisibility.getItemCount(); i++) {
+			if (cmbVisibility.getItemAt(i).getData().equals(visibility)) {
+				cmbVisibility.setSelectedIndex(i);
+			}
+		}
+	}
+	
 	public JComboBox<VisibilityType> getCmbVisibility() {
 		return cmbVisibility;
 	}

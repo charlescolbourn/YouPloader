@@ -19,13 +19,13 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -70,6 +70,7 @@ import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
@@ -135,27 +136,18 @@ public class FrmMain extends JFrame implements IMainMenu {
 	private JTextArea txtDescription;
 	private JTabbedPane TabbedPane;
 	private JComboBox<String> cmbFile;
-	private JPanel mainTab;
-	private JMenu menu, mnuAcc, mnuFile;
-	private JMenuBar mnuBar;
-	private JMenuItem mnuQuit, mntmAbout;
+	private JMenu mnuAcc, mnuFile;
 	private JTextField txtTitle;
-	private JMenuItem mntmAddAccount;
 	private JLabel lblTagslenght, lbltitlelenght, lblDesclenght;
-	private JScrollPane TabQueues;
-	private JPanel panel, panel_1;
+	private JPanel panel;
 	private JSpinner spinner;
-	private JPanel TabQueue;
-	private JButton btnSelectMovie, btnStart, btnStop, btnAddToQueue;
+	private JButton btnSelectMovie, btnStart, btnAddToQueue;
 	private JPanel QueuePanel;
 	private JComboBox<CategoryType> cmbCategory;
-	private JMenuItem mntmDonate;
 	private JTextArea txtTags;
 	private JComboBox<AccountType> cmbAccount;
 	private SidebarSection ss1, ss2, ss3;
 	public transient static HashMap<Integer, JMenuItem> _accounts = new HashMap<Integer, JMenuItem>();
-	private JSlider slider;
-	private JScrollPane TagScrollPane;
 	private int editItem = -1;
 
 	
@@ -164,10 +156,10 @@ public class FrmMain extends JFrame implements IMainMenu {
 	 *            the command line arguments
 	 */
 	public static void main(String args[]) {
-		if (args.length > 0 && args[0].equalsIgnoreCase("debug")) {
+		/* if (args.length > 0 && args[0].equalsIgnoreCase("debug")) {
 
 			
-		}
+		} */
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
@@ -178,7 +170,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		if(!dataDir.exists()){
 			LOG.info(APP_NAME + " " + VERSION + " first launch. Database folder not found.", FrmMain.class);
 			dataDir.mkdirs();
-			if(!SQLite.set_up()){
+			if(!SQLite.Setup()){
 				JOptionPane.showMessageDialog(null,  String.format(LANG.getString("frmMain.errordatabase.Message"),System.getProperty("user.home") + "/YouPloader/data/"), LANG.getString("frmMain.errordatabase.title"), JOptionPane.ERROR_MESSAGE);
 			}
 			firstlaunch = true;
@@ -217,7 +209,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/yp.png")));
 		this.setLocationRelativeTo(null);
 		try {
-			load_queue();
+			loadQueue();
 		} catch (SQLException | IOException e) {
 			LOG.error("Error: ", e);
 		}
@@ -240,10 +232,10 @@ public class FrmMain extends JFrame implements IMainMenu {
 	public void initComponents() {
 		LOG.debug("init Components", FrmMain.class);
 		TabbedPane = new JTabbedPane();
-		mainTab = new JPanel();
-		mnuBar = new JMenuBar();
+		JPanel mainTab = new JPanel();
+		JMenuBar mnuBar = new JMenuBar();
 		mnuFile = new JMenu();
-		mnuQuit = new JMenuItem();
+		JMenuItem mnuQuit = new JMenuItem();
 		mnuAcc = new JMenu();
 		cmbCategory = new JComboBox<CategoryType>();
 		cmbCategory.setModel(new DefaultComboBoxModel<CategoryType>());
@@ -262,7 +254,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		}
 
 		panel = new JPanel();
-		javax.swing.GroupLayout mainTabLayout = new javax.swing.GroupLayout(mainTab);
+		javax.swing.GroupLayout mainTabLayout = new GroupLayout(mainTab);
 		mainTabLayout
 				.setHorizontalGroup(mainTabLayout.createParallelGroup(Alignment.LEADING).addGroup(Alignment.TRAILING,
 						mainTabLayout.createSequentialGroup()
@@ -333,7 +325,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		lblTagslenght = new JLabel("(0/500)");
 		panel.add(lblTagslenght, "14, 14, 3, 1, right, top");
 
-		TagScrollPane = new JScrollPane();
+		JScrollPane TagScrollPane = new JScrollPane();
 		panel.add(TagScrollPane, "3, 16, 14, 1, fill, fill");
 
 		txtTags = new JTextArea();
@@ -359,7 +351,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		panel.add(btnAddToQueue, "3, 21, 6, 1, fill, fill");
 		btnAddToQueue.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				QueueButton();
+				queueButton();
 			}
 		});
 		JLabel lblSelectVideo = new JLabel();
@@ -397,11 +389,11 @@ public class FrmMain extends JFrame implements IMainMenu {
 		mnuFile.setText(LANG.getString("frmMain.menu.File"));
 
 		mnuQuit.setAccelerator(
-				javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_MASK));
+				KeyStroke.getKeyStroke(KeyEvent.VK_F4, InputEvent.ALT_MASK));
 		mnuQuit.setText(LANG.getString("frmMain.menu.Quit"));
-		mnuQuit.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				mnuQuitActionPerformed(evt);
+		mnuQuit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				mnuQuitActionPerformed();
 			}
 		});
 		mnuFile.add(mnuQuit);
@@ -412,9 +404,9 @@ public class FrmMain extends JFrame implements IMainMenu {
 		mnuBar.add(mnuAcc);
 
 		JSeparator separator = new JSeparator();
-		mntmAddAccount = new JMenuItem(LANG.getString("frmMain.menu.AddAccount"));
-		mntmAddAccount.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
+		JMenuItem mntmAddAccount = new JMenuItem(LANG.getString("frmMain.menu.AddAccount"));
+		mntmAddAccount.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
 				mntmAddAccountActionPerformed();
 			}
 		});
@@ -424,13 +416,13 @@ public class FrmMain extends JFrame implements IMainMenu {
 
 		setJMenuBar(mnuBar);
 
-		menu = new JMenu("?");
+		JMenu menu = new JMenu("?");
 		mnuBar.add(menu);
 
-		mntmDonate = new JMenuItem(LANG.getString("frmMain.menu.Donate"));
+		JMenuItem mntmDonate = new JMenuItem(LANG.getString("frmMain.menu.Donate"));
 		menu.add(mntmDonate);
-		mntmDonate.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
+		mntmDonate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
 				if (Desktop.isDesktopSupported()) {
 					try {
 						Desktop.getDesktop().browse(new URI(
@@ -444,22 +436,22 @@ public class FrmMain extends JFrame implements IMainMenu {
 			}
 		});
 
-		mntmAbout = new JMenuItem(LANG.getString("frmMain.menu.About"));
-		mntmAbout.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
+		JMenuItem mntmAbout = new JMenuItem(LANG.getString("frmMain.menu.About"));
+		mntmAbout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
 				FrmAbout about = new FrmAbout();
 				about.setVisible(true);
 			}
 		});
 		menu.add(mntmAbout);
 
-		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+		javax.swing.GroupLayout layout = new GroupLayout(getContentPane());
 		layout.setHorizontalGroup(layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(layout.createSequentialGroup().addContainerGap().addComponent(TabbedPane).addContainerGap()));
 		layout.setVerticalGroup(layout.createParallelGroup(Alignment.LEADING).addComponent(TabbedPane,
 				GroupLayout.DEFAULT_SIZE, 501, Short.MAX_VALUE));
 
-		TabQueues = new JScrollPane();
+		JScrollPane TabQueues = new JScrollPane();
 		QueuePanel = new JPanel();
 		TabQueues.setViewportView(QueuePanel);
 		getContentPane().setLayout(layout);
@@ -489,12 +481,12 @@ public class FrmMain extends JFrame implements IMainMenu {
 		btnStart = new JButton("Start");
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				start_uploads();					
+				startUploads();					
 			}
 		});
 		buttonPanel.add(btnStart, "2, 4");
 
-		btnStop = new JButton("Stop");
+		JButton btnStop = new JButton("Stop");
 		btnStop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				UploadMgr.stop();
@@ -505,7 +497,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		JLabel lblUploads = new JLabel("Uploads:");
 		buttonPanel.add(lblUploads, "18, 4, right, fill");
 
-		slider = new JSlider();
+		JSlider slider = new JSlider();
 		slider.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				JSlider s = (JSlider) evt.getSource();
@@ -541,7 +533,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		JLabel lblKbps = new JLabel("kbps");
 		buttonPanel.add(lblKbps, "28, 4");
 
-		TabQueue = new JPanel();
+		JPanel TabQueue = new JPanel();
 		TabbedPane.addTab(LANG.getString("frmMain.Tabs.Queue"), null, TabQueue, null);
 		TabQueue.setLayout(new BorderLayout(0, 0));
 
@@ -549,17 +541,14 @@ public class FrmMain extends JFrame implements IMainMenu {
 
 		TabQueue.add(TabQueues, BorderLayout.CENTER);
 
-		panel_1 = new JPanel();
-		FlowLayout flowLayout = (FlowLayout) panel_1.getLayout();
-		flowLayout.setAlignment(FlowLayout.LEFT);
 		QueuePanel.revalidate();
-		load_accounts();
+		loadAccounts();
 		pack();
 		ss1.expand();
 	}
 
-	protected void start_uploads() {
-		if(s.setting.get("tos_agreed").equals("0") && !this.tos){
+	protected void startUploads() {
+		if("0".equals(s.setting.get("tos_agreed")) && !this.tos){
 			JCheckBox checkbox = new JCheckBox(LANG.getString("frmMain.tos.Remember"));
 			String message = LANG.getString("frmMain.tos.Message");
 			Object[] params = {message, checkbox};
@@ -580,7 +569,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		}
 	}
 
-	private void mnuQuitActionPerformed(ActionEvent evt) {
+	private void mnuQuitActionPerformed() {
 		System.exit(0);
 	}
 
@@ -590,19 +579,19 @@ public class FrmMain extends JFrame implements IMainMenu {
 
 	}
 
-	public void prep_modal(Account Account, String code) {
+	public void prepModal(Account Account, String code) {
 		modal = new ModalDialog((Frame) this, Account, code);
 	}
 
-	public void show_modal() {
+	public void showModal() {
 		modal.setVisible(true);
 	}
 
-	public void close_modal() {
+	public void closeModal() {
 		modal.success();
 	}
 	
-	public void refresh_accounts() {
+	public void refreshAccounts() {
 		int s = _accounts.size();
 		for (int i = 0; i < s; i++) {
 			mnuAcc.remove(_accounts.get(i));
@@ -610,10 +599,10 @@ public class FrmMain extends JFrame implements IMainMenu {
 		}
 		cmbAccount.removeAllItems();
 		btnAddToQueue.setEnabled(false);
-		load_accounts();
+		loadAccounts();
 	}
 	
-	public void load_accounts() {
+	public void loadAccounts() {
 		int i = 0;
 		HashMap<AccountType, Integer> accounts = accMng.load();
 		for (Entry<AccountType, Integer> entry : accounts.entrySet()) {
@@ -646,7 +635,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		accedit.setVisible(true);
 	}
 
-	private void load_queue() throws JsonParseException, JsonMappingException, SQLException, IOException {
+	private void loadQueue() throws JsonParseException, JsonMappingException, SQLException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		PreparedStatement prest = null;
 		String sql = "SELECT * FROM `uploads` ORDER BY `id`";
@@ -702,7 +691,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 	 * @throws IOException
 	 * @throws UploadException
 	 */
-	public UploadItem create_upload(String File, String Name, int acc_id) throws IOException {
+	public UploadItem createUpload(String File, String Name, int acc_id) throws IOException {
 		UploadItem f = new UploadItem();
 		EditPanel edit = (EditPanel) ss1.contentPane;
 		f.getlblName().setText(Name);
@@ -799,7 +788,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		}
 	}
 
-	private void QueueButton() {
+	private void queueButton() {
 		AccountType acc = (AccountType) cmbAccount.getSelectedItem();
 		if (this.editItem != -1) {
 			try {
@@ -812,7 +801,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		} else {
 			if (cmbFile.getSelectedItem() != null && !cmbFile.getSelectedItem().toString().equals("")) {
 				try {
-					create_upload(cmbFile.getSelectedItem().toString(), txtTitle.getText(), acc.getValue());
+					createUpload(cmbFile.getSelectedItem().toString(), txtTitle.getText(), acc.getValue());
 					cmbFile.removeAllItems();
 				} catch (IOException e1) {
 					LOG.error("Error: ", e1);
@@ -847,37 +836,16 @@ public class FrmMain extends JFrame implements IMainMenu {
 		ResultSet rs = prest.executeQuery();
 		if (rs.isBeforeFirst()) {
 			while (rs.next()) {
-				Video v = mapper.readValue(rs.getString("data"), new TypeReference<Video>() {
-				});
+				Video v = mapper.readValue(rs.getString("data"), new TypeReference<Video>() {});
 				cmbFile.removeAllItems();
 				cmbFile.addItem(rs.getString("file"));
-				for (int i = 0; i < cmbCategory.getItemCount(); i++) {
-					if (cmbCategory.getItemAt(i).getValue() == v.snippet.categoryId) {
-						cmbCategory.setSelectedIndex(i);
-					}
-				}
+				this.setCategory(v.snippet.categoryId);
 				txtTitle.setText(v.snippet.title);
 				cmbAccount.setSelectedItem(rs.getString("account"));
 				txtDescription.setText(v.snippet.description);
-				String tags = "";
-				for (int i = 0; i < v.snippet.tags.length; i++) {
-					if (i == 0) {
-						tags = v.snippet.tags[i];
-					} else {
-						tags += "," + v.snippet.tags[i];
-					}
-				}
-				txtTags.setText(tags);
-				for (int i = 0; i < edit.getCmbLicense().getItemCount(); i++) {
-					if (edit.getCmbLicense().getItemAt(i).getData().equals(v.status.license)) {
-						edit.getCmbLicense().setSelectedIndex(i);
-					}
-				}
-				for (int i = 0; i < edit.getCmbVisibility().getItemCount(); i++) {
-					if (edit.getCmbVisibility().getItemAt(i).getData().equals(v.status.privacyStatus)) {
-						edit.getCmbVisibility().setSelectedIndex(i);
-					}
-				}
+				txtTags.setText(prepareTagsfromArray(v.snippet.tags));
+				edit.setLicence(v.status.license);
+				edit.setVisibility(v.status.privacyStatus);
 				if (v.status.publishAt != null && !v.status.publishAt.equals("")) {
 					edit.getDateTimePicker().setEnabled(true);
 					edit.getDateTimePicker().getEditor().setEnabled(true);
@@ -935,40 +903,32 @@ public class FrmMain extends JFrame implements IMainMenu {
 		edit.refresh_templates(t.name);
 	}
 	
+	private String prepareTagsfromArray(String[] in){
+		String tags = "";
+		for (int i = 0; i < in.length; i++) {
+			if (i == 0) {
+				tags = in[i];
+			} else {
+				tags += "," + in[i];
+			}
+		}
+		return tags;
+	}
+	
 	public void loadTemplate(Item item) {
 		EditPanel edit = (EditPanel) ss1.contentPane;
 		Template t = item.getTemplate();
-		for (int i = 0; i < cmbCategory.getItemCount(); i++) {
-			if (cmbCategory.getItemAt(i).getValue() == t.videodata.snippet.categoryId) {
-				cmbCategory.setSelectedIndex(i);
-			}
-		}
+		this.setCategory(t.videodata.snippet.categoryId);
 		txtTitle.setText(t.videodata.snippet.title);
 		txtDescription.setText(t.videodata.snippet.description);
-		String tags = "";
-		for (int i = 0; i < t.videodata.snippet.tags.length; i++) {
-			if (i == 0) {
-				tags = t.videodata.snippet.tags[i];
-			} else {
-				tags += "," + t.videodata.snippet.tags[i];
-			}
-		}
-		txtTags.setText(tags);
-		for (int i = 0; i < edit.getCmbLicense().getItemCount(); i++) {
-			if (edit.getCmbLicense().getItemAt(i).getData().equals(t.videodata.status.license)) {
-				edit.getCmbLicense().setSelectedIndex(i);
-			}
-		}
+		txtTags.setText(prepareTagsfromArray(t.videodata.snippet.tags));
+		edit.setLicence(t.videodata.status.license);
 		if(t.videodata.status.publishAt != null && t.videodata.status.publishAt.equals("1") && t.videodata.status.privacyStatus.equals("private")){
 			edit.getCmbVisibility().setSelectedItem(VisibilityType.SCHEDULED);
 		}else if(t.videodata.status.publishAt != null && t.videodata.status.publishAt.equals("0") && t.videodata.status.privacyStatus.equals("private")){
 			edit.getCmbVisibility().setSelectedItem(VisibilityType.PRIVATE);
 		}else{
-			for (int i = 0; i < edit.getCmbVisibility().getItemCount(); i++) {
-				if (edit.getCmbVisibility().getItemAt(i).getData().equals(t.videodata.status.privacyStatus)) {
-					edit.getCmbVisibility().setSelectedIndex(i);
-				}
-			}
+			edit.setVisibility(t.videodata.status.privacyStatus);
 		}
 		if(t.enddir != null){
 			edit.getTxtEndDir().setText(t.enddir);
@@ -1014,6 +974,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		}
 		lbltitlelenght.setText("(" + txtTitle.getText().length() + "/100)");
 	}
+	
 	public void saveTemplate(int id) {
 		EditPanel edit = (EditPanel) ss1.contentPane;
 		Video v = new Video();
@@ -1050,6 +1011,14 @@ public class FrmMain extends JFrame implements IMainMenu {
 		edit.refresh_templates(t.name);
 	}
 
+	public void setCategory(int catId){
+		for (int i = 0; i < cmbCategory.getItemCount(); i++) {
+			if (cmbCategory.getItemAt(i).getValue() == catId) {
+				cmbCategory.setSelectedIndex(i);
+			}
+		}
+	}
+	
 	public void deleteTemplate(int id) {
 		EditPanel edit = (EditPanel) ss1.contentPane;
 		TemplateMgr.delete(id);

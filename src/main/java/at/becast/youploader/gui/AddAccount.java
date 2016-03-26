@@ -136,7 +136,7 @@ public class AddAccount extends javax.swing.JDialog {
 				Browser browser = new Browser(account);
 				browser.setVisible(true);
 				browser.loadURL("https://google.com/device");
-				parent.prep_modal(account, code);
+				parent.prepModal(account, code);
 				Runnable runnable = new Runnable() {
 					public void run() {
 						try {
@@ -147,15 +147,15 @@ public class AddAccount extends javax.swing.JDialog {
 							LOG.info("Got refresh token {}", account.refreshToken);
 							account.save();
 							browser.dispose();
-							parent.refresh_accounts();
-							parent.close_modal();
+							parent.refreshAccounts();
+							parent.closeModal();
 						} catch (InterruptedException | IOException e) {
 							LOG.error("Error while linking", e);
 						}
 					}
 				};
 				new Thread(runnable).start();
-				parent.show_modal();
+				parent.showModal();
 			} else {
 				LOG.info("Account {} already exists", AccName.getText());
 				JOptionPane.showMessageDialog(this, LANG.getString("AddAccount.nameexists.message"), LANG.getString("AddAccount.nameexists.title"),

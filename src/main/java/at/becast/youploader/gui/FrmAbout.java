@@ -24,6 +24,10 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.JScrollPane;
@@ -48,6 +52,7 @@ public class FrmAbout extends JDialog {
 	 */
 	private static final long serialVersionUID = -8005016163820525203L;
 	private final JPanel contentPanel = new JPanel();
+	private static final Logger LOG = LoggerFactory.getLogger(FrmAbout.class);
 
 	/**
 	 * Create the dialog.
@@ -117,10 +122,12 @@ public class FrmAbout extends JDialog {
 						try {
 							Desktop.getDesktop().browse(new URI(
 									"https://github.com/becast/youploader"));
-						} catch (IOException | URISyntaxException e1) {
-							/* TODO: error handling */ }
-					} else {
-						/* TODO: error handling */ }
+						} catch (IOException | URISyntaxException e) { 
+		      		    	  LOG.error("Browser error", e);
+		      		      }
+		      		    } else { 
+		      		    	LOG.error("Browser error");
+		      		    }
 			}
 		});
 		lblHttpsgithubcombecastyouploader.setForeground(Color.BLUE);

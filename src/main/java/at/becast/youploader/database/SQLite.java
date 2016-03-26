@@ -51,7 +51,7 @@ public class SQLite {
     }
     
 
-    public static Boolean set_up(){
+    public static Boolean Setup(){
         if(c == null)
             new SQLite(FrmMain.DB_FILE);
         
