@@ -47,7 +47,7 @@ public class AccountManager {
         return accMng;
     }
 	
-	public void set_active(String Username){
+	public void setActive(String Username){
 		Connection c = SQLite.getInstance();
 		Statement stmt;
 		try {

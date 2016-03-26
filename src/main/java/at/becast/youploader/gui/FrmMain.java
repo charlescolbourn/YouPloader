@@ -789,7 +789,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 					SQLite.updateUpload(acc_id, data, v, enddir, upload_id);
 				}
 				File data = new File(File);
-				UploadMgr.update_upload(upload_id, data, v, acc_id);
+				UploadMgr.updateUpload(upload_id, data, v, acc_id);
 			}
 		}
 	}

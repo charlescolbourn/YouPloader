@@ -181,7 +181,7 @@ public class UploadManager {
 		}
 	}
 
-	public void update_upload(int upload_id, File data, Video v, int acc_id) {
+	public void updateUpload(int upload_id, File data, Video v, int acc_id) {
 		if(!_Uploading.isEmpty()){
 			for(int i=0;i<_Uploading.size();i++){
 				if(_Uploading.get(i).id == upload_id){
