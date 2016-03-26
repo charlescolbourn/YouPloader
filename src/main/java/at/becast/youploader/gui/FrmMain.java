@@ -137,12 +137,11 @@ public class FrmMain extends JFrame implements IMainMenu {
 	private JTextArea txtDescription;
 	private JTabbedPane TabbedPane;
 	private JComboBox<String> cmbFile;
-	private JMenu mnuAcc, mnuFile;
+	private JMenu mnuAcc;
 	private JTextField txtTitle;
 	private JLabel lblTagslenght, lbltitlelenght, lblDesclenght;
-	private JPanel panel;
 	private JSpinner spinner;
-	private JButton btnSelectMovie, btnStart, btnAddToQueue;
+	private JButton btnSelectMovie, btnAddToQueue;
 	private JPanel QueuePanel;
 	private JComboBox<CategoryType> cmbCategory;
 	private JTextArea txtTags;
@@ -151,16 +150,17 @@ public class FrmMain extends JFrame implements IMainMenu {
 	public transient static HashMap<Integer, JMenuItem> _accounts = new HashMap<Integer, JMenuItem>();
 	private int editItem = -1;
 
-	
 	/**
 	 * @param args
 	 *            the command line arguments
 	 */
 	public static void main(String args[]) {
-		/* if (args.length > 0 && args[0].equalsIgnoreCase("debug")) {
-
-			
-		} */
+		/*
+		 * if (args.length > 0 && args[0].equalsIgnoreCase("debug")) {
+		 * 
+		 * 
+		 * }
+		 */
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
@@ -168,11 +168,14 @@ public class FrmMain extends JFrame implements IMainMenu {
 			LOG.error("Look and Feel exception", e);
 		}
 		File dataDir = new File(System.getProperty("user.home") + "/YouPloader/data/");
-		if(!dataDir.exists()){
+		if (!dataDir.exists()) {
 			LOG.info(APP_NAME + " " + VERSION + " first launch. Database folder not found.", FrmMain.class);
 			dataDir.mkdirs();
-			if(!SQLite.Setup()){
-				JOptionPane.showMessageDialog(null,  String.format(LANG.getString("frmMain.errordatabase.Message"),System.getProperty("user.home") + "/YouPloader/data/"), LANG.getString("frmMain.errordatabase.title"), JOptionPane.ERROR_MESSAGE);
+			if (!SQLite.Setup()) {
+				JOptionPane.showMessageDialog(null,
+						String.format(LANG.getString("frmMain.errordatabase.Message"),
+								System.getProperty("user.home") + "/YouPloader/data/"),
+						LANG.getString("frmMain.errordatabase.title"), JOptionPane.ERROR_MESSAGE);
 			}
 			firstlaunch = true;
 		}
@@ -185,7 +188,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 			}
 		});
 	}
-	
+
 	/**
 	 * Creates new form frmMain
 	 */
@@ -193,18 +196,16 @@ public class FrmMain extends JFrame implements IMainMenu {
 		LOG.info(APP_NAME + " " + VERSION + " starting.", FrmMain.class);
 		self = this;
 		this.tos = false;
-		this.setMinimumSize(new Dimension(900,580));
-		addWindowListener(new WindowAdapter()
-        {
-            @Override
-            public void windowClosing(WindowEvent e)
-            {
-            	LOG.info(APP_NAME + " " + VERSION + " closing.", FrmMain.class);
-            	LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
-            	loggerContext.stop();
-                e.getWindow().dispose();
-            }
-        });
+		this.setMinimumSize(new Dimension(900, 580));
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				LOG.info(APP_NAME + " " + VERSION + " closing.", FrmMain.class);
+				LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+				loggerContext.stop();
+				e.getWindow().dispose();
+			}
+		});
 		UploadMgr.setParent(this);
 		initComponents();
 		this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/yp.png")));
@@ -215,13 +216,15 @@ public class FrmMain extends JFrame implements IMainMenu {
 			LOG.error("Error: ", e);
 		}
 		EditPanel edit = (EditPanel) ss1.contentPane;
-		if(edit.getCmbTemplate().getModel().getSize()>0){
+		if (edit.getCmbTemplate().getModel().getSize() > 0) {
 			edit.getCmbTemplate().setSelectedIndex(0);
 		}
 		this.setVisible(true);
-		if(firstlaunch){
-			int n = JOptionPane.showConfirmDialog(null,  LANG.getString("frmMain.initialAccount.Message"), LANG.getString("frmMain.initialAccount.title"),JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-			if(n==JOptionPane.YES_OPTION){
+		if (firstlaunch) {
+			int n = JOptionPane.showConfirmDialog(null, LANG.getString("frmMain.initialAccount.Message"),
+					LANG.getString("frmMain.initialAccount.title"), JOptionPane.YES_NO_OPTION,
+					JOptionPane.QUESTION_MESSAGE);
+			if (n == JOptionPane.YES_OPTION) {
 				mntmAddAccountActionPerformed();
 			}
 		}
@@ -235,7 +238,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		TabbedPane = new JTabbedPane();
 		JPanel mainTab = new JPanel();
 		JMenuBar mnuBar = new JMenuBar();
-		mnuFile = new JMenu();
+		JMenu mnuFile = new JMenu();
 		JMenuItem mnuQuit = new JMenuItem();
 		mnuAcc = new JMenu();
 		cmbCategory = new JComboBox<CategoryType>();
@@ -254,8 +257,8 @@ public class FrmMain extends JFrame implements IMainMenu {
 			cmbCategory.addItem(new CategoryType(cat.getID(), cat.toString()));
 		}
 
-		panel = new JPanel();
-		javax.swing.GroupLayout mainTabLayout = new GroupLayout(mainTab);
+		JPanel panel = new JPanel();
+		GroupLayout mainTabLayout = new GroupLayout(mainTab);
 		mainTabLayout
 				.setHorizontalGroup(mainTabLayout.createParallelGroup(Alignment.LEADING).addGroup(Alignment.TRAILING,
 						mainTabLayout.createSequentialGroup()
@@ -389,8 +392,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 
 		mnuFile.setText(LANG.getString("frmMain.menu.File"));
 
-		mnuQuit.setAccelerator(
-				KeyStroke.getKeyStroke(KeyEvent.VK_F4, InputEvent.ALT_MASK));
+		mnuQuit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, InputEvent.ALT_MASK));
 		mnuQuit.setText(LANG.getString("frmMain.menu.Quit"));
 		mnuQuit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
@@ -429,10 +431,10 @@ public class FrmMain extends JFrame implements IMainMenu {
 						Desktop.getDesktop().browse(new URI(
 								"https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=AZ42BHSUTGPT6"));
 					} catch (IOException | URISyntaxException e1) {
-						LOG.error("Can't open browser"); 
+						LOG.error("Can't open browser");
 					}
 				} else {
-					LOG.error("Desktop not supported."); 
+					LOG.error("Desktop not supported.");
 				}
 			}
 		});
@@ -479,10 +481,10 @@ public class FrmMain extends JFrame implements IMainMenu {
 						FormSpecs.DEFAULT_ROWSPEC, FormSpecs.RELATED_GAP_ROWSPEC,
 						RowSpec.decode("max(0dlu;default)"), }));
 
-		btnStart = new JButton("Start");
+		JButton btnStart = new JButton("Start");
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				startUploads();					
+				startUploads();
 			}
 		});
 		buttonPanel.add(btnStart, "2, 4");
@@ -549,16 +551,17 @@ public class FrmMain extends JFrame implements IMainMenu {
 	}
 
 	protected void startUploads() {
-		if("0".equals(s.setting.get("tos_agreed")) && !this.tos){
+		if ("0".equals(s.setting.get("tos_agreed")) && !this.tos) {
 			JCheckBox checkbox = new JCheckBox(LANG.getString("frmMain.tos.Remember"));
 			String message = LANG.getString("frmMain.tos.Message");
-			Object[] params = {message, checkbox};
+			Object[] params = { message, checkbox };
 			int n;
 			do {
-				n = JOptionPane.showConfirmDialog(null, params, LANG.getString("frmMain.tos.Title"), JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
-			} while(n == JOptionPane.CLOSED_OPTION);
-			if(n == JOptionPane.OK_OPTION){
-				if(checkbox.isSelected()){
+				n = JOptionPane.showConfirmDialog(null, params, LANG.getString("frmMain.tos.Title"),
+						JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
+			} while (n == JOptionPane.CLOSED_OPTION);
+			if (n == JOptionPane.OK_OPTION) {
+				if (checkbox.isSelected()) {
 					s.setting.put("tos_agreed", "1");
 					s.save("tos_agreed");
 				}
@@ -591,7 +594,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 	public void closeModal() {
 		modal.success();
 	}
-	
+
 	public void refreshAccounts() {
 		int s = _accounts.size();
 		for (int i = 0; i < s; i++) {
@@ -602,7 +605,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		btnAddToQueue.setEnabled(false);
 		loadAccounts();
 	}
-	
+
 	public void loadAccounts() {
 		int i = 0;
 		HashMap<AccountType, Integer> accounts = accMng.load();
@@ -624,7 +627,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 			mnuAcc.add(rdoBtn);
 			i++;
 		}
-		if(!accounts.isEmpty()){
+		if (!accounts.isEmpty()) {
 			btnAddToQueue.setEnabled(true);
 		}
 
@@ -840,7 +843,8 @@ public class FrmMain extends JFrame implements IMainMenu {
 		ResultSet rs = prest.executeQuery();
 		if (rs.isBeforeFirst()) {
 			while (rs.next()) {
-				Video v = mapper.readValue(rs.getString("data"), new TypeReference<Video>() {});
+				Video v = mapper.readValue(rs.getString("data"), new TypeReference<Video>() {
+				});
 				cmbFile.removeAllItems();
 				cmbFile.addItem(rs.getString("file"));
 				this.setCategory(v.snippet.categoryId);
@@ -906,8 +910,8 @@ public class FrmMain extends JFrame implements IMainMenu {
 		TemplateMgr.save(t);
 		edit.refresh_templates(t.name);
 	}
-	
-	private String prepareTagsfromArray(String[] in){
+
+	private String prepareTagsfromArray(String[] in) {
 		String tags = "";
 		for (int i = 0; i < in.length; i++) {
 			if (i == 0) {
@@ -918,7 +922,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		}
 		return tags;
 	}
-	
+
 	public void loadTemplate(Item item) {
 		EditPanel edit = (EditPanel) ss1.contentPane;
 		Template t = item.getTemplate();
@@ -927,24 +931,26 @@ public class FrmMain extends JFrame implements IMainMenu {
 		txtDescription.setText(t.videodata.snippet.description);
 		txtTags.setText(prepareTagsfromArray(t.videodata.snippet.tags));
 		edit.setLicence(t.videodata.status.license);
-		if(t.videodata.status.publishAt != null && t.videodata.status.publishAt.equals("1") && t.videodata.status.privacyStatus.equals("private")){
+		if (t.videodata.status.publishAt != null && t.videodata.status.publishAt.equals("1")
+				&& t.videodata.status.privacyStatus.equals("private")) {
 			edit.getCmbVisibility().setSelectedItem(VisibilityType.SCHEDULED);
-		}else if(t.videodata.status.publishAt != null && t.videodata.status.publishAt.equals("0") && t.videodata.status.privacyStatus.equals("private")){
+		} else if (t.videodata.status.publishAt != null && t.videodata.status.publishAt.equals("0")
+				&& t.videodata.status.privacyStatus.equals("private")) {
 			edit.getCmbVisibility().setSelectedItem(VisibilityType.PRIVATE);
-		}else{
+		} else {
 			edit.setVisibility(t.videodata.status.privacyStatus);
 		}
-		if(t.enddir != null){
+		if (t.enddir != null) {
 			edit.getTxtEndDir().setText(t.enddir);
 		}
-		
-		if(t.startdir != null){
+
+		if (t.startdir != null) {
 			edit.getTxtStartDir().setText(t.startdir);
 		}
 		calcNotifies();
 	}
 
-	private void calcNotifies(){
+	private void calcNotifies() {
 		if (txtTags.getText().length() > 450) {
 			lblTagslenght.setForeground(Color.RED);
 		} else {
@@ -955,7 +961,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 
 		}
 		lblTagslenght.setText("(" + txtTags.getText().length() + "/500)");
-		
+
 		if (txtDescription.getText().length() > 900) {
 			lblDesclenght.setForeground(Color.RED);
 		} else {
@@ -966,7 +972,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 
 		}
 		lblDesclenght.setText("(" + txtDescription.getText().length() + "/1000)");
-		
+
 		if (txtTitle.getText().length() > 90) {
 			lbltitlelenght.setForeground(Color.RED);
 		} else {
@@ -978,7 +984,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		}
 		lbltitlelenght.setText("(" + txtTitle.getText().length() + "/100)");
 	}
-	
+
 	public void saveTemplate(int id) {
 		EditPanel edit = (EditPanel) ss1.contentPane;
 		Video v = new Video();
@@ -996,9 +1002,9 @@ public class FrmMain extends JFrame implements IMainMenu {
 			v.snippet.tags = trimmedtags;
 		}
 		VisibilityType visibility = (VisibilityType) edit.getCmbVisibility().getSelectedItem();
-		if(visibility == VisibilityType.SCHEDULED){
+		if (visibility == VisibilityType.SCHEDULED) {
 			v.status.publishAt = "1";
-		}else{
+		} else {
 			v.status.publishAt = "0";
 		}
 		v.status.privacyStatus = visibility.getData();
@@ -1015,20 +1021,20 @@ public class FrmMain extends JFrame implements IMainMenu {
 		edit.refresh_templates(t.name);
 	}
 
-	public void setCategory(int catId){
+	public void setCategory(int catId) {
 		for (int i = 0; i < cmbCategory.getItemCount(); i++) {
 			if (cmbCategory.getItemAt(i).getValue() == catId) {
 				cmbCategory.setSelectedIndex(i);
 			}
 		}
 	}
-	
+
 	public void deleteTemplate(int id) {
 		EditPanel edit = (EditPanel) ss1.contentPane;
 		TemplateMgr.delete(id);
 		edit.refresh_templates();
 	}
-	
+
 	private JPanel getQueuePanel() {
 		return QueuePanel;
 	}
@@ -1040,6 +1046,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 	public JTextArea getTxtDescription() {
 		return txtDescription;
 	}
+
 	public JSpinner getSpinner() {
 		return spinner;
 	}

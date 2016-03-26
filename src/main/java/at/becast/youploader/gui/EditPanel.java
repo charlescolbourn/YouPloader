@@ -60,7 +60,6 @@ public class EditPanel extends javax.swing.JPanel {
 	private static final long serialVersionUID = -2023946504262191056L;
 	private static final Logger LOG = LoggerFactory.getLogger(EditPanel.class);
 	private JComboBox<Item> cmbTemplate;
-	private JLabel jLabel1;
 	private JTextField txtStartDir;
 	private JTextField txtEndDir;
 	private FrmMain parent;
@@ -71,6 +70,7 @@ public class EditPanel extends javax.swing.JPanel {
 	private TemplateManager TemplateMgr = TemplateManager.getInstance();
 	private JTextField txtThumbnail;
 	private JTextField txtGameTitle;
+	private DateTimePicker dateTimePickerStart;
 
 	/**
 	 * Creates new form editPanel
@@ -81,7 +81,7 @@ public class EditPanel extends javax.swing.JPanel {
 	}
 
 	private void initComponents() {
-		jLabel1 = new JLabel();
+		JLabel lblTemplate = new JLabel();
 		cmbTemplate = new JComboBox<Item>();
 		load_templates();
 		cmbTemplate.addActionListener(new ActionListener() {
@@ -136,8 +136,8 @@ public class EditPanel extends javax.swing.JPanel {
 				FormSpecs.LABEL_COMPONENT_GAP_ROWSPEC,
 				RowSpec.decode("20px"),}));
 
-		jLabel1.setText("Template:");
-		add(jLabel1, "2, 2, right, center");
+		lblTemplate.setText("Template:");
+		add(lblTemplate, "2, 2, right, center");
 		add(cmbTemplate, "4, 2, 5, 1, fill, fill");
 
 		JButton btnNewTemplate = new JButton("");
@@ -265,7 +265,7 @@ public class EditPanel extends javax.swing.JPanel {
 		lblStartUploadAt.setEnabled(false);
 		add(lblStartUploadAt, "2, 16, right, default");
 		
-		DateTimePicker dateTimePickerStart = new DateTimePicker();
+		dateTimePickerStart = new DateTimePicker();
 		dateTimePickerStart.setEnabled(false);
 		add(dateTimePickerStart, "4, 16, 5, 1, fill, fill");
 		
@@ -416,5 +416,14 @@ public class EditPanel extends javax.swing.JPanel {
 
 	public JComboBox<LicenseType> getCmbLicense() {
 		return cmbLicense;
+	}
+	public JTextField getTxtGameTitle() {
+		return txtGameTitle;
+	}
+	public JTextField getTxtThumbnail() {
+		return txtThumbnail;
+	}
+	public DateTimePicker getDateTimePickerStart() {
+		return dateTimePickerStart;
 	}
 }

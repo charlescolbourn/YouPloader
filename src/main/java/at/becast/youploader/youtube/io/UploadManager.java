@@ -190,7 +190,7 @@ public class UploadManager {
 					w.frame.getlblName().setText(v.snippet.title);
 					String release = "";
 					if(v.status.privacyStatus == VisibilityType.SCHEDULED.getData()){
-			        	if(!v.status.publishAt.equals("")){
+			        	if(!"".equals(v.status.publishAt)){
 			        		String pattern = "yyyy-MM-dd'T'HH:mm:ss.sssZ";
 			        		SimpleDateFormat formatter = new SimpleDateFormat(pattern);
 			        		Date date;
@@ -228,7 +228,7 @@ public class UploadManager {
 						w.frame.getlblName().setText(v.snippet.title);
 						String release = "";
 						if(v.status.privacyStatus == VisibilityType.SCHEDULED.getData()){
-				        	if(!v.status.publishAt.equals("")){
+				        	if(!"".equals(v.status.publishAt)){
 				        		String pattern = "yyyy-MM-dd'T'HH:mm:ss.sssZ";
 				        		SimpleDateFormat formatter = new SimpleDateFormat(pattern);
 				        		Date date;
