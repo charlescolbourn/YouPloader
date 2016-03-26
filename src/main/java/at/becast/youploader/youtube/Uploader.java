@@ -72,7 +72,7 @@ public class Uploader {
     this.http.close();
   }
   
-  public void set_speedlimit(int limit){
+  public void setSpeedlimit(int limit){
 	  this.stream.setSpeedLimit(limit);
   }
   

@@ -66,6 +66,7 @@ public class GuiUploadEvent implements UploadEvent {
 
   @Override
   public void onSpeedLimitSet(long limit) {
+	  //Nothing to do
   }
 
   @Override

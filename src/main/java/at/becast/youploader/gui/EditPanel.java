@@ -83,7 +83,7 @@ public class EditPanel extends javax.swing.JPanel {
 	private void initComponents() {
 		JLabel lblTemplate = new JLabel();
 		cmbTemplate = new JComboBox<Item>();
-		load_templates();
+		loadTemplates();
 		cmbTemplate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				TemplateCmbChanged(e);
@@ -325,12 +325,10 @@ public class EditPanel extends javax.swing.JPanel {
 				cmbTemplate.setEditable(false);
 				parent.createTemplate(temp);
 				this.adding = false;
-			}else if("comboBoxChanged".equals(e.getActionCommand())){
-				if(!this.adding){
-					LOG.debug("Load Template " + temp);
-					Item t = (Item) cmbTemplate.getSelectedItem();
-					parent.loadTemplate(t);
-				}
+			}else if("comboBoxChanged".equals(e.getActionCommand()) && !this.adding){
+				LOG.debug("Load Template " + temp);
+				Item t = (Item) cmbTemplate.getSelectedItem();
+				parent.loadTemplate(t);
 			}
 		}
 	}
@@ -361,23 +359,23 @@ public class EditPanel extends javax.swing.JPanel {
 		return txtEndDir;
 	}
 
-	public void load_templates(){
+	public void loadTemplates(){
 		for (Entry<Integer,Template> e: TemplateMgr.templates.entrySet()) {
 			cmbTemplate.addItem(new Item(e.getKey(),e.getValue()));
 		}
 	}
 	
-	public void refresh_templates(){
+	public void refreshTemplates(){
 		this.adding = true;
 		cmbTemplate.removeAllItems();
-		load_templates();
+		loadTemplates();
 		this.adding = false;
 	}
 	
-	public void refresh_templates(String name){
+	public void refreshTemplates(String name){
 		this.adding = true;
 		cmbTemplate.removeAllItems();
-		load_templates();
+		loadTemplates();
 		for (int i=0; i<cmbTemplate.getItemCount();i++) {
 			if(cmbTemplate.getItemAt(i).getTemplate().name.equals(name)){
 				cmbTemplate.setSelectedIndex(i);

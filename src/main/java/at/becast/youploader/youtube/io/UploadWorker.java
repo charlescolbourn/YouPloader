@@ -99,10 +99,10 @@ public class UploadWorker extends Thread {
 	}
 	
 	public void setSpeed(int Speed){
-		this.uploader.set_speedlimit(Speed);
+		this.uploader.setSpeedlimit(Speed);
 	}
 	
-	public void reset_uploader(){
+	public void resetUploader(){
 		this.uploader = new Uploader(this.AccMgr.getAuth(acc_id));
 	}
 	

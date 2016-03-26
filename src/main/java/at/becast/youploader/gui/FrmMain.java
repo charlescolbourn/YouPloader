@@ -171,7 +171,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		if (!dataDir.exists()) {
 			LOG.info(APP_NAME + " " + VERSION + " first launch. Database folder not found.", FrmMain.class);
 			dataDir.mkdirs();
-			if (!SQLite.Setup()) {
+			if (!SQLite.setup()) {
 				JOptionPane.showMessageDialog(null,
 						String.format(LANG.getString("frmMain.errordatabase.Message"),
 								System.getProperty("user.home") + "/YouPloader/data/"),
@@ -504,7 +504,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		slider.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				JSlider s = (JSlider) evt.getSource();
-				UploadMgr.set_uploadlimit(s.getValue());
+				UploadMgr.setUploadlimit(s.getValue());
 			}
 		});
 		slider.setMajorTickSpacing(1);
@@ -528,7 +528,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				JSpinner s = (JSpinner) e.getSource();
-				UploadMgr.set_limit(Integer.parseInt(s.getValue().toString()));
+				UploadMgr.setLimit(Integer.parseInt(s.getValue().toString()));
 			}
 		});
 		buttonPanel.add(spinner, "26, 4");
@@ -663,14 +663,14 @@ public class FrmMain extends JFrame implements IMainMenu {
 				long position = rs.getLong("uploaded");
 				long size = rs.getLong("lenght");
 				if (url != null && !url.equals("") && !"FINISHED".equals(status)) {
-					UploadMgr.add_resumeable_upload(f, data, v, acc_id, enddir, url, yt_id);
+					UploadMgr.addResumeableUpload(f, data, v, acc_id, enddir, url, yt_id);
 					f.getProgressBar().setString(String.format("%6.2f%%", (float) position / size * 100));
 					f.getProgressBar().setValue((int) ((float) position / size * 100));
 					f.getProgressBar().revalidate();
 					f.revalidate();
 					f.repaint();
 				} else if ("NOT_STARTED".equals(status)) {
-					UploadMgr.add_upload(f, data, v, acc_id, enddir);
+					UploadMgr.addUpload(f, data, v, acc_id, enddir);
 				} else {
 					f.getBtnEdit().setEnabled(false);
 					f.getProgressBar().setValue(100);
@@ -737,7 +737,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		LicenseType license = (LicenseType) edit.getCmbLicense().getSelectedItem();
 		v.status.license = license.getData();
 		File data = new File(File);
-		UploadMgr.add_upload(f, data, v, acc_id, edit.getTxtEndDir().getText());
+		UploadMgr.addUpload(f, data, v, acc_id, edit.getTxtEndDir().getText());
 		return f;
 	}
 
@@ -908,7 +908,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		}
 		t.setVideodata(v);
 		TemplateMgr.save(t);
-		edit.refresh_templates(t.name);
+		edit.refreshTemplates(t.name);
 	}
 
 	private String prepareTagsfromArray(String[] in) {
@@ -1018,7 +1018,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		}
 		t.setVideodata(v);
 		TemplateMgr.update(id, t);
-		edit.refresh_templates(t.name);
+		edit.refreshTemplates(t.name);
 	}
 
 	public void setCategory(int catId) {
@@ -1032,7 +1032,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 	public void deleteTemplate(int id) {
 		EditPanel edit = (EditPanel) ss1.contentPane;
 		TemplateMgr.delete(id);
-		edit.refresh_templates();
+		edit.refreshTemplates();
 	}
 
 	private JPanel getQueuePanel() {

@@ -63,7 +63,7 @@ public class UploadManager {
 		this.parent = parent;
 	}
 	
-	public void add_upload(UploadItem frame, File data, Video videodata, int acc_id, String enddir){
+	public void addUpload(UploadItem frame, File data, Video videodata, int acc_id, String enddir){
 		LOG.info("Adding upload");
 		this.speed_limit = Integer.parseInt(parent.getSpinner().getValue().toString());
 		if(frame.upload_id == -1){
@@ -76,7 +76,7 @@ public class UploadManager {
 			}
 			if(id != -1){
 				LOG.info("Upload is not a preexisting upload: Adding Upload");
-				frame.set_id(id);
+				frame.setId(id);
 				UploadWorker worker = new UploadWorker(id, frame, acc_id, data, videodata, speed_limit, enddir);
 				_ToUpload.addLast(worker);
 			}else{
@@ -89,7 +89,7 @@ public class UploadManager {
 		}
 	}
 	
-	public void add_resumeable_upload(UploadItem frame, File data, Video videodata, int acc_id, String enddir, String url, String yt_id){
+	public void addResumeableUpload(UploadItem frame, File data, Video videodata, int acc_id, String enddir, String url, String yt_id){
 		this.speed_limit = Integer.parseInt(parent.getSpinner().getValue().toString());
 		LOG.info("Adding resumed Upload");
 		UploadWorker worker = new UploadWorker(frame.upload_id, frame, acc_id, data, videodata, speed_limit, enddir, url, yt_id);
@@ -120,13 +120,13 @@ public class UploadManager {
 		}
 	}
 	
-	public void set_limit(int limit){
+	public void setLimit(int limit){
 		for(int i=0;i<_Uploading.size();i++){
 			_Uploading.get(i).setSpeed(limit);
 		}
 	}
 	
-	public void set_uploadlimit(int limit){
+	public void setUploadlimit(int limit){
 		this.upload_limit = limit;
 	}
 
@@ -248,7 +248,7 @@ public class UploadManager {
 						w.frame.getlblRelease().setText(release);
 						w.file = data;
 						w.acc_id = acc_id;
-						w.reset_uploader();
+						w.resetUploader();
 						return;
 					}
 				}

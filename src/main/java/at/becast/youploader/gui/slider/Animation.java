@@ -120,12 +120,14 @@ public abstract class Animation implements ActionListener {
 	 * the animation can be placed here.
 	 */
 	protected void starting () {
+		//Optional Method
 	}
 
 	/**
 	 * Optional stop method for an animation. Ie. clean up code, or rendering code that happens at the end of the animation
 	 */
 	protected void stopped () {
+		//Optional Method
 	}
 
 	

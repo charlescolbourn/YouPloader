@@ -174,7 +174,7 @@ public class UploadItem extends JPanel {
 
 	}
 	
-	public void set_id(int id){
+	public void setId(int id){
 		this.upload_id = id;
 	}
 
