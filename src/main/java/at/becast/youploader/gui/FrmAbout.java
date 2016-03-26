@@ -41,7 +41,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import javax.swing.JTextPane;
 
-public class frmAbout extends JDialog {
+public class FrmAbout extends JDialog {
 
 	/**
 	 * 
@@ -52,7 +52,7 @@ public class frmAbout extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public frmAbout() {
+	public FrmAbout() {
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setResizable(false);
 		setTitle("About YouPloader");
@@ -93,7 +93,7 @@ public class frmAbout extends JDialog {
 		label.setIcon(new ImageIcon(getClass().getResource("/yp.png")));
 		contentPanel.add(label, "1, 2, 1, 9, left, fill");
 		
-		JLabel lblYouploader = new JLabel("YouPloader "+frmMain.VERSION);
+		JLabel lblYouploader = new JLabel("YouPloader "+FrmMain.VERSION);
 		lblYouploader.setFont(new Font("Arial Black", Font.PLAIN, 11));
 		contentPanel.add(lblYouploader, "3, 2, left, default");
 		

@@ -31,12 +31,12 @@ public class PlaylistPanel extends JPanel {
 	 */
 	private static final long serialVersionUID = -870661666925769377L;
 	private static final Logger LOG = LoggerFactory.getLogger(PlaylistPanel.class);
-	private frmMain parent;
+	private FrmMain parent;
 
 	/**
 	 * Create the panel.
 	 */
-	public PlaylistPanel(frmMain parent) {
+	public PlaylistPanel(FrmMain parent) {
 		this.parent = parent;
 		initComponents();
 	}

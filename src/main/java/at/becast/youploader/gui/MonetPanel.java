@@ -34,12 +34,12 @@ public class MonetPanel extends javax.swing.JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOG = LoggerFactory.getLogger(MonetPanel.class);
-	private frmMain parent;
+	private FrmMain parent;
 
 	/**
      * Creates new form editPanel
      */
-    public MonetPanel(frmMain parent) {
+    public MonetPanel(FrmMain parent) {
     	this.parent = parent;
         initComponents();
     }

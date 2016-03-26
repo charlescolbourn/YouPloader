@@ -56,6 +56,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -115,17 +116,16 @@ import net.miginfocom.swing.MigLayout;
  * @author genuineparts
  */
 
-public class frmMain extends javax.swing.JFrame implements IMainMenu {
+public class FrmMain extends JFrame implements IMainMenu {
 
 	private static final long serialVersionUID = 6965358827253585528L;
 	public static final String DB_FILE = System.getProperty("user.home") + "/YouPloader/data/data.db";
 	public static final String APP_NAME = "YouPloader";
 	public static final String VERSION = "0.3";
-	private static final Logger LOG = LoggerFactory.getLogger(frmMain.class);
+	private static final Logger LOG = LoggerFactory.getLogger(FrmMain.class);
 	public static UploadManager UploadMgr;
 	public static TemplateManager TemplateMgr;
-	static Locale locale = Locale.getDefault();
-	private static final ResourceBundle LANG = ResourceBundle.getBundle("lang", locale);
+	private static final ResourceBundle LANG = ResourceBundle.getBundle("lang", Locale.getDefault());
 	private static Settings s;
 	private static Boolean firstlaunch = false;
 	private AccountManager accMng = AccountManager.getInstance();
@@ -135,7 +135,6 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 	private JTextArea txtDescription;
 	private JTabbedPane TabbedPane;
 	private JComboBox<String> cmbFile;
-	private JLabel lblSelectVideo;
 	private JPanel mainTab;
 	private JMenu menu, mnuAcc, mnuFile;
 	private JMenuBar mnuBar;
@@ -146,7 +145,6 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 	private JScrollPane TabQueues;
 	private JPanel panel, panel_1;
 	private JSpinner spinner;
-	private JLabel lblUploadSpeed;
 	private JPanel TabQueue;
 	private JButton btnSelectMovie, btnStart, btnStop, btnAddToQueue;
 	private JPanel QueuePanel;
@@ -157,7 +155,6 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 	private SidebarSection ss1, ss2, ss3;
 	public transient static HashMap<Integer, JMenuItem> _accounts = new HashMap<Integer, JMenuItem>();
 	private JSlider slider;
-	private JLabel lblUploads;
 	private JScrollPane TagScrollPane;
 	private int editItem = -1;
 
@@ -179,17 +176,19 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 		}
 		File dataDir = new File(System.getProperty("user.home") + "/YouPloader/data/");
 		if(!dataDir.exists()){
-			LOG.info(APP_NAME + " " + VERSION + " first launch. Database folder not found.", frmMain.class);
+			LOG.info(APP_NAME + " " + VERSION + " first launch. Database folder not found.", FrmMain.class);
 			dataDir.mkdirs();
 			if(!SQLite.set_up()){
 				JOptionPane.showMessageDialog(null,  String.format(LANG.getString("frmMain.errordatabase.Message"),System.getProperty("user.home") + "/YouPloader/data/"), LANG.getString("frmMain.errordatabase.title"), JOptionPane.ERROR_MESSAGE);
 			}
 			firstlaunch = true;
 		}
+		UploadMgr = UploadManager.getInstance();
+		TemplateMgr = TemplateManager.getInstance();
 		s = Settings.getInstance();
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				new frmMain().setVisible(true);
+				new FrmMain().setVisible(true);
 			}
 		});
 	}
@@ -197,8 +196,8 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 	/**
 	 * Creates new form frmMain
 	 */
-	public frmMain() {
-		LOG.info(APP_NAME + " " + VERSION + " starting.", frmMain.class);
+	public FrmMain() {
+		LOG.info(APP_NAME + " " + VERSION + " starting.", FrmMain.class);
 		self = this;
 		this.tos = false;
 		this.setMinimumSize(new Dimension(900,580));
@@ -207,15 +206,13 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
             @Override
             public void windowClosing(WindowEvent e)
             {
-            	LOG.info(APP_NAME + " " + VERSION + " closing.", frmMain.class);
+            	LOG.info(APP_NAME + " " + VERSION + " closing.", FrmMain.class);
             	LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
             	loggerContext.stop();
                 e.getWindow().dispose();
             }
         });
-		UploadMgr = UploadManager.getInstance();
 		UploadMgr.setParent(this);
-		TemplateMgr = TemplateManager.getInstance();
 		initComponents();
 		this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/yp.png")));
 		this.setLocationRelativeTo(null);
@@ -241,7 +238,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 	 * 
 	 */
 	public void initComponents() {
-		LOG.debug("init Components", frmMain.class);
+		LOG.debug("init Components", FrmMain.class);
 		TabbedPane = new JTabbedPane();
 		mainTab = new JPanel();
 		mnuBar = new JMenuBar();
@@ -365,7 +362,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 				QueueButton();
 			}
 		});
-		lblSelectVideo = new JLabel();
+		JLabel lblSelectVideo = new JLabel();
 		panel.add(lblSelectVideo, "3, 3, 4, 1, left, top");
 
 		lblSelectVideo.setText(LANG.getString("frmMain.selectVideoFile"));
@@ -450,7 +447,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 		mntmAbout = new JMenuItem(LANG.getString("frmMain.menu.About"));
 		mntmAbout.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				frmAbout about = new frmAbout();
+				FrmAbout about = new FrmAbout();
 				about.setVisible(true);
 			}
 		});
@@ -505,7 +502,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 		});
 		buttonPanel.add(btnStop, "6, 4");
 
-		lblUploads = new JLabel("Uploads:");
+		JLabel lblUploads = new JLabel("Uploads:");
 		buttonPanel.add(lblUploads, "18, 4, right, fill");
 
 		slider = new JSlider();
@@ -525,7 +522,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 		slider.setPaintLabels(true);
 		buttonPanel.add(slider, "20, 4, fill, fill");
 
-		lblUploadSpeed = new JLabel("Upload Speed:");
+		JLabel lblUploadSpeed = new JLabel("Upload Speed:");
 		lblUploadSpeed.setHorizontalAlignment(SwingConstants.TRAILING);
 		buttonPanel.add(lblUploadSpeed, "24, 4");
 

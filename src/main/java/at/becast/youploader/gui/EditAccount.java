@@ -20,16 +20,16 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import at.becast.youploader.account.AccountManager;
-import at.becast.youploader.oauth.OAuth2;
-import at.becast.youploader.settings.Settings;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.GroupLayout;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.WindowConstants;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,25 +40,21 @@ import java.awt.event.ActionEvent;
  *
  * @author Bernhard
  */
-public class EditAccount extends javax.swing.JDialog {
+public class EditAccount extends JDialog {
 
 	private static final long serialVersionUID = 6117673731267538015L;
-	Settings s = Settings.getInstance();
-	OAuth2 o2;
-	frmMain parent;
-	AccountManager AccMng = AccountManager.getInstance();
+	private FrmMain parent;
+	private AccountManager AccMng = AccountManager.getInstance();
 	private int id;
 	private String name;
 	private JTextField AccName;
-	private JButton btnOk;
-	private JLabel jLabel1;
 	private static final Logger LOG = LoggerFactory.getLogger(EditAccount.class);
 	private static final ResourceBundle LANG = ResourceBundle.getBundle("lang", Locale.getDefault());
 	/**
 	 * Creates new form AddAccount
 	 * @param name 
 	 */
-	public EditAccount(frmMain parent, String name, int id) {
+	public EditAccount(FrmMain parent, String name, int id) {
 		this.parent = parent;
 		this.id = id;
 		this.name = name;
@@ -70,40 +66,40 @@ public class EditAccount extends javax.swing.JDialog {
 	private void initComponents() {
 
 		AccName = new JTextField(this.name);
-		jLabel1 = new JLabel();
-		btnOk = new JButton();
+		JLabel lblAccName = new JLabel();
+		JButton btnOk = new JButton();
 
-		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle(LANG.getString("EditAccount.title"));
 		setMinimumSize(new java.awt.Dimension(350, 130));
 		setName("EditAccount"); // NOI18N
 		setPreferredSize(new java.awt.Dimension(350, 130));
 		setType(java.awt.Window.Type.POPUP);
 
-		jLabel1.setText(LANG.getString("Account.name"));
+		lblAccName.setText(LANG.getString("Account.name"));
 
 		btnOk.setText(LANG.getString("Button.save"));
-		btnOk.addActionListener(new java.awt.event.ActionListener() {
+		btnOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				btnOkActionPerformed(e);
+				btnOkActionPerformed();
 			}
 		});
 		
 		JButton btnDelete = new JButton(LANG.getString("Button.delete"));
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				btnDeleteActionPerformed(e);
+				btnDeleteActionPerformed();
 			}
 		});
 		
 		JButton btnCancel = new JButton(LANG.getString("Button.cancel"));
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				btnCancelActionPerformed(e);
+				btnCancelActionPerformed();
 			}
 		});
 
-		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+		javax.swing.GroupLayout layout = new GroupLayout(getContentPane());
 		layout.setHorizontalGroup(
 			layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(layout.createSequentialGroup()
@@ -119,14 +115,14 @@ public class EditAccount extends javax.swing.JDialog {
 							.addGap(24)
 							.addGroup(layout.createParallelGroup(Alignment.LEADING)
 								.addComponent(AccName, GroupLayout.DEFAULT_SIZE, 323, Short.MAX_VALUE)
-								.addComponent(jLabel1))))
+								.addComponent(lblAccName))))
 					.addContainerGap())
 		);
 		layout.setVerticalGroup(
 			layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(layout.createSequentialGroup()
 					.addContainerGap()
-					.addComponent(jLabel1)
+					.addComponent(lblAccName)
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addComponent(AccName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
@@ -139,7 +135,7 @@ public class EditAccount extends javax.swing.JDialog {
 		getContentPane().setLayout(layout);
 	}
 
-	private void btnOkActionPerformed(ActionEvent e) {
+	private void btnOkActionPerformed() {
 		if (AccName.getText() != null && !AccName.getText().equals("")) {
 			LOG.info("Renaming Account {} to {}",  this.id, AccName.getText());
 			this.setVisible(false);
@@ -153,7 +149,7 @@ public class EditAccount extends javax.swing.JDialog {
 		}
 	}
 	
-	private void btnDeleteActionPerformed(ActionEvent e) {
+	private void btnDeleteActionPerformed() {
 		LOG.info("Deleting Account");
 		int n= JOptionPane.showConfirmDialog(this, LANG.getString("EditAccount.confirmdelete.message"),LANG.getString("EditAccount.confirmdelete.title"),JOptionPane.OK_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE);
 		if (n == JOptionPane.OK_OPTION) {
@@ -167,7 +163,7 @@ public class EditAccount extends javax.swing.JDialog {
 		}
 	}
 	
-	private void btnCancelActionPerformed(ActionEvent e) {
+	private void btnCancelActionPerformed() {
 		this.setVisible(false);
 		this.dispose();
 	}

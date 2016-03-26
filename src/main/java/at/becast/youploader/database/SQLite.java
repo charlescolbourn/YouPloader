@@ -25,7 +25,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import at.becast.youploader.gui.frmMain;
+import at.becast.youploader.gui.FrmMain;
 import at.becast.youploader.templates.Template;
 import at.becast.youploader.youtube.data.Video;
 import at.becast.youploader.youtube.io.UploadManager;
@@ -46,14 +46,14 @@ public class SQLite {
 	
     public static Connection getInstance(){
         if(c == null)
-            new SQLite(frmMain.DB_FILE);
+            new SQLite(FrmMain.DB_FILE);
         return c;
     }
     
 
     public static Boolean set_up(){
         if(c == null)
-            new SQLite(frmMain.DB_FILE);
+            new SQLite(FrmMain.DB_FILE);
         
         PreparedStatement prest = null;
         try {

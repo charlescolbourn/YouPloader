@@ -35,14 +35,20 @@ import java.net.URISyntaxException;
 import java.util.Map;
 import java.awt.Color;
 import javax.swing.border.EtchedBorder;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 public class UploadItem extends JPanel {
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 903077478168871789L;
+	private static final Logger LOG = LoggerFactory.getLogger(UploadItem.class);
 	public int upload_id = -1;
 	private JLabel lblName;
 	private JLabel lblUrl;
@@ -109,8 +115,12 @@ public class UploadItem extends JPanel {
 				if (Desktop.isDesktopSupported()) {
       		      try {
       		        Desktop.getDesktop().browse(new URI(lblUrl.getText()));
-      		      } catch (IOException | URISyntaxException e1) { /* TODO: error handling */ }
-      		    } else { /* TODO: error handling */ }
+      		      } catch (IOException | URISyntaxException e1) { 
+      		    	  LOG.error("Browser error", e);
+      		      }
+      		    } else { 
+      		    	LOG.error("Browser error");
+      		    }
 			}
 		});
 		add(lblUrl, "cell 0 1");
@@ -200,14 +210,14 @@ public class UploadItem extends JPanel {
 	}
 	
 	public void edit(){
-		frmMain.UploadMgr.editUpload(this.upload_id);
+		FrmMain.UploadMgr.editUpload(this.upload_id);
 	}
 	
 	public void cancel(){
-		frmMain.UploadMgr.cancel(this.upload_id);
+		FrmMain.UploadMgr.cancel(this.upload_id);
 	}
 	
 	public void delete(){
-		frmMain.UploadMgr.delete(this.upload_id);
+		FrmMain.UploadMgr.delete(this.upload_id);
 	}
 }

@@ -25,7 +25,7 @@ import org.apache.commons.io.FileUtils;
 
 import at.becast.youploader.database.SQLite;
 import at.becast.youploader.gui.UploadItem;
-import at.becast.youploader.gui.frmMain;
+import at.becast.youploader.gui.FrmMain;
 import at.becast.youploader.youtube.io.UploadEvent;
 import at.becast.youploader.youtube.io.UploadManager.Status;
 
@@ -101,7 +101,7 @@ public class GuiUploadEvent implements UploadEvent {
 	  	frame.getProgressBar().revalidate();
     	frame.revalidate();
     	SQLite.setUploadFinished(frame.upload_id,Status.FINISHED);
-    	frmMain.UploadMgr.finished(frame.upload_id);
+    	FrmMain.UploadMgr.finished(frame.upload_id);
   	}
 	frame.getBtnCancel().setEnabled(false);
 	frame.getBtnEdit().setEnabled(false);

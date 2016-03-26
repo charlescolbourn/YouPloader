@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 import at.becast.youploader.account.AccountManager;
 import at.becast.youploader.database.SQLite;
 import at.becast.youploader.gui.UploadItem;
-import at.becast.youploader.gui.frmMain;
+import at.becast.youploader.gui.FrmMain;
 import at.becast.youploader.youtube.VisibilityType;
 import at.becast.youploader.youtube.data.Video;
 import at.becast.youploader.youtube.data.VideoUpdate;
@@ -44,7 +44,7 @@ public class UploadManager {
 	private int upload_limit = 1;
 	private static final Logger LOG = LoggerFactory.getLogger(UploadManager.class);
 	public static enum Status{NOT_STARTED,PREPARED,STOPPED,UPLOADING,FINISHED,ABORTED};
-	private frmMain parent;
+	private FrmMain parent;
 	private LinkedList<UploadWorker> _ToUpload = new LinkedList<UploadWorker>();
 	private LinkedList<UploadWorker> _Uploading = new LinkedList<UploadWorker>();
 	private int speed_limit = 0;
@@ -61,7 +61,7 @@ public class UploadManager {
 		return self;
 	}
 	
-	public void setParent(frmMain parent){
+	public void setParent(FrmMain parent){
 		this.parent = parent;
 	}
 	

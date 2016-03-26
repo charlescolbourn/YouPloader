@@ -63,7 +63,7 @@ public class EditPanel extends javax.swing.JPanel {
 	private JLabel jLabel1;
 	private JTextField txtStartDir;
 	private JTextField txtEndDir;
-	private frmMain parent;
+	private FrmMain parent;
 	private Boolean adding = false;
 	private JComboBox<VisibilityType> cmbVisibility;
 	private DateTimePicker dateTimePicker;
@@ -75,7 +75,7 @@ public class EditPanel extends javax.swing.JPanel {
 	/**
 	 * Creates new form editPanel
 	 */
-	public EditPanel(frmMain parent) {
+	public EditPanel(FrmMain parent) {
 		this.parent = parent;
 		initComponents();
 	}

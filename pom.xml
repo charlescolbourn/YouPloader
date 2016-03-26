@@ -142,7 +142,7 @@
 	                    <manifest>
 	                    	<addClasspath>true</addClasspath>
 	                    	<classpathPrefix>lib/</classpathPrefix>
-                        	<mainClass>at.becast.youploader.gui.frmMain</mainClass>
+                        	<mainClass>at.becast.youploader.gui.FrmMain</mainClass>
 	                    </manifest>
                        	<manifestEntries>
                       		<Implementation-Build>${buildNumber}</Implementation-Build>
@@ -167,7 +167,7 @@
                         <outfile>${project.build.directory}/${project.artifactId}.exe</outfile>
                         <downloadUrl>http://java.com/download</downloadUrl>
                         <classPath>
-                            <mainClass>at.becast.youploader.gui.frmMain</mainClass>
+                            <mainClass>at.becast.youploader.gui.FrmMain</mainClass>
                             <preCp>anything</preCp>
                         </classPath>
                         <icon>src/main/resources/images/yp_Eck_icon.ico</icon>

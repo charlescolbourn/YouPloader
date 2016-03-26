@@ -31,7 +31,6 @@ public class Browser extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private final JFXPanel jfxPanel = new JFXPanel();
     private WebEngine engine;
-    private WebView view;
     private Account acc;
     private Browser self;
     private final JPanel panel = new JPanel(new BorderLayout());
@@ -93,7 +92,7 @@ public class Browser extends JFrame {
             @Override 
             public void run() {
  
-                view = new WebView();
+            	WebView view = new WebView();
                 engine = view.getEngine();
  
                 engine.titleProperty().addListener(new ChangeListener<String>() {
