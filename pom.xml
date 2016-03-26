@@ -173,7 +173,7 @@
                     </goals>
                     <configuration>
                         <headerType>gui</headerType>
-                        <jar>${project.build.directory}/${project.artifactId}.jar</jar>
+                        <jar>${project.artifactId}.jar</jar>
                         <dontWrapJar>true</dontWrapJar>
                         <outfile>${project.build.directory}/${project.artifactId}.exe</outfile>
                         <downloadUrl>http://java.com/download</downloadUrl>
