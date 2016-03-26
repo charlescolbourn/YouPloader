@@ -18,6 +18,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Desktop;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Frame;
@@ -200,6 +201,7 @@ public class frmMain extends javax.swing.JFrame implements IMainMenu {
 		LOG.info(APP_NAME + " " + VERSION + " starting.", frmMain.class);
 		self = this;
 		this.tos = false;
+		this.setMinimumSize(new Dimension(900,580));
 		addWindowListener(new WindowAdapter()
         {
             @Override

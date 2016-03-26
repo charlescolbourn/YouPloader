@@ -46,6 +46,8 @@ import at.becast.youploader.youtube.LicenseType;
 import at.becast.youploader.youtube.VisibilityType;
 import javax.swing.JCheckBox;
 import javax.swing.SwingConstants;
+import javax.swing.JTextPane;
+import javax.swing.JScrollPane;
 
 /**
  *
@@ -107,24 +109,32 @@ public class EditPanel extends javax.swing.JPanel {
 				RowSpec.decode("25px"),
 				FormSpecs.LABEL_COMPONENT_GAP_ROWSPEC,
 				RowSpec.decode("25px"),
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				RowSpec.decode("25px"),
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				RowSpec.decode("25px"),
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				RowSpec.decode("25px"),
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				RowSpec.decode("25px"),
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				RowSpec.decode("25px"),
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				RowSpec.decode("25px"),
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				RowSpec.decode("25px"),
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				FormSpecs.DEFAULT_ROWSPEC,
 				FormSpecs.LABEL_COMPONENT_GAP_ROWSPEC,
-				FormSpecs.DEFAULT_ROWSPEC,}));
+				RowSpec.decode("25px"),
+				FormSpecs.LABEL_COMPONENT_GAP_ROWSPEC,
+				RowSpec.decode("25px"),
+				FormSpecs.LABEL_COMPONENT_GAP_ROWSPEC,
+				RowSpec.decode("25px"),
+				FormSpecs.LABEL_COMPONENT_GAP_ROWSPEC,
+				RowSpec.decode("25px"),
+				FormSpecs.LABEL_COMPONENT_GAP_ROWSPEC,
+				RowSpec.decode("25px"),
+				FormSpecs.LABEL_COMPONENT_GAP_ROWSPEC,
+				RowSpec.decode("25px"),
+				FormSpecs.LABEL_COMPONENT_GAP_ROWSPEC,
+				RowSpec.decode("25px"),
+				FormSpecs.LABEL_COMPONENT_GAP_ROWSPEC,
+				RowSpec.decode("20px"),
+				RowSpec.decode("1dlu"),
+				RowSpec.decode("20px"),
+				FormSpecs.LABEL_COMPONENT_GAP_ROWSPEC,
+				RowSpec.decode("20px"),
+				FormSpecs.LABEL_COMPONENT_GAP_ROWSPEC,
+				RowSpec.decode("20px"),
+				FormSpecs.LABEL_COMPONENT_GAP_ROWSPEC,
+				RowSpec.decode("20px"),
+				FormSpecs.LABEL_COMPONENT_GAP_ROWSPEC,
+				RowSpec.decode("20px"),}));
 
 		jLabel1.setText("Template:");
 		add(jLabel1, "2, 2, right, center");
@@ -243,7 +253,6 @@ public class EditPanel extends javax.swing.JPanel {
 		
 		txtThumbnail = new JTextField();
 		txtThumbnail.setEnabled(false);
-		txtThumbnail.setEditable(false);
 		add(txtThumbnail, "4, 14, 5, 1, fill, fill");
 		txtThumbnail.setColumns(10);
 		
@@ -258,7 +267,6 @@ public class EditPanel extends javax.swing.JPanel {
 		
 		DateTimePicker dateTimePickerStart = new DateTimePicker();
 		dateTimePickerStart.setEnabled(false);
-		dateTimePickerStart.setEditable(false);
 		add(dateTimePickerStart, "4, 16, 5, 1, fill, fill");
 		
 		JLabel lblGameTitle = new JLabel("Game title:");
@@ -266,7 +274,6 @@ public class EditPanel extends javax.swing.JPanel {
 		add(lblGameTitle, "2, 18, right, default");
 		
 		txtGameTitle = new JTextField();
-		txtGameTitle.setEditable(false);
 		txtGameTitle.setEnabled(false);
 		add(txtGameTitle, "4, 18, 5, 1, fill, fill");
 		txtGameTitle.setColumns(10);
@@ -286,6 +293,28 @@ public class EditPanel extends javax.swing.JPanel {
 		
 		JCheckBox chckbxAllowComments = new JCheckBox("Allow comments");
 		add(chckbxAllowComments, "8, 22, 3, 1, left, default");
+		
+		JLabel lblMessage = new JLabel("Message:");
+		add(lblMessage, "2, 24, right, default");
+		
+		JScrollPane scrollPane = new JScrollPane();
+		add(scrollPane, "4, 24, 5, 7, fill, fill");
+		
+		JTextPane txtMessage = new JTextPane();
+		txtMessage.setEnabled(false);
+		scrollPane.setViewportView(txtMessage);
+		
+		JCheckBox chckbxGoogle = new JCheckBox("Google+");
+		chckbxGoogle.setEnabled(false);
+		add(chckbxGoogle, "2, 26, left, default");
+		
+		JCheckBox chckbxTwitter = new JCheckBox("Twitter");
+		chckbxTwitter.setEnabled(false);
+		add(chckbxTwitter, "2, 28, left, default");
+		
+		JCheckBox chckbxFacebook = new JCheckBox("Facebook");
+		chckbxFacebook.setEnabled(false);
+		add(chckbxFacebook, "2, 30, left, default");
 	}
 
 	protected void TemplateCmbChanged(ActionEvent e) {
