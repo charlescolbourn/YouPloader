@@ -1,13 +1,18 @@
 package at.becast.youploader.youtube.io;
 
 import org.apache.http.Header;
+import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import at.becast.youploader.youtube.exceptions.UploadException;
 
 import java.io.IOException;
@@ -19,7 +24,8 @@ public class SimpleHTTP {
   private HttpPut put;
   private InputStream stream;
   private CloseableHttpResponse response;
-
+  private static final Logger LOG = LoggerFactory.getLogger(SimpleHTTP.class);
+  
   public SimpleHTTP() {
     this.chc = HttpClients.createDefault();
   }
@@ -53,7 +59,7 @@ public class SimpleHTTP {
     return location;
   }
 
-  public void put(String url, Map<String, String> headers, InputStream stream) throws IOException {
+  public void put(String url, Map<String, String> headers, InputStream stream, UploadEvent callback) throws IOException {
     this.put = new HttpPut(url);
     for (String key : headers.keySet()) {
     	this.put.setHeader(key, headers.get(key));
@@ -63,9 +69,16 @@ public class SimpleHTTP {
     try {
     	response = this.chc.execute(this.put);
     }catch(Exception e){
-    	
+    	LOG.error("Upload failed ", e);
+    	if(callback != null){
+    		callback.onError(false);
+    	}
     }
     if(response!=null){
+    	StatusLine l = response.getStatusLine();
+    	if(l.getStatusCode()>=200 && l.getStatusCode()<=299){
+    		callback.onFinish();
+    	}
     	response.close();
     }
   }
@@ -104,6 +117,24 @@ public class SimpleHTTP {
     }
 
     return 0;
+  }
+  
+  public boolean delete(Map<String, String> headers, String id) throws IOException {
+	  HttpDelete delete = new HttpDelete("https://www.googleapis.com/youtube/v3/videos?id="+id);
+
+
+    for (String key : headers.keySet()) {
+    	delete.setHeader(key, headers.get(key));
+    }
+
+    response = this.chc.execute(delete);
+    if(response.getStatusLine().getStatusCode()==204){
+    	response.close();
+    	return true;
+    }else{
+    	return false;
+    }
+
   }
   public void abort() {
 	  this.put.abort();

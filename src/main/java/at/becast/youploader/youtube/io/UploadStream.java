@@ -24,6 +24,7 @@ public class UploadStream extends FileInputStream {
   private long limit;
   private long size;
   private long position;
+  private Boolean finished = false;
 
 
   public UploadStream(File file, UploadEvent event) throws FileNotFoundException {
@@ -112,8 +113,12 @@ public class UploadStream extends FileInputStream {
   @Override
   public void close() throws IOException {
     super.close();
-    if (this.event != null) {
+    if (this.event != null && this.finished) {
       this.event.onClose();
     }
   }
+
+	public void setFinished() {
+		this.finished = true;
+	}
 }

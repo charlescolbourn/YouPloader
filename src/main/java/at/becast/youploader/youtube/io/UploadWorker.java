@@ -33,6 +33,7 @@ public class UploadWorker extends Thread {
 	
 	public Video videodata;
 	public int id, acc_id;
+	public int retrys = 0;
 	private int speed_limit;
 	public File file;
 	public UploadItem frame;
@@ -90,7 +91,11 @@ public class UploadWorker extends Thread {
 				SQLite.startUpload(this.id,0);
 				this.uploader.upload(this.upload, this.event, this.speed_limit);
 			}else{
-				this.uploader.resumeUpload(this.upload, this.event, this.speed_limit);
+				try{
+					this.uploader.resumeUpload(this.upload, this.event, this.speed_limit);
+				}catch( IOException e){
+					this.event.onError(true);
+				}
 			}
 			
 		} catch (IOException e) {
@@ -109,6 +114,23 @@ public class UploadWorker extends Thread {
 	
 	public void abort(){
 		this.uploader.abort();
+	}
+	
+	public int getRetrys() {
+		return retrys;
+	}
+
+	public boolean delete() {
+		try {
+			return this.uploader.delete(this.upload);
+		} catch (IOException e) {
+			return false;
+		}
+		
+	}
+	
+	public void setRetrys(int retrys) {
+		this.retrys = retrys+1;
 	}
 	
 	public void suspend(Boolean suspend){

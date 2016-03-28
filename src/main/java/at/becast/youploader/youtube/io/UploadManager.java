@@ -42,7 +42,7 @@ public class UploadManager {
 	private static UploadManager self;
 	private int upload_limit = 1;
 	private static final Logger LOG = LoggerFactory.getLogger(UploadManager.class);
-	public static enum Status{NOT_STARTED,PREPARED,STOPPED,UPLOADING,FINISHED,ABORTED};
+	public static enum Status{NOT_STARTED,PREPARED,STOPPED,UPLOADING,FINISHED,ABORTED,FAILED};
 	private FrmMain parent;
 	private LinkedList<UploadWorker> _ToUpload = new LinkedList<UploadWorker>();
 	private LinkedList<UploadWorker> _Uploading = new LinkedList<UploadWorker>();
@@ -154,8 +154,10 @@ public class UploadManager {
 		if(!_Uploading.isEmpty()){
 			for(int i=0;i<_Uploading.size();i++){
 				if(_Uploading.get(i).id == upload_id){
-					_Uploading.get(i).abort();
+					UploadWorker w = _Uploading.get(i);
+					w.abort();
 					_Uploading.remove(i);
+					w.delete();
 				}
 			}
 		}
@@ -255,6 +257,48 @@ public class UploadManager {
 			}
 		}
 		
+	}
+
+	public void restart(int upload_id) {
+		for(int i=0;i<_Uploading.size();i++){
+			if(_Uploading.get(i).id == upload_id){
+				UploadWorker o = _Uploading.get(i);
+				if(o.retrys<5){
+					try {
+						for(int s = 10; s>0;s--){
+							o.frame.getProgressBar().setString(String.format("Error - Retrying in %s seconds", s));
+							Thread.sleep(1000);
+						}
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+	
+					LOG.info("Restarting Upload {}",o.videodata.snippet.title);
+					UploadWorker worker = new UploadWorker(upload_id, o.frame, o.acc_id, o.file, o.videodata, speed_limit, o.enddir, o.upload.url, o.upload.id);
+					worker.setRetrys(o.getRetrys());
+					_Uploading.set(i, worker);
+					worker.start();
+				}else{
+					o.frame.getProgressBar().setString("Failed - You can try restarting");
+					o.frame.getProgressBar().setValue(0);
+					LOG.info("Retried 5 times. Failing Upload {}",o.videodata.snippet.title);
+					_Uploading.remove(i);
+					UploadWorker worker = new UploadWorker(upload_id, o.frame, o.acc_id, o.file, o.videodata, speed_limit, o.enddir, o.upload.url, o.upload.id);
+					_ToUpload.add(worker);
+					SQLite.setUploadFinished(upload_id,Status.STOPPED);
+				}
+			}
+		}
+	}
+
+	public void hardfail(int upload_id) {
+		for(int i=0;i<_Uploading.size();i++){
+			if(_Uploading.get(i).id == upload_id){
+				UploadWorker o = _Uploading.get(i);
+				_Uploading.remove(i);
+				o.delete();
+			}
+		}		
 	}
 	
 }

@@ -671,6 +671,10 @@ public class FrmMain extends JFrame implements IMainMenu {
 					f.repaint();
 				} else if ("NOT_STARTED".equals(status)) {
 					UploadMgr.addUpload(f, data, v, acc_id, enddir);
+				} else if ("FAILED".equals(status)) {
+					f.getBtnEdit().setEnabled(false);
+					f.getProgressBar().setValue(0);
+					f.getProgressBar().setString("Failed");
 				} else {
 					f.getBtnEdit().setEnabled(false);
 					f.getProgressBar().setValue(100);

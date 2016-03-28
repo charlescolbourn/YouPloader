@@ -207,6 +207,23 @@ public class SQLite {
 		}				
 	}
 	
+	public static boolean failUpload(int upload_id) {
+		PreparedStatement prest = null;
+    	String sql	= "UPDATE `uploads` SET `status`=?,`uploaded`=? WHERE `id`=?";
+    	try {
+			prest = c.prepareStatement(sql);
+	    	prest.setString(1, UploadManager.Status.FAILED.toString());
+	    	prest.setInt(3, upload_id);
+	    	boolean res = prest.execute();
+	    	prest.close();
+	    	return res;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+	}
+	
 	public static Boolean updateUpload(int account, File file, Video data, String enddir, int id) throws SQLException, IOException{
     	PreparedStatement prest = null;
     	String sql	= "UPDATE `uploads` SET `account`=?, `file`=?, `lenght`=?, `enddir`=? WHERE `id`=?";

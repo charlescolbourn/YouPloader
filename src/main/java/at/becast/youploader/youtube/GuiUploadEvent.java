@@ -97,12 +97,6 @@ public class GuiUploadEvent implements UploadEvent {
   @Override
   public void onClose() {
   	if(!this.aborted){
-	  	frame.getProgressBar().setString("100,00%");
-	  	frame.getProgressBar().setValue(100);
-	  	frame.getProgressBar().revalidate();
-    	frame.revalidate();
-    	SQLite.setUploadFinished(frame.upload_id,Status.FINISHED);
-    	FrmMain.UploadMgr.finished(frame.upload_id);
   	}
 	frame.getBtnCancel().setEnabled(false);
 	frame.getBtnEdit().setEnabled(false);
@@ -110,12 +104,39 @@ public class GuiUploadEvent implements UploadEvent {
 	frame.revalidate();
   }
 
-@Override
-public void onAbort() {
-	this.aborted = true;
-	frame.getProgressBar().setString("Aborted");
-  	frame.getProgressBar().setValue(0);
-  	frame.getProgressBar().revalidate();
-  	SQLite.setUploadFinished(frame.upload_id,Status.ABORTED);
-}
+  @Override
+	public void onAbort() {
+		this.aborted = true;
+		frame.getProgressBar().setString("Aborted");
+	  	frame.getProgressBar().setValue(0);
+	  	frame.getProgressBar().revalidate();
+	  	SQLite.setUploadFinished(frame.upload_id,Status.ABORTED);
+  	}
+
+	@Override
+	public void onError(boolean hardfail) {
+		if(hardfail){
+			frame.getProgressBar().setString("Failed");
+		  	frame.getProgressBar().setValue(0);
+		  	frame.getProgressBar().revalidate();
+			frame.getBtnCancel().setEnabled(false);
+			frame.getBtnEdit().setEnabled(false);
+			frame.getBtnDelete().setEnabled(true);
+			FrmMain.UploadMgr.hardfail(frame.upload_id);
+		  	SQLite.failUpload(frame.upload_id);
+		}else{
+			FrmMain.UploadMgr.restart(frame.upload_id);
+		}
+	}
+	
+	@Override
+	public void onFinish() {
+		frame.getProgressBar().setString("100,00%");
+	  	frame.getProgressBar().setValue(100);
+	  	frame.getProgressBar().revalidate();
+    	frame.revalidate();
+    	SQLite.setUploadFinished(frame.upload_id,Status.FINISHED);
+    	FrmMain.UploadMgr.finished(frame.upload_id);
+	}
+	
 }

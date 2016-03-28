@@ -30,89 +30,110 @@ import java.util.Map;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Uploader {
-  private OAuth2 oAuth2;
-  private UploadStream stream;
-  private SimpleHTTP http;
-  
-  public Uploader(OAuth2 oAuth2) {
-    this.oAuth2 = oAuth2;
-  }
+	private OAuth2 oAuth2;
+	private UploadStream stream;
+	private SimpleHTTP http;
 
-  public Upload prepareUpload(File file, Video video) throws IOException, UploadException {
-    this.http = new SimpleHTTP();
-
-    if (video.snippet.title == null) {
-      video.snippet.title = file.getName();
-    }
-
-    Map<String, String> headers = new HashMap<>();
-    headers.put("Authorization", this.oAuth2.getHeader());
-    headers.put("Content-Type", "application/json; charset=UTF-8");
-    headers.put("X-Upload-Content-Length", String.valueOf(file.length()));
-    headers.put("X-Upload-Content-Type", "video/*");
-
-    String[] result = http.post("https://www.googleapis.com//upload/youtube/v3/videos?uploadType=resumable&part=snippet,status",headers,new ObjectMapper().writeValueAsString(video));
-    Upload url = new Upload(result[0], file, result[1], video);
-
-    this.http.close();
-    return url;
-  }
-
-  public void upload(Upload upload, UploadEvent event, long limit) throws IOException {
-	  this.http = new SimpleHTTP();
-
-    Map<String, String> headers = new HashMap<>();
-    headers.put("Authorization", this.oAuth2.getHeader());
-    headers.put("Content-Type", "video/*");
-
-    stream = new UploadStream(upload.file, event);
-    stream.setSpeedLimit(limit);
-    this.http.put(upload.url, headers, stream);
-    stream.close();
-    this.http.close();
-  }
-  
-  public void setSpeedlimit(int limit){
-	  this.stream.setSpeedLimit(limit);
-  }
-  
-  public void abort(){
-	  try {
-		this.stream.abort();
-		this.http.abort();
-	} catch (Exception e) {
-
+	public Uploader(OAuth2 oAuth2) {
+		this.oAuth2 = oAuth2;
 	}
-  }
-  
-  public void resumeUpload(Upload upload, UploadEvent event, long limit) throws IOException {
-	  this.http = new SimpleHTTP();
 
-	long uploaded;
-	{
-	  Map<String, String> headers = new HashMap<>();
-	  headers.put("Authorization", this.oAuth2.getHeader());
-	  headers.put("Content-Range", "bytes */" + String.valueOf(upload.file.length()));
-	
-	  uploaded = http.put(upload.url, headers);
+	public Upload prepareUpload(File file, Video video) throws IOException, UploadException {
+		this.http = new SimpleHTTP();
+
+		if (video.snippet.title == null) {
+			video.snippet.title = file.getName();
+		}
+
+		Map<String, String> headers = new HashMap<>();
+		headers.put("Authorization", this.oAuth2.getHeader());
+		headers.put("Content-Type", "application/json; charset=UTF-8");
+		headers.put("X-Upload-Content-Length", String.valueOf(file.length()));
+		headers.put("X-Upload-Content-Type", "video/*");
+
+		String[] result = http.post(
+				"https://www.googleapis.com//upload/youtube/v3/videos?uploadType=resumable&part=snippet,status",
+				headers, new ObjectMapper().writeValueAsString(video));
+		Upload url = new Upload(result[0], file, result[1], video);
+
+		this.http.close();
+		return url;
 	}
-	
-	if (uploaded == 0) {
-	  this.upload(upload, event, limit);
+
+	public void upload(Upload upload, UploadEvent event, long limit) throws IOException {
+		this.http = new SimpleHTTP();
+
+		Map<String, String> headers = new HashMap<>();
+		headers.put("Authorization", this.oAuth2.getHeader());
+		headers.put("Content-Type", "video/*");
+
+		stream = new UploadStream(upload.file, event);
+		stream.setSpeedLimit(limit);
+		this.http.put(upload.url, headers, stream, event);
+		stream.setFinished();
+		stream.close();
+		this.http.close();
 	}
-	else {
-	  long length = upload.file.length();
-	
-	  Map<String, String> headers = new HashMap<>();
-	  headers.put("Authorization", this.oAuth2.getHeader());
-	  headers.put("Content-Range", String.format("bytes %d-%d/%d", uploaded, length - 1, length));
-	
-	      stream = new UploadStream(upload.file, event, uploaded);
-	      stream.setSpeedLimit(limit);
-	      http.put(upload.url, headers, stream);
-	      stream.close();
-	    }
-	
-	    http.close();
-  	}
+
+	public void setSpeedlimit(int limit) {
+		this.stream.setSpeedLimit(limit);
+	}
+
+	public void abort() {
+		try {
+			this.stream.abort();
+			this.http.abort();
+		} catch (Exception e) {
+
+		}
+	}
+
+	public boolean delete(Upload upload) throws IOException {
+		SimpleHTTP del = new SimpleHTTP();
+		if(upload.id!=null){
+			Map<String, String> headers = new HashMap<>();
+			try {
+				headers.put("Authorization", this.oAuth2.getHeader());
+			} catch (NullPointerException e) {
+				return false;
+			}
+			return del.delete(headers, upload.id);
+		}
+		return false;
+	}
+
+	public void resumeUpload(Upload upload, UploadEvent event, long limit) throws IOException {
+		this.http = new SimpleHTTP();
+
+		long uploaded;
+		{
+			Map<String, String> headers = new HashMap<>();
+			try {
+				headers.put("Authorization", this.oAuth2.getHeader());
+			} catch (NullPointerException e) {
+				event.onError(true);
+			}
+			headers.put("Content-Range", "bytes */" + String.valueOf(upload.file.length()));
+
+			uploaded = http.put(upload.url, headers);
+		}
+
+		if (uploaded == 0) {
+			this.upload(upload, event, limit);
+		} else {
+			long length = upload.file.length();
+
+			Map<String, String> headers = new HashMap<>();
+			headers.put("Authorization", this.oAuth2.getHeader());
+			headers.put("Content-Range", String.format("bytes %d-%d/%d", uploaded, length - 1, length));
+
+			stream = new UploadStream(upload.file, event, uploaded);
+			stream.setSpeedLimit(limit);
+			http.put(upload.url, headers, stream, event);
+			stream.setFinished();
+			stream.close();
+		}
+
+		http.close();
+	}
 }
