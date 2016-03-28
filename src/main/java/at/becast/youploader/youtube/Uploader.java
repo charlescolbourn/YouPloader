@@ -81,6 +81,7 @@ public class Uploader {
 
 	public void abort() {
 		try {
+			this.http.setAborted(true);
 			this.stream.abort();
 			this.http.abort();
 		} catch (Exception e) {

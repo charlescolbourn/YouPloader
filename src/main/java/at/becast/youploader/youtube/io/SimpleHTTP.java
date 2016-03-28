@@ -24,6 +24,7 @@ public class SimpleHTTP {
   private HttpPut put;
   private InputStream stream;
   private CloseableHttpResponse response;
+  private boolean aborted = false;
   private static final Logger LOG = LoggerFactory.getLogger(SimpleHTTP.class);
   
   public SimpleHTTP() {
@@ -69,9 +70,13 @@ public class SimpleHTTP {
     try {
     	response = this.chc.execute(this.put);
     }catch(Exception e){
-    	LOG.error("Upload failed ", e);
-    	if(callback != null){
-    		callback.onError(false);
+    	if(!aborted){
+	    	LOG.error("Upload failed ", e);
+	    	if(callback != null){
+	    		callback.onError(false);
+	    	}
+    	}else{
+    		LOG.info("Upload aborted");
     	}
     }
     if(response!=null){
@@ -121,12 +126,9 @@ public class SimpleHTTP {
   
   public boolean delete(Map<String, String> headers, String id) throws IOException {
 	  HttpDelete delete = new HttpDelete("https://www.googleapis.com/youtube/v3/videos?id="+id);
-
-
     for (String key : headers.keySet()) {
     	delete.setHeader(key, headers.get(key));
     }
-
     response = this.chc.execute(delete);
     if(response.getStatusLine().getStatusCode()==204){
     	response.close();
@@ -136,6 +138,11 @@ public class SimpleHTTP {
     }
 
   }
+  
+  public void setAborted(boolean aborted) {
+	this.aborted = aborted;
+  }
+  
   public void abort() {
 	  this.put.abort();
   }

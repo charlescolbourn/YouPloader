@@ -110,6 +110,9 @@ public class GuiUploadEvent implements UploadEvent {
 		frame.getProgressBar().setString("Aborted");
 	  	frame.getProgressBar().setValue(0);
 	  	frame.getProgressBar().revalidate();
+	  	frame.getBtnCancel().setEnabled(false);
+		frame.getBtnEdit().setEnabled(true);
+		frame.getBtnDelete().setEnabled(true);
 	  	SQLite.setUploadFinished(frame.upload_id,Status.ABORTED);
   	}
 

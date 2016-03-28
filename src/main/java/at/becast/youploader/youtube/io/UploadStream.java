@@ -20,103 +20,97 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class UploadStream extends FileInputStream {
-  private UploadEvent event;
-  private long limit;
-  private long size;
-  private long position;
-  private Boolean finished = false;
+	private UploadEvent event;
+	private long limit;
+	private long size;
+	private long position;
+	private Boolean finished = false;
 
+	public UploadStream(File file, UploadEvent event) throws FileNotFoundException {
+		super(file);
+		this.event = event;
+		this.limit = 0;
+		this.size = file.length();
+		this.position = 0;
 
-  public UploadStream(File file, UploadEvent event) throws FileNotFoundException {
-    super(file);
-    this.event = event;
-    this.limit = 0;
-    this.size = file.length();
-    this.position = 0;
+		if (event != null) {
+			event.onInit();
+		}
+	}
 
-    if (event != null) {
-      event.onInit();
-    }
-  }
+	public UploadStream(File file) throws FileNotFoundException {
+		this(file, null);
+	}
 
-  public UploadStream(File file) throws FileNotFoundException {
-    this(file, null);
-  }
+	public UploadStream(File file, UploadEvent event, long skip) throws IOException {
+		this(file, event);
+		this.skip(skip);
+	}
 
-  public UploadStream(File file, UploadEvent event, long skip) throws IOException {
-    this(file, event);
-    this.skip(skip);
-  }
+	public UploadStream(File file, long skip) throws IOException {
+		this(file, null, skip);
+	}
 
-  public UploadStream(File file, long skip) throws IOException {
-    this(file, null, skip);
-  }
+	public void setSpeedLimit(long limit) {
+		if (this.event != null) {
+			this.event.onSpeedLimitSet(limit);
+		}
 
+		this.limit = limit;
+	}
 
-  public void setSpeedLimit(long limit) {
-    if (this.event != null) {
-      this.event.onSpeedLimitSet(limit);
-    }
+	@Override
+	public long skip(long skip) throws IOException {
+		if (this.event != null) {
+			this.event.onRead(skip, this.position, this.size);
+		}
 
-    this.limit = limit;
-  }
+		this.position += skip;
+		return super.skip(skip);
+	}
 
+	@Override
+	public int read(byte[] bytes) throws IOException {
+		this.position += bytes.length;
 
-  @Override
-  public long skip(long skip) throws IOException {
-    if (this.event != null) {
-      this.event.onRead(skip, this.position, this.size);
-    }
+		if (this.event != null) {
+			this.event.onRead(bytes.length, this.position, this.size);
+		}
 
-    this.position += skip;
-    return super.skip(skip);
-  }
+		if (this.limit != 0) {
+			long s = System.currentTimeMillis();
+			int r = super.read(bytes);
 
-  @Override
-  public int read(byte[] bytes) throws IOException {
-    this.position += bytes.length;
+			s = System.currentTimeMillis() - s;
+			s = bytes.length / this.limit - s;
 
-    if (this.event != null) {
-      this.event.onRead(bytes.length, this.position, this.size);
-    }
+			if (s > 0) {
+				try {
+					Thread.sleep(s);
+				} catch (InterruptedException e) {
+				}
+			}
 
-    if (this.limit != 0) {
-      long s = System.currentTimeMillis();
-      int r = super.read(bytes);
+			return r;
+		} else {
+			return super.read(bytes);
+		}
+	}
 
-      s = System.currentTimeMillis() - s;
-      s = bytes.length / this.limit - s;
+	public void abort() throws IOException {
+		if (this.event != null) {
+			this.event.onAbort();
+		}
+		super.close();
+	}
 
-      if (s > 0) {
-        try {
-          Thread.sleep(s);
-        }
-        catch (InterruptedException e) {
-        }
-      }
-
-      return r;
-    }
-    else {
-      return super.read(bytes);
-    }
-  }
-
-  public void abort() throws IOException {
-    if (this.event != null) {
-      this.event.onAbort();
-    }
-
-    super.close();
-  }
-  
-  @Override
-  public void close() throws IOException {
-    super.close();
-    if (this.event != null && this.finished) {
-      this.event.onClose();
-    }
-  }
+	@Override
+	public void close() throws IOException {
+		super.close();
+		if (this.event != null && this.finished) {
+			this.event.onClose();
+		}
+	}
 
 	public void setFinished() {
 		this.finished = true;
