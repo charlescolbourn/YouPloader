@@ -37,8 +37,7 @@ public class GuiUploadEvent implements UploadEvent {
   private long dataDelta;
   private long lasttime;
   private long lastdata;
-  private boolean aborted = false;
-
+  
   public GuiUploadEvent(UploadItem frame) {
 	  this.frame=frame;
 	  this.step = 0;
@@ -96,8 +95,6 @@ public class GuiUploadEvent implements UploadEvent {
 
   @Override
   public void onClose() {
-  	if(!this.aborted){
-  	}
 	frame.getBtnCancel().setEnabled(false);
 	frame.getBtnEdit().setEnabled(false);
 	frame.getBtnDelete().setEnabled(true);
@@ -106,7 +103,6 @@ public class GuiUploadEvent implements UploadEvent {
 
   @Override
 	public void onAbort() {
-		this.aborted = true;
 		frame.getProgressBar().setString("Aborted");
 	  	frame.getProgressBar().setValue(0);
 	  	frame.getProgressBar().revalidate();

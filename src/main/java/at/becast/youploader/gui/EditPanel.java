@@ -91,7 +91,7 @@ public class EditPanel extends javax.swing.JPanel {
 		loadTemplates();
 		cmbTemplate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				TemplateCmbChanged(e);
+				templateCmbChanged(e);
 			}
 		});
 		setLayout(new FormLayout(new ColumnSpec[] {
@@ -322,7 +322,7 @@ public class EditPanel extends javax.swing.JPanel {
 		add(chckbxFacebook, "2, 30, left, default");
 	}
 
-	protected void TemplateCmbChanged(ActionEvent e) {
+	protected void templateCmbChanged(ActionEvent e) {
 		if(cmbTemplate.getSelectedItem() != null){
 			String temp = cmbTemplate.getSelectedItem().toString();
 			if ("comboBoxEdited".equals(e.getActionCommand())) {

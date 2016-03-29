@@ -39,7 +39,7 @@ public class SQLite {
 			Class.forName("org.sqlite.JDBC");
 			c = DriverManager.getConnection("jdbc:sqlite:"+database);
 		} catch ( Exception e ) {
-			LOG.error("SQLite", e);
+			LOG.error("SQLite ", e);
 		}
 	}
 	
