@@ -457,6 +457,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		buttonPanel.add(lblUploadSpeed, "24, 4");
 
 		spinner = new JSpinner();
+		spinner.setValue("Unlimited");
 		spinner.setModel(new SpinnerNumberModel(new Integer(0), new Integer(0), null, new Integer(10)));
 		spinner.addChangeListener(new ChangeListener() {
 
