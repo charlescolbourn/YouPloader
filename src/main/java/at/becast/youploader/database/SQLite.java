@@ -300,5 +300,21 @@ public class SQLite {
 		}			
 	}
 
+	public static void update() {
+		PreparedStatement prest = null;
+		try {
+			switch(getVersion()){
+				case 3:
+					prest = c.prepareStatement("INSERT INTO `settings` VALUES('notify_updates','1')");
+					prest.executeUpdate();
+				default:
+					setVersion(FrmMain.getDBVersion());
+			}
+			
+		} catch (SQLException e) {
+			LOG.info("Could not update Database ", e);
+		}
+	}
+
     
 }

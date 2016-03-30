@@ -98,6 +98,8 @@ import at.becast.youploader.templates.Item;
 import at.becast.youploader.templates.Template;
 import at.becast.youploader.templates.TemplateManager;
 import at.becast.youploader.util.DesktopUtil;
+import at.becast.youploader.util.GetVersion;
+import at.becast.youploader.util.VersionComparator;
 import at.becast.youploader.youtube.Categories;
 import at.becast.youploader.youtube.LicenseType;
 import at.becast.youploader.youtube.VisibilityType;
@@ -108,6 +110,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.util.StatusPrinter;
 import net.miginfocom.layout.CC;
 import net.miginfocom.swing.MigLayout;
+import javax.swing.JCheckBoxMenuItem;
 
 /**
  *
@@ -120,6 +123,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 	public static final String DB_FILE = System.getProperty("user.home") + "/YouPloader/data/data.db";
 	public static final String APP_NAME = "YouPloader";
 	public static final String VERSION = "0.4";
+	public static final int DB_VERSION = 4;
 	private static final Logger LOG = LoggerFactory.getLogger(FrmMain.class);
 	public static UploadManager UploadMgr;
 	public static TemplateManager TemplateMgr;
@@ -136,6 +140,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 	private JComboBox<String> cmbFile;
 	private JMenu mnuAcc;
 	private JTextField txtTitle;
+	private JCheckBoxMenuItem chckbxmntmCheckForUpdates;
 	private JLabel lblTagslenght, lbltitlelenght, lblDesclenght;
 	private JSpinner spinner;
 	private JPanel QueuePanel;
@@ -174,6 +179,15 @@ public class FrmMain extends JFrame implements IMainMenu {
 						LANG.getString("frmMain.errordatabase.title"), JOptionPane.ERROR_MESSAGE);
 			}
 			firstlaunch = true;
+		} else {
+			SQLite.getInstance();
+			try {
+				if(SQLite.getVersion()<DB_VERSION){
+						SQLite.update();
+				}
+			} catch (SQLException e) {
+				LOG.info("Failed to get DB Version ", e);
+			}
 		}
 		UploadMgr = UploadManager.getInstance();
 		TemplateMgr = TemplateManager.getInstance();
@@ -226,6 +240,20 @@ public class FrmMain extends JFrame implements IMainMenu {
 				mntmAddAccountActionPerformed();
 			}
 		}
+		
+		if(s.setting.get("notify_updates").equals("1")){
+			checkUpdates();
+		}
+	}
+
+	private void checkUpdates() {
+		String gitVersion = GetVersion.get();
+		VersionComparator v = new VersionComparator();
+		int updateAvaiable = v.compare(gitVersion, VERSION);
+		if(updateAvaiable > 0){
+			LOG.info("Update {} avaiable!", gitVersion);
+		}
+		
 	}
 
 	/**
@@ -457,7 +485,6 @@ public class FrmMain extends JFrame implements IMainMenu {
 		buttonPanel.add(lblUploadSpeed, "24, 4");
 
 		spinner = new JSpinner();
-		spinner.setValue("Unlimited");
 		spinner.setModel(new SpinnerNumberModel(new Integer(0), new Integer(0), null, new Integer(10)));
 		spinner.addChangeListener(new ChangeListener() {
 
@@ -545,7 +572,26 @@ public class FrmMain extends JFrame implements IMainMenu {
 		});
 		menu.add(mntmShowLogfile);
 		
+		chckbxmntmCheckForUpdates = new JCheckBoxMenuItem(LANG.getString("frmMain.menu.CheckforUpdates"));
+		menu.add(chckbxmntmCheckForUpdates);
+		if(s.setting.get("notify_updates").equals("1")){
+			chckbxmntmCheckForUpdates.setSelected(true);
+		}
+		chckbxmntmCheckForUpdates.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				toggleUpdateNotifier();
+			}
+		});
 		setJMenuBar(mnuBar);
+	}
+
+	protected void toggleUpdateNotifier() {
+		if(chckbxmntmCheckForUpdates.isSelected()){
+			s.setting.put("notify_updates", "1");
+		}else{
+			s.setting.put("notify_updates", "0");
+		}
+		s.save("notify_updates");
 	}
 
 	protected void donateButton() {
@@ -1064,5 +1110,9 @@ public class FrmMain extends JFrame implements IMainMenu {
 
 	public JSpinner getSpinner() {
 		return spinner;
+	}
+
+	public static int getDBVersion() {
+		return DB_VERSION;
 	}
 }
