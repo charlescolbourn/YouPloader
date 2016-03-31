@@ -30,4 +30,53 @@ public class VideoMetadata {
 		this.video_monetization_style = video_monetization_style;
 		this.syndication = syndication;
 	}
+	
+	public String getVideo_monetization_style() {
+		return video_monetization_style;
+	}
+
+	public void setVideo_monetization_style(String video_monetization_style) {
+		this.video_monetization_style = video_monetization_style;
+	}
+
+	public String getSyndication() {
+		return syndication;
+	}
+
+	public void setSyndication(String syndication) {
+		this.syndication = syndication;
+	}
+
+	public boolean isOverlay() {
+		return overlay;
+	}
+
+	public void setOverlay(boolean overlay) {
+		this.overlay = overlay;
+	}
+
+	public boolean isTrueview() {
+		return trueview;
+	}
+
+	public void setTrueview(boolean trueview) {
+		this.trueview = trueview;
+	}
+
+	public boolean isInstream() {
+		return instream;
+	}
+
+	public void setInstream(boolean instream) {
+		this.instream = instream;
+	}
+
+	public boolean isProduct() {
+		return product;
+	}
+
+	public void setProduct(boolean product) {
+		this.product = product;
+	}
+
 }
