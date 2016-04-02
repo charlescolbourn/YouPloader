@@ -209,7 +209,7 @@ public class UploadManager {
 					w.frame.getlblName().setText(v.snippet.title);
 					String release = "";
 					if(v.status.privacyStatus == VisibilityType.SCHEDULED.getData()){
-			        	if(!"".equals(v.status.publishAt)){
+			        	if(v.status.publishAt!= null && !v.status.publishAt.equals("")){
 			        		String pattern = "yyyy-MM-dd'T'HH:mm:ss.sssZ";
 			        		SimpleDateFormat formatter = new SimpleDateFormat(pattern);
 			        		Date date;
