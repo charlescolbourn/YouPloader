@@ -48,6 +48,7 @@ import at.becast.youploader.youtube.LicenseType;
 import at.becast.youploader.youtube.VisibilityType;
 import javax.swing.JCheckBox;
 import javax.swing.SwingConstants;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JTextPane;
 import javax.swing.JScrollPane;
 
@@ -257,12 +258,21 @@ public class EditPanel extends javax.swing.JPanel {
 		add(lblThumbnail, "2, 14, right, default");
 		
 		txtThumbnail = new JTextField();
-		txtThumbnail.setEnabled(false);
 		add(txtThumbnail, "4, 14, 5, 1, fill, fill");
 		txtThumbnail.setColumns(10);
 		
 		JButton btnThumbnail = new JButton("");
-		btnThumbnail.setEnabled(false);
+		btnThumbnail.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser chooser = new JFileChooser();
+				chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+				chooser.setFileFilter(new FileNameExtensionFilter("Image Files", "jpg", "jpeg", "png"));
+				int returnVal = chooser.showOpenDialog(getParent());
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					txtThumbnail.setText(chooser.getSelectedFile().getAbsolutePath().toString());
+				}
+			}
+		});
 		btnThumbnail.setIcon(new ImageIcon(getClass().getResource("/folder.png")));
 		add(btnThumbnail, "10, 14, fill, fill");
 		

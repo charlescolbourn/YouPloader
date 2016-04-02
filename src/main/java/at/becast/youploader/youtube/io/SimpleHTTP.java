@@ -15,6 +15,8 @@ import org.slf4j.LoggerFactory;
 
 import at.becast.youploader.youtube.exceptions.UploadException;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
@@ -96,6 +98,22 @@ public class SimpleHTTP {
 	this.put.setEntity(new ByteArrayEntity(body.getBytes("UTF-8")));
 	try {
 		response = this.chc.execute(this.put);
+	}catch(Exception e){
+		
+	}
+	if(response!=null){
+		response.close();
+	}
+  }
+  
+  public void post(String url, Map<String, String> headers, File body) throws IOException {
+	HttpPost post =  new HttpPost(url);
+	for (String key : headers.keySet()) {
+		post.setHeader(key, headers.get(key));
+	}
+	post.setEntity(new InputStreamEntity(new FileInputStream(body)));
+	try {
+		response = this.chc.execute(post);
 	}catch(Exception e){
 		
 	}

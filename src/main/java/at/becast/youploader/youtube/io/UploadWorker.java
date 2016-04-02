@@ -27,11 +27,13 @@ import at.becast.youploader.youtube.GuiUploadEvent;
 import at.becast.youploader.youtube.Uploader;
 import at.becast.youploader.youtube.data.Upload;
 import at.becast.youploader.youtube.data.Video;
+import at.becast.youploader.youtube.data.VideoMetadata;
 import at.becast.youploader.youtube.exceptions.UploadException;
 
 public class UploadWorker extends Thread {
 	
 	public Video videodata;
+	public VideoMetadata metadata;
 	public int id, acc_id;
 	public int retrys = 0;
 	private int speed_limit;
@@ -44,7 +46,7 @@ public class UploadWorker extends Thread {
 	private AccountManager AccMgr;
 	private static final Logger LOG = LoggerFactory.getLogger(UploadWorker.class);
 	
-	public UploadWorker(int id, UploadItem frame, int acc_id, File file, Video videodata, int speed_limit, String enddir){
+	public UploadWorker(int id, UploadItem frame, int acc_id, File file, Video videodata, int speed_limit, String enddir, VideoMetadata metadata){
 		this.id = id;
 		this.speed_limit = speed_limit;
 		this.frame = frame;
@@ -52,20 +54,22 @@ public class UploadWorker extends Thread {
 		this.acc_id = acc_id;
 		this.file = file;
 		this.videodata = videodata;
+		this.metadata = metadata;
 		this.enddir = enddir;
 		this.AccMgr = AccountManager.getInstance();
 		this.uploader = new Uploader(this.AccMgr.getAuth(acc_id));
 		this.event = new GuiUploadEvent(frame);
 	}
 	
-	public UploadWorker(int id, UploadItem frame, int acc_id, File file, Video videodata, int speed_limit, String enddir, String url, String yt_id){
+	public UploadWorker(int id, UploadItem frame, int acc_id, File file, Video videodata, int speed_limit, String enddir, VideoMetadata metadata, String url, String yt_id){
 		this.id = id;
 		this.speed_limit = speed_limit;
 		this.frame = frame;
 		this.acc_id = acc_id;
 		this.file = file;
-		this.upload = new Upload(url,file,yt_id,videodata);
+		this.upload = new Upload(url,file,yt_id,videodata,metadata);
 		this.videodata = videodata;
+		this.metadata = metadata;
 		this.enddir = enddir;
 		this.AccMgr = AccountManager.getInstance();
 		this.uploader = new Uploader(this.AccMgr.getAuth(acc_id));
@@ -76,10 +80,22 @@ public class UploadWorker extends Thread {
 		try {
 			this.upload = this.uploader.prepareUpload(this.file, this.videodata);
 		} catch (IOException | UploadException e) {
-			LOG.error("Could not prepare upload",e);
+			LOG.error("Could not prepare upload ",e);
 		}
 		SQLite.prepareUpload(this.id,this.upload.url,this.upload.id);
 		this.frame.getlblUrl().setText("https://www.youtube.com/watch?v="+this.upload.id);
+	}
+	
+	public void setMetadata(){
+		
+	}
+	
+	public void setThumbnail(){
+		try {
+			this.uploader.uploadThumbnail(new File(this.metadata.getThumbnail()), upload);
+		} catch (IOException | UploadException e) {
+			LOG.error("Could not set Thumbnail ",e);
+		}
 	}
 	
 	@Override
@@ -114,6 +130,9 @@ public class UploadWorker extends Thread {
 	
 	public void abort(){
 		this.uploader.abort();
+	}
+	public void uploadThumbnail(){
+		this.setThumbnail();
 	}
 	
 	public int getRetrys() {

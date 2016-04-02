@@ -105,6 +105,7 @@ import at.becast.youploader.youtube.LicenseType;
 import at.becast.youploader.youtube.VisibilityType;
 import at.becast.youploader.youtube.data.CategoryType;
 import at.becast.youploader.youtube.data.Video;
+import at.becast.youploader.youtube.data.VideoMetadata;
 import at.becast.youploader.youtube.io.UploadManager;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.util.StatusPrinter;
@@ -183,7 +184,10 @@ public class FrmMain extends JFrame implements IMainMenu {
 			SQLite.getInstance();
 			try {
 				if(SQLite.getVersion()<DB_VERSION){
-						SQLite.update();
+					SQLite.close();
+					SQLite.makeBackup();
+					SQLite.getInstance();
+					SQLite.update();
 				}
 			} catch (SQLException e) {
 				LOG.info("Failed to get DB Version ", e);
@@ -399,7 +403,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 				JFileChooser chooser = new JFileChooser();
 				EditPanel edit = (EditPanel) ss1.contentPane;
 				if (edit.getTxtStartDir() != null && !edit.getTxtStartDir().equals("")) {
-					chooser.setCurrentDirectory(new File(edit.getTxtStartDir().getText()));
+					chooser.setCurrentDirectory(new File(edit.getTxtStartDir().getText().trim()));
 				}
 				int returnVal = chooser.showOpenDialog((Component) self);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -698,6 +702,12 @@ public class FrmMain extends JFrame implements IMainMenu {
 			while (rs.next()) {
 				UploadItem f = new UploadItem();
 				Video v = mapper.readValue(rs.getString("data"), new TypeReference<Video>() {});
+				VideoMetadata metadata;
+				try{
+					metadata = mapper.readValue(rs.getString("metadata"), new TypeReference<VideoMetadata>() {});
+				}catch(NullPointerException e){
+					metadata = new VideoMetadata();
+				}
 				f.upload_id = rs.getInt("id");
 				String url = rs.getString("url");
 				String yt_id = rs.getString("yt_id");
@@ -710,14 +720,14 @@ public class FrmMain extends JFrame implements IMainMenu {
 				long position = rs.getLong("uploaded");
 				long size = rs.getLong("lenght");
 				if (url != null && !url.equals("") && !"FINISHED".equals(status)) {
-					UploadMgr.addResumeableUpload(f, data, v, acc_id, enddir, url, yt_id);
+					UploadMgr.addResumeableUpload(f, data, v, acc_id, enddir, metadata, url, yt_id);
 					f.getProgressBar().setString(String.format("%6.2f%%", (float) position / size * 100));
 					f.getProgressBar().setValue((int) ((float) position / size * 100));
 					f.getProgressBar().revalidate();
 					f.revalidate();
 					f.repaint();
 				} else if ("NOT_STARTED".equals(status)) {
-					UploadMgr.addUpload(f, data, v, acc_id, enddir);
+					UploadMgr.addUpload(f, data, v, acc_id, enddir, metadata);
 				} else if ("FAILED".equals(status)) {
 					f.getBtnEdit().setEnabled(false);
 					f.getProgressBar().setValue(0);
@@ -763,6 +773,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		if (txtTags != null && !txtTags.getText().equals("")) {
 			v.snippet.tags = trimTags(txtTags.getText());
 		}
+		VideoMetadata metadata = createMetadata();
 		VisibilityType visibility = (VisibilityType) edit.getCmbVisibility().getSelectedItem();
 		if (visibility == VisibilityType.SCHEDULED) {
 			if (edit.getDateTimePicker().getEditor().getValue() != null
@@ -787,7 +798,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		LicenseType license = (LicenseType) edit.getCmbLicense().getSelectedItem();
 		v.status.license = license.getData();
 		File data = new File(File);
-		UploadMgr.addUpload(f, data, v, acc_id, edit.getTxtEndDir().getText());
+		UploadMgr.addUpload(f, data, v, acc_id, edit.getTxtEndDir().getText(), metadata);
 		return f;
 	}
 
@@ -820,6 +831,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 				if (txtTags != null && !txtTags.getText().equals("")) {
 					v.snippet.tags = trimTags(txtTags.getText());
 				}
+				VideoMetadata metadata = createMetadata();
 				VisibilityType visibility = (VisibilityType) edit.getCmbVisibility().getSelectedItem();
 				if (visibility == VisibilityType.SCHEDULED) {
 					if (edit.getDateTimePicker().getEditor().getValue() != null
@@ -847,7 +859,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 					SQLite.updateUpload(acc_id, data, v, enddir, upload_id);
 				}
 				File data = new File(File);
-				UploadMgr.updateUpload(upload_id, data, v, acc_id);
+				UploadMgr.updateUpload(upload_id, data, v, metadata, acc_id);
 			}
 		}
 	}
@@ -1088,6 +1100,19 @@ public class FrmMain extends JFrame implements IMainMenu {
 				cmbCategory.setSelectedIndex(i);
 			}
 		}
+	}
+	
+	public VideoMetadata createMetadata() {
+		VideoMetadata meta = new VideoMetadata();
+		EditPanel edit = (EditPanel) ss1.contentPane;
+		MonetPanel monet = (MonetPanel) ss3.contentPane;
+		meta.setMonetized(monet.getChckbxMonetize().isSelected());
+		meta.setSyndication(monet.getCmbContentSyndication().getSelectedItem().toString());
+		meta.setInstream(monet.getChckbxSkippableVideoads().isSelected());
+		meta.setOverlay(monet.getChckbxOverlayads().isSelected());
+		meta.setProduct(monet.getChckbxSponsoredCards().isSelected());
+		meta.setThumbnail(edit.getTxtThumbnail().getText().trim());
+		return meta;
 	}
 
 	public void deleteTemplate(int id) {

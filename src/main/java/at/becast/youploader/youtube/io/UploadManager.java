@@ -35,6 +35,7 @@ import at.becast.youploader.gui.UploadItem;
 import at.becast.youploader.gui.FrmMain;
 import at.becast.youploader.youtube.VisibilityType;
 import at.becast.youploader.youtube.data.Video;
+import at.becast.youploader.youtube.data.VideoMetadata;
 import at.becast.youploader.youtube.data.VideoUpdate;
 import at.becast.youploader.youtube.exceptions.UploadException;
 
@@ -63,7 +64,7 @@ public class UploadManager {
 		this.parent = parent;
 	}
 	
-	public void addUpload(UploadItem frame, File data, Video videodata, int acc_id, String enddir){
+	public void addUpload(UploadItem frame, File data, Video videodata, int acc_id, String enddir, VideoMetadata metadata){
 		LOG.info("Adding upload");
 		this.speed_limit = Integer.parseInt(parent.getSpinner().getValue().toString());
 		if(frame.upload_id == -1){
@@ -77,22 +78,22 @@ public class UploadManager {
 			if(id != -1){
 				LOG.info("Upload is not a preexisting upload: Adding Upload");
 				frame.setId(id);
-				UploadWorker worker = new UploadWorker(id, frame, acc_id, data, videodata, speed_limit, enddir);
+				UploadWorker worker = new UploadWorker(id, frame, acc_id, data, videodata, speed_limit, enddir, metadata);
 				_ToUpload.addLast(worker);
 			}else{
 				LOG.info("Upload could not be added to database.");
 			}
 		}else{
 			LOG.info("Upload is a preexisting upload: Adding Upload");
-			UploadWorker worker = new UploadWorker(frame.upload_id, frame, acc_id, data, videodata, speed_limit, enddir);
+			UploadWorker worker = new UploadWorker(frame.upload_id, frame, acc_id, data, videodata, speed_limit, enddir, metadata);
 			_ToUpload.addLast(worker);
 		}
 	}
 	
-	public void addResumeableUpload(UploadItem frame, File data, Video videodata, int acc_id, String enddir, String url, String yt_id){
+	public void addResumeableUpload(UploadItem frame, File data, Video videodata, int acc_id, String enddir, VideoMetadata metadata, String url, String yt_id){
 		this.speed_limit = Integer.parseInt(parent.getSpinner().getValue().toString());
 		LOG.info("Adding resumed Upload");
-		UploadWorker worker = new UploadWorker(frame.upload_id, frame, acc_id, data, videodata, speed_limit, enddir, url, yt_id);
+		UploadWorker worker = new UploadWorker(frame.upload_id, frame, acc_id, data, videodata, speed_limit, enddir, metadata, url, yt_id);
 		_ToUpload.addFirst(worker);
 	}
 	
@@ -136,10 +137,14 @@ public class UploadManager {
 				if(_Uploading.get(i).id == upload_id){
 					UploadWorker w = _Uploading.get(i);
 					LOG.info("Upload {} finished",w.videodata.snippet.title);
+					if(w.metadata.getThumbnail()!=null && !w.metadata.getThumbnail().trim().equals("")){
+						LOG.info("Uploading Thumbnail {}",w.metadata.getThumbnail());
+						w.uploadThumbnail();
+					}
 					if(w.enddir !=null && !w.enddir.equals("")){
 						LOG.info("Moving file {}",w.file.getName());
 						try {
-							Files.move(w.file.toPath(), Paths.get(w.enddir).resolve(w.file.getName()));
+							Files.move(w.file.toPath(), Paths.get(w.enddir.trim()).resolve(w.file.getName()));
 						} catch (IOException e) {
 							LOG.error("Could not move file {}",w.file.getName(), e);
 						}
@@ -183,12 +188,13 @@ public class UploadManager {
 		}
 	}
 
-	public void updateUpload(int upload_id, File data, Video v, int acc_id) {
+	public void updateUpload(int upload_id, File data, Video v, VideoMetadata metadata, int acc_id) {
 		if(!_Uploading.isEmpty()){
 			for(int i=0;i<_Uploading.size();i++){
 				if(_Uploading.get(i).id == upload_id){
 					UploadWorker w = _Uploading.get(i);
 					w.videodata = v;
+					w.metadata = metadata;
 					w.frame.getlblName().setText(v.snippet.title);
 					String release = "";
 					if(v.status.privacyStatus == VisibilityType.SCHEDULED.getData()){
@@ -274,7 +280,7 @@ public class UploadManager {
 					}
 	
 					LOG.info("Restarting Upload {}",o.videodata.snippet.title);
-					UploadWorker worker = new UploadWorker(upload_id, o.frame, o.acc_id, o.file, o.videodata, speed_limit, o.enddir, o.upload.url, o.upload.id);
+					UploadWorker worker = new UploadWorker(upload_id, o.frame, o.acc_id, o.file, o.videodata, speed_limit, o.enddir, o.metadata, o.upload.url, o.upload.id);
 					worker.setRetrys(o.getRetrys());
 					_Uploading.set(i, worker);
 					worker.start();
@@ -283,7 +289,7 @@ public class UploadManager {
 					o.frame.getProgressBar().setValue(0);
 					LOG.info("Retried 5 times. Failing Upload {}",o.videodata.snippet.title);
 					_Uploading.remove(i);
-					UploadWorker worker = new UploadWorker(upload_id, o.frame, o.acc_id, o.file, o.videodata, speed_limit, o.enddir, o.upload.url, o.upload.id);
+					UploadWorker worker = new UploadWorker(upload_id, o.frame, o.acc_id, o.file, o.videodata, speed_limit, o.enddir, o.metadata, o.upload.url, o.upload.id);
 					_ToUpload.add(worker);
 					SQLite.setUploadFinished(upload_id,Status.STOPPED);
 				}

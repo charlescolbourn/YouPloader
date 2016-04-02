@@ -15,11 +15,13 @@ public class VersionComparator implements Comparator<Object> {
 		VersionTokenizer tokenizer1 = new VersionTokenizer(version1);
 		VersionTokenizer tokenizer2 = new VersionTokenizer(version2);
 
-		int number1 = 0, number2 = 0;
-		String suffix1 = "", suffix2 = "";
+		int number1 = 0;
+		int number2 = 0;
+		String suffix1 = "";
+		String suffix2 = "";
 
-		while (tokenizer1.MoveNext()) {
-			if (!tokenizer2.MoveNext()) {
+		while (tokenizer1.moveNext()) {
+			if (!tokenizer2.moveNext()) {
 				do {
 					number1 = tokenizer1.getNumber();
 					suffix1 = tokenizer1.getSuffix();
@@ -27,7 +29,7 @@ public class VersionComparator implements Comparator<Object> {
 						// Version one is longer than number two, and non-zero
 						return 1;
 					}
-				} while (tokenizer1.MoveNext());
+				} while (tokenizer1.moveNext());
 
 				// Version one is longer than version two, but zero
 				return 0;
@@ -63,7 +65,7 @@ public class VersionComparator implements Comparator<Object> {
 				return result;
 
 		}
-		if (tokenizer2.MoveNext()) {
+		if (tokenizer2.moveNext()) {
 			do {
 				number2 = tokenizer2.getNumber();
 				suffix2 = tokenizer2.getSuffix();
@@ -71,7 +73,7 @@ public class VersionComparator implements Comparator<Object> {
 					// Version one is longer than version two, and non-zero
 					return -1;
 				}
-			} while (tokenizer2.MoveNext());
+			} while (tokenizer2.moveNext());
 
 			// Version two is longer than version one, but zero
 			return 0;

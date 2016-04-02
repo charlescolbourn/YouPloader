@@ -78,6 +78,15 @@ public class Uploader {
 	public void setSpeedlimit(int limit) {
 		this.stream.setSpeedLimit(limit);
 	}
+	
+	public void uploadThumbnail(File thumbnail, Upload upload) throws IOException, UploadException {
+		this.http = new SimpleHTTP();
+		Map<String, String> headers = new HashMap<>();
+		headers.put("Authorization", this.oAuth2.getHeader());
+		headers.put("Content-Type", "application/octet-stream; charset=UTF-8");		this.http.post("https://www.googleapis.com/upload/youtube/v3/thumbnails/set?videoId="+upload.id, headers, thumbnail);
+		this.http.close();
+	}
+	
 
 	public void abort() {
 		try {

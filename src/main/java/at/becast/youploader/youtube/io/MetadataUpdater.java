@@ -59,4 +59,5 @@ public class MetadataUpdater {
 		LOG.info("Updating Metadata for Video {}",upload.id);
 		
 	}
+		
 }

@@ -14,31 +14,48 @@
  */
 package at.becast.youploader.youtube.data;
 
+
 public class VideoMetadata {
-	private String video_monetization_style;
 	private String syndication;
+	private String thumbnail;
 	private boolean overlay;
 	private boolean trueview;
 	private boolean instream;
 	private boolean product;
+	private boolean product_placement;
+	private boolean monetized = false;
 	
 	public VideoMetadata(){
 		
 	}
 	
-	public VideoMetadata(String video_monetization_style, String syndication){
-		this.video_monetization_style = video_monetization_style;
-		this.syndication = syndication;
+	public boolean isMonetized() {
+		return monetized;
+	}
+
+	public void setMonetized(boolean monetized) {
+		this.monetized = monetized;
 	}
 	
-	public String getVideo_monetization_style() {
-		return video_monetization_style;
+	public String getProductplacement() {
+		return "{\"has_paid_product_placement\":"+product_placement+"}";
 	}
 
-	public void setVideo_monetization_style(String video_monetization_style) {
-		this.video_monetization_style = video_monetization_style;
+	public void setProduct_placement(boolean product_placement) {
+		this.product_placement = product_placement;
 	}
-
+	
+	public String getMonetization() {
+		if(monetized){
+			return "ads";
+		}else{
+			return "";
+		}
+	}
+	public String getAdFormats(){
+		return "{\"has_overlay_ads\":"+isOverlay()+",\"has_skippable_video_ads\":"+isInstream()+",\"has_non_skippable_video_ads\":false,\"has_long_non_skippable_video_ads\":false,\"has_product_listing_ads\":"+isProduct()+"}";
+	}
+	
 	public String getSyndication() {
 		return syndication;
 	}
@@ -77,6 +94,14 @@ public class VideoMetadata {
 
 	public void setProduct(boolean product) {
 		this.product = product;
+	}
+	
+	public String getThumbnail() {
+		return this.thumbnail;
+	}
+
+	public void setThumbnail(String thumbnail) {
+		this.thumbnail = thumbnail;
 	}
 
 }

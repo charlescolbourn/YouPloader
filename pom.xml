@@ -93,7 +93,11 @@
     </dependencies>
     <build>
     <resources>
-    <resource>
+    	<resource>
+	        <directory>src/main/resources</directory>
+	        <filtering>false</filtering>
+	    </resource>
+    	<resource>
 	        <directory>src/main/resources/data</directory>
 	        <includes>
 	          <include>**/*.properties</include>

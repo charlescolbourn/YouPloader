@@ -21,15 +21,26 @@ public class Upload {
   public final File file;
   public final String id;
   public final Video video;
+  public VideoMetadata metadata;
 
-  public Upload(String url, File file, String id, Video video) {
+  public Upload(String url, File file, String id, Video video, VideoMetadata metadata) {
     this.url = url;
     this.file = file;
     this.id = id;
     this.video = video;
+    this.metadata = metadata;
   }
 
   public Upload() {
-    this(null, null, null, null);
+    this(null, null, null, null, null);
   }
+  
+  public Upload(String url, File file, String id, Video video) {
+	  this(url, file, id, video, null);
+  }
+  
+  public void setMetadata(VideoMetadata metadata){
+	  this.metadata = metadata;
+  }
+  
 }

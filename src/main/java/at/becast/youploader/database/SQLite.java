@@ -17,8 +17,16 @@ package at.becast.youploader.database;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,13 +72,15 @@ public class SQLite {
 			prest.executeUpdate();
 			prest = c.prepareStatement("INSERT INTO `settings` VALUES('tos_agreed','0')");
 			prest.executeUpdate();
+			prest = c.prepareStatement("INSERT INTO `settings` VALUES('notify_updates','1')");
+			prest.executeUpdate();
 			prest = c.prepareStatement("CREATE TABLE `accounts` (`id` INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , `name` VARCHAR NOT NULL , `refresh_token` VARCHAR, `cookie` VARCHAR, `active` INTEGER DEFAULT 0)");
 			prest.executeUpdate();
-			prest = c.prepareStatement("CREATE TABLE `templates` (`id` INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , `name` VARCHAR, `data` VARCHAR)");
+			prest = c.prepareStatement("CREATE TABLE `templates` (`id` INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , `name` VARCHAR, `data` VARCHAR ,`metadata` VARCHAR)");
 			prest.executeUpdate();
-			prest = c.prepareStatement("CREATE TABLE `uploads` (`id` INTEGER PRIMARY KEY  NOT NULL ,`file` VARCHAR,`account` INTEGER DEFAULT (null),`yt_id` VARCHAR, `enddir` VARCHAR ,`url` VARCHAR,`uploaded` INTEGER DEFAULT (null) ,`lenght` INTEGER DEFAULT (null) ,`data` VARCHAR,`status` VARCHAR)");
+			prest = c.prepareStatement("CREATE TABLE `uploads` (`id` INTEGER PRIMARY KEY  NOT NULL ,`file` VARCHAR,`account` INTEGER DEFAULT (null),`yt_id` VARCHAR, `enddir` VARCHAR ,`url` VARCHAR,`uploaded` INTEGER DEFAULT (null) ,`lenght` INTEGER DEFAULT (null) ,`data` VARCHAR,`metadata` VARCHAR, `status` VARCHAR)");
 			prest.executeUpdate();
-			setVersion(3);
+			setVersion(FrmMain.getDBVersion());
 		} catch (SQLException e) {
 			LOG.error("Error creating Database",e);
 			return false;
@@ -304,17 +314,45 @@ public class SQLite {
 		PreparedStatement prest = null;
 		try {
 			switch(getVersion()){
+				//This falls through intentionally since ALL updates since the version have to be applied.
 				case 3:
 					prest = c.prepareStatement("INSERT INTO `settings` VALUES('notify_updates','1')");
 					prest.executeUpdate();
+					prest = c.prepareStatement("ALTER TABLE `uploads` ADD COLUMN 'metadata' VARCHAR");
+					prest.executeUpdate();
+					prest = c.prepareStatement("ALTER TABLE `templates` ADD COLUMN 'metadata' VARCHAR");
+					prest.executeUpdate();
 				default:
 					setVersion(FrmMain.getDBVersion());
+				break;
 			}
 			
 		} catch (SQLException e) {
 			LOG.info("Could not update Database ", e);
 		}
 	}
+
+	public static void close() {
+		if(c!=null){
+			try {
+				c.close();
+				c = null;
+			} catch (SQLException e) {
+				LOG.info("Could not close DB");
+			}
+		}
+	}
+	
+	public static void makeBackup() {
+		SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyhhmm");
+		Date today = new Date();
+		try {
+			FileUtils.copyFile(new File(FrmMain.DB_FILE), new File(System.getProperty("user.home") + "/YouPloader/data/bak-" + formatter.format(today) +".db"));
+		} catch (IOException e) {
+			LOG.error("Could not create Database Backup ",e);
+		}
+	}
+	
 
     
 }
