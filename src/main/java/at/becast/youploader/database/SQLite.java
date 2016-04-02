@@ -35,6 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import at.becast.youploader.gui.FrmMain;
 import at.becast.youploader.templates.Template;
 import at.becast.youploader.youtube.data.Video;
+import at.becast.youploader.youtube.data.VideoMetadata;
 import at.becast.youploader.youtube.io.UploadManager;
 import at.becast.youploader.youtube.io.UploadManager.Status;
 
@@ -110,18 +111,19 @@ public class SQLite {
     	prest.executeUpdate();
     }
     
-    public static int addUpload(int account, File file, Video data, String enddir) throws SQLException, IOException{
+    public static int addUpload(int account, File file, Video data, String enddir, VideoMetadata metadata) throws SQLException, IOException{
     	PreparedStatement prest = null;
     	ObjectMapper mapper = new ObjectMapper();
-    	String sql	= "INSERT INTO `uploads` (`account`, `file`, `lenght`, `data`,`enddir`, `status`) " +
-    			"VALUES (?,?,?,?,?,?)";
+    	String sql	= "INSERT INTO `uploads` (`account`, `file`, `lenght`, `data`,`enddir`, `metadata`, `status`) " +
+    			"VALUES (?,?,?,?,?,?,?)";
     	prest = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     	prest.setInt(1, account);
     	prest.setString(2, file.getAbsolutePath());
     	prest.setLong(3, file.length());
     	prest.setString(4, mapper.writeValueAsString(data));
     	prest.setString(5, enddir);
-    	prest.setString(6, UploadManager.Status.NOT_STARTED.toString());
+    	prest.setString(6, mapper.writeValueAsString(metadata));
+    	prest.setString(7, UploadManager.Status.NOT_STARTED.toString());
     	prest.execute();
         ResultSet rs = prest.getGeneratedKeys();
         prest.close();
@@ -234,7 +236,7 @@ public class SQLite {
 		
 	}
 	
-	public static Boolean updateUpload(int account, File file, Video data, String enddir, int id) throws SQLException, IOException{
+	public static Boolean updateUpload(int account, File file, Video data, String enddir, VideoMetadata metadata, int id) throws SQLException, IOException{
     	PreparedStatement prest = null;
     	String sql	= "UPDATE `uploads` SET `account`=?, `file`=?, `lenght`=?, `enddir`=? WHERE `id`=?";
     	prest = c.prepareStatement(sql);
@@ -243,20 +245,20 @@ public class SQLite {
     	prest.setLong(3, file.length());
     	prest.setString(4, enddir);
     	prest.setInt(5, id);
-    	prest.execute();
     	boolean res = prest.execute();
     	prest.close();
-    	return res && updateUploadData(data, id);
+    	boolean upd = updateUploadData(data, metadata, id);
+    	return res && upd;
     }
 	
-    public static Boolean updateUploadData(Video data, int id) throws SQLException, IOException{
+    public static Boolean updateUploadData(Video data, VideoMetadata metadata, int id) throws SQLException, IOException{
     	PreparedStatement prest = null;
     	ObjectMapper mapper = new ObjectMapper();
-    	String sql	= "UPDATE `uploads` SET `data`=? WHERE `id`=?";
+    	String sql	= "UPDATE `uploads` SET `data`=?,`metadata`=? WHERE `id`=?";
     	prest = c.prepareStatement(sql);
     	prest.setString(1, mapper.writeValueAsString(data));
-    	prest.setInt(2, id);
-    	prest.execute();
+    	prest.setString(2, mapper.writeValueAsString(metadata));
+    	prest.setInt(3, id);
     	boolean res = prest.execute();
         prest.close();
         return res;
@@ -289,7 +291,6 @@ public class SQLite {
     	prest = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     	prest.setString(1, mapper.writeValueAsString(template));
     	prest.setInt(2, id);
-    	prest.execute();
     	boolean res = prest.execute();
         prest.close();
         return res;

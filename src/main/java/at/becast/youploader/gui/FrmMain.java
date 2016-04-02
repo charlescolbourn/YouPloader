@@ -850,10 +850,10 @@ public class FrmMain extends JFrame implements IMainMenu {
 				v.status.publicStatsViewable = edit.getChckbxMakeStatisticsPublic().isSelected();
 				v.status.license = license.getData();
 				if (video_id != null && !video_id.equals("")) {
-					SQLite.updateUploadData(v, upload_id);
+					SQLite.updateUploadData(v,metadata, upload_id);
 				} else {
 					File data = new File(File);
-					SQLite.updateUpload(acc_id, data, v, enddir, upload_id);
+					SQLite.updateUpload(acc_id, data, v, enddir, metadata, upload_id);
 				}
 				File data = new File(File);
 				UploadMgr.updateUpload(upload_id, data, v, metadata, acc_id);

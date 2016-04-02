@@ -29,8 +29,6 @@ import java.util.Locale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mashape.unirest.http.exceptions.UnirestException;
-
 import at.becast.youploader.account.AccountManager;
 import at.becast.youploader.database.SQLite;
 import at.becast.youploader.gui.UploadItem;
@@ -73,7 +71,7 @@ public class UploadManager {
 			int id = -1;
 			LOG.info("Upload is not a preexisting upload: Inserting to Database");
 			try {
-				id = SQLite.addUpload(acc_id, data, videodata, enddir);
+				id = SQLite.addUpload(acc_id, data, videodata, enddir, metadata);
 			} catch (SQLException | IOException e) {
 				LOG.error("Upload cound not be added", e);
 			}
@@ -141,9 +139,11 @@ public class UploadManager {
 					LOG.info("Upload {} finished",w.videodata.snippet.title);
 					if(w.metadata.getThumbnail()!=null && !w.metadata.getThumbnail().trim().equals("")){
 						LOG.info("Uploading Thumbnail {}",w.metadata.getThumbnail());
+						w.frame.getProgressBar().setString(String.format("Uploading Thumbnail"));
 						w.uploadThumbnail();
 					}
 					LOG.info("Updating Metadata");
+					w.frame.getProgressBar().setString(String.format("Updating Metadata"));
 					MetadataUpdater u = new MetadataUpdater(w.acc_id,w.upload);
 					try {
 						u.updateMetadata();
@@ -152,12 +152,14 @@ public class UploadManager {
 					}
 					if(w.enddir !=null && !w.enddir.equals("")){
 						LOG.info("Moving file {}",w.file.getName());
+						w.frame.getProgressBar().setString(String.format("Moving File"));
 						try {
 							Files.move(w.file.toPath(), Paths.get(w.enddir.trim()).resolve(w.file.getName()));
 						} catch (IOException e) {
 							LOG.error("Could not move file {}",w.file.getName(), e);
 						}
 					}
+					w.frame.getProgressBar().setString(String.format("Finished"));
 					_Uploading.remove(i);
 				}
 			}
