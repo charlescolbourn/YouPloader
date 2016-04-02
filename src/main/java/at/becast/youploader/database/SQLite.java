@@ -76,7 +76,7 @@ public class SQLite {
 			prest.executeUpdate();
 			prest = c.prepareStatement("CREATE TABLE `accounts` (`id` INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , `name` VARCHAR NOT NULL , `refresh_token` VARCHAR, `cookie` VARCHAR, `active` INTEGER DEFAULT 0)");
 			prest.executeUpdate();
-			prest = c.prepareStatement("CREATE TABLE `templates` (`id` INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , `name` VARCHAR, `data` VARCHAR ,`metadata` VARCHAR)");
+			prest = c.prepareStatement("CREATE TABLE `templates` (`id` INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , `name` VARCHAR, `data` VARCHAR)");
 			prest.executeUpdate();
 			prest = c.prepareStatement("CREATE TABLE `uploads` (`id` INTEGER PRIMARY KEY  NOT NULL ,`file` VARCHAR,`account` INTEGER DEFAULT (null),`yt_id` VARCHAR, `enddir` VARCHAR ,`url` VARCHAR,`uploaded` INTEGER DEFAULT (null) ,`lenght` INTEGER DEFAULT (null) ,`data` VARCHAR,`metadata` VARCHAR, `status` VARCHAR)");
 			prest.executeUpdate();
@@ -319,8 +319,6 @@ public class SQLite {
 					prest = c.prepareStatement("INSERT INTO `settings` VALUES('notify_updates','1')");
 					prest.executeUpdate();
 					prest = c.prepareStatement("ALTER TABLE `uploads` ADD COLUMN 'metadata' VARCHAR");
-					prest.executeUpdate();
-					prest = c.prepareStatement("ALTER TABLE `templates` ADD COLUMN 'metadata' VARCHAR");
 					prest.executeUpdate();
 				default:
 					setVersion(FrmMain.getDBVersion());

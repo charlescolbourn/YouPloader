@@ -14,6 +14,7 @@
  */
 package at.becast.youploader.youtube.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class VideoMetadata {
 	private String syndication;
@@ -22,7 +23,7 @@ public class VideoMetadata {
 	private boolean trueview;
 	private boolean instream;
 	private boolean product;
-	private boolean product_placement;
+	private boolean productplacement;
 	private boolean monetized = false;
 	
 	public VideoMetadata(){
@@ -37,14 +38,18 @@ public class VideoMetadata {
 		this.monetized = monetized;
 	}
 	
-	public String getProductplacement() {
-		return "{\"has_paid_product_placement\":"+product_placement+"}";
+	public boolean getProductplacement() {
+		return this.productplacement;
+	}
+	@JsonIgnore
+	public String productplacement(){
+		return "{\"has_paid_product_placement\":"+productplacement+"}";
 	}
 
-	public void setProduct_placement(boolean product_placement) {
-		this.product_placement = product_placement;
+	public void setProductplacement(boolean productplacement) {
+		this.productplacement = productplacement;
 	}
-	
+	@JsonIgnore
 	public String getMonetization() {
 		if(monetized){
 			return "ads";
@@ -52,6 +57,7 @@ public class VideoMetadata {
 			return "";
 		}
 	}
+	@JsonIgnore
 	public String getAdFormats(){
 		return "{\"has_overlay_ads\":"+isOverlay()+",\"has_skippable_video_ads\":"+isInstream()+",\"has_non_skippable_video_ads\":false,\"has_long_non_skippable_video_ads\":false,\"has_product_listing_ads\":"+isProduct()+"}";
 	}

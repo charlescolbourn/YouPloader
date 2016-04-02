@@ -14,15 +14,18 @@
  */
 package at.becast.youploader.youtube;
 
-public enum SyndicationType {
-	EVERYWHERE("everywhere", "Everywhere"), MONEZIZED("monetized", "Monetised platforms");
+import java.util.Locale;
+import java.util.ResourceBundle;
 
+public enum SyndicationType {
+	EVERYWHERE("everywhere", "MonetPanel.Syndication.everywhere"), MONEZIZED("monetized", "MonetPanel.Syndication.monetized");
+	private final ResourceBundle LANG = ResourceBundle.getBundle("lang", Locale.getDefault());
 	private final String term;
 	private final String label;
 
 	SyndicationType(final String term, final String label) {
 		this.term = term;
-		this.label = label;
+		this.label = LANG.getString(label);
 	}
 
 	@Override

@@ -102,8 +102,8 @@ import at.becast.youploader.util.GetVersion;
 import at.becast.youploader.util.VersionComparator;
 import at.becast.youploader.youtube.Categories;
 import at.becast.youploader.youtube.LicenseType;
+import at.becast.youploader.youtube.SyndicationType;
 import at.becast.youploader.youtube.VisibilityType;
-import at.becast.youploader.youtube.data.CategoryType;
 import at.becast.youploader.youtube.data.Video;
 import at.becast.youploader.youtube.data.VideoMetadata;
 import at.becast.youploader.youtube.io.UploadManager;
@@ -145,7 +145,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 	private JLabel lblTagslenght, lbltitlelenght, lblDesclenght;
 	private JSpinner spinner;
 	private JPanel QueuePanel;
-	private JComboBox<CategoryType> cmbCategory;
+	private JComboBox<Categories> cmbCategory;
 	private JTextArea txtTags;
 	private JComboBox<AccountType> cmbAccount;
 	private SidebarSection ss1, ss2, ss3;
@@ -266,8 +266,8 @@ public class FrmMain extends JFrame implements IMainMenu {
 	public void initComponents() {
 		LOG.debug("init Components", FrmMain.class);
 		TabbedPane = new JTabbedPane();
-		cmbCategory = new JComboBox<CategoryType>();
-		cmbCategory.setModel(new DefaultComboBoxModel<CategoryType>());
+		cmbCategory = new JComboBox<Categories>();
+		cmbCategory.setModel(new DefaultComboBoxModel<Categories>(Categories.values()));
 		SideBar sideBar = new SideBar(SideBar.SideBarMode.TOP_LEVEL, true, 300, true);
 		ss1 = new SidebarSection(sideBar, LANG.getString("frmMain.Sidebar.Settings"), new EditPanel(this), null);
 		ss2 = new SidebarSection(sideBar, LANG.getString("frmMain.Sidebar.Playlists"), new PlaylistPanel(), null);
@@ -278,9 +278,6 @@ public class FrmMain extends JFrame implements IMainMenu {
 		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		setTitle(APP_NAME + " " + VERSION);
 		setName("frmMain");
-		for (Categories cat : Categories.values()) {
-			cmbCategory.addItem(new CategoryType(cat.getID(), cat.toString()));
-		}
 		JPanel mainTab = new JPanel();
 		JPanel panel = new JPanel();
 		GroupLayout mainTabLayout = new GroupLayout(mainTab);
@@ -767,8 +764,8 @@ public class FrmMain extends JFrame implements IMainMenu {
 		this.getQueuePanel().revalidate();
 		Video v = new Video();
 		v.snippet.title = Name;
-		CategoryType cat = (CategoryType) cmbCategory.getSelectedItem();
-		v.snippet.categoryId = cat.getValue();
+		Categories cat = (Categories) cmbCategory.getSelectedItem();
+		v.snippet.categoryId = cat.getID();
 		v.snippet.description = txtDescription.getText();
 		if (txtTags != null && !txtTags.getText().equals("")) {
 			v.snippet.tags = trimTags(txtTags.getText());
@@ -825,8 +822,8 @@ public class FrmMain extends JFrame implements IMainMenu {
 				String video_id = rs.getString("yt_id");
 				Video v = new Video();
 				v.snippet.title = txtTitle.getText();
-				CategoryType cat = (CategoryType) cmbCategory.getSelectedItem();
-				v.snippet.categoryId = cat.getValue();
+				Categories cat = (Categories) cmbCategory.getSelectedItem();
+				v.snippet.categoryId = cat.getID();
 				v.snippet.description = txtDescription.getText();
 				if (txtTags != null && !txtTags.getText().equals("")) {
 					v.snippet.tags = trimTags(txtTags.getText());
@@ -911,6 +908,9 @@ public class FrmMain extends JFrame implements IMainMenu {
 			while (rs.next()) {
 				Video v = mapper.readValue(rs.getString("data"), new TypeReference<Video>() {
 				});
+				VideoMetadata metadata = mapper.readValue(rs.getString("metadata"), new TypeReference<VideoMetadata>() {
+				});
+				resetMetadata(metadata);
 				cmbFile.removeAllItems();
 				cmbFile.addItem(rs.getString("file"));
 				this.setCategory(v.snippet.categoryId);
@@ -953,8 +953,8 @@ public class FrmMain extends JFrame implements IMainMenu {
 		Template t = new Template(name);
 		Video v = new Video();
 		v.snippet.title = txtTitle.getText();
-		CategoryType cat = (CategoryType) cmbCategory.getSelectedItem();
-		v.snippet.categoryId = cat.getValue();
+		Categories cat = (Categories) cmbCategory.getSelectedItem();
+		v.snippet.categoryId = cat.getID();
 		v.snippet.description = txtDescription.getText();
 		if (txtTags != null && !txtTags.getText().equals("")) {
 			v.snippet.tags = trimTags(txtTags.getText());
@@ -1023,6 +1023,9 @@ public class FrmMain extends JFrame implements IMainMenu {
 		if (t.startdir != null) {
 			edit.getTxtStartDir().setText(t.startdir);
 		}
+		if(t.getMetadata()!=null){
+			resetMetadata(t.getMetadata());
+		}
 		calcNotifies();
 	}
 
@@ -1064,10 +1067,12 @@ public class FrmMain extends JFrame implements IMainMenu {
 	public void saveTemplate(int id) {
 		EditPanel edit = (EditPanel) ss1.contentPane;
 		Video v = new Video();
+		VideoMetadata metadata = createMetadata();
 		Template t = TemplateMgr.get(id);
+		t.setMetadata(metadata);
 		v.snippet.title = txtTitle.getText();
-		CategoryType cat = (CategoryType) cmbCategory.getSelectedItem();
-		v.snippet.categoryId = cat.getValue();
+		Categories cat = (Categories) cmbCategory.getSelectedItem();
+		v.snippet.categoryId = cat.getID();
 		v.snippet.description = txtDescription.getText();
 		if (txtTags != null && !txtTags.getText().equals("")) {
 			v.snippet.tags = trimTags(txtTags.getText());
@@ -1096,7 +1101,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 
 	public void setCategory(int catId) {
 		for (int i = 0; i < cmbCategory.getItemCount(); i++) {
-			if (cmbCategory.getItemAt(i).getValue() == catId) {
+			if (cmbCategory.getItemAt(i).getID() == catId) {
 				cmbCategory.setSelectedIndex(i);
 			}
 		}
@@ -1107,12 +1112,28 @@ public class FrmMain extends JFrame implements IMainMenu {
 		EditPanel edit = (EditPanel) ss1.contentPane;
 		MonetPanel monet = (MonetPanel) ss3.contentPane;
 		meta.setMonetized(monet.getChckbxMonetize().isSelected());
-		meta.setSyndication(monet.getCmbContentSyndication().getSelectedItem().toString());
+		SyndicationType syn = (SyndicationType) monet.getCmbContentSyndication().getSelectedItem();
+		meta.setSyndication(syn.getData());
 		meta.setInstream(monet.getChckbxSkippableVideoads().isSelected());
 		meta.setOverlay(monet.getChckbxOverlayads().isSelected());
 		meta.setProduct(monet.getChckbxSponsoredCards().isSelected());
 		meta.setThumbnail(edit.getTxtThumbnail().getText().trim());
 		return meta;
+	}
+	
+	private void resetMetadata(VideoMetadata metadata) {
+		EditPanel edit = (EditPanel) ss1.contentPane;
+		MonetPanel monet = (MonetPanel) ss3.contentPane;		
+		for (int i = 0; i < monet.getCmbContentSyndication().getItemCount(); i++) {
+			if (monet.getCmbContentSyndication().getItemAt(i).getData().equals(metadata.getSyndication())) {
+				monet.getCmbContentSyndication().setSelectedIndex(i);
+			}
+		}
+		edit.getTxtThumbnail().setText(metadata.getThumbnail());
+		monet.getChckbxMonetize().setSelected(metadata.isMonetized());
+		monet.getChckbxSkippableVideoads().setSelected(metadata.isInstream());
+		monet.getChckbxOverlayads().setSelected(metadata.isOverlay());
+		monet.getChckbxSponsoredCards().setSelected(metadata.isProduct());
 	}
 
 	public void deleteTemplate(int id) {

@@ -30,6 +30,7 @@ import com.jgoodies.forms.layout.FormSpecs;
 import javax.swing.JComboBox;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
+import javax.swing.DefaultComboBoxModel;
 
 /**
  *
@@ -93,6 +94,7 @@ public class MonetPanel extends javax.swing.JPanel {
     	add(lblContentSyndication, "2, 6");
     	
     	cmbContentSyndication = new JComboBox<SyndicationType>();
+    	cmbContentSyndication.setModel(new DefaultComboBoxModel<SyndicationType>(SyndicationType.values()));
     	add(cmbContentSyndication, "2, 8, 5, 1, fill, fill");
     	
     	chckbxMonetize = new JCheckBox(LANG.getString("MonetPanel.Monetize"));

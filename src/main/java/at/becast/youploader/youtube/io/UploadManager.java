@@ -29,6 +29,8 @@ import java.util.Locale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mashape.unirest.http.exceptions.UnirestException;
+
 import at.becast.youploader.account.AccountManager;
 import at.becast.youploader.database.SQLite;
 import at.becast.youploader.gui.UploadItem;
@@ -140,6 +142,13 @@ public class UploadManager {
 					if(w.metadata.getThumbnail()!=null && !w.metadata.getThumbnail().trim().equals("")){
 						LOG.info("Uploading Thumbnail {}",w.metadata.getThumbnail());
 						w.uploadThumbnail();
+					}
+					LOG.info("Updating Metadata");
+					MetadataUpdater u = new MetadataUpdater(w.acc_id,w.upload);
+					try {
+						u.updateMetadata();
+					} catch (UnirestException e1) {
+						LOG.error("Error Updating Metadata ", e1);
 					}
 					if(w.enddir !=null && !w.enddir.equals("")){
 						LOG.info("Moving file {}",w.file.getName());

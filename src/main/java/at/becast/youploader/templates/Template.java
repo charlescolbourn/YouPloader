@@ -1,11 +1,13 @@
 package at.becast.youploader.templates;
 
 import at.becast.youploader.youtube.data.Video;
+import at.becast.youploader.youtube.data.VideoMetadata;
 
 public class Template {
 	
 	public String name;
 	public Video videodata;
+	public VideoMetadata metadata;
 	public String startdir;
 	public String enddir;
 	
@@ -17,11 +19,12 @@ public class Template {
 
 	}
 	
-	public Template(String name, String startdir, String enddir, Video videodata){
+	public Template(String name, String startdir, String enddir, Video videodata, VideoMetadata metadata){
 		this.name=name;
 		this.startdir=startdir;
 		this.enddir=enddir;
 		this.videodata=videodata;
+		this.metadata=metadata;
 	}
 	
 	
@@ -44,6 +47,13 @@ public class Template {
 		this.videodata = videodata;
 	}
 
+	public VideoMetadata getMetadata() {
+		return metadata;
+	}
+
+	public void setMetadata(VideoMetadata metadata) {
+		this.metadata = metadata;
+	}
 
 	public String getStartdir() {
 		return startdir;

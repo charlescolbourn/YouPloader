@@ -25,6 +25,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
+import at.becast.youploader.account.Account;
 import at.becast.youploader.account.AccountManager;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.GroupLayout;
@@ -34,6 +35,7 @@ import javax.swing.WindowConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.awt.event.ActionEvent;
 
 /**
@@ -98,14 +100,23 @@ public class EditAccount extends JDialog {
 				btnCancelActionPerformed();
 			}
 		});
+		
+		JButton btnRefresh = new JButton("refresh");
+		btnRefresh.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				btnRefreshActionPerformed();
+			}
+		});
 
 		GroupLayout layout = new GroupLayout(getContentPane());
 		layout.setHorizontalGroup(
 			layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(layout.createSequentialGroup()
-					.addGroup(layout.createParallelGroup(Alignment.LEADING)
-						.addGroup(Alignment.TRAILING, layout.createSequentialGroup()
+					.addGroup(layout.createParallelGroup(Alignment.TRAILING)
+						.addGroup(layout.createSequentialGroup()
 							.addContainerGap()
+							.addComponent(btnRefresh)
+							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(btnDelete)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(btnCancel)
@@ -125,11 +136,12 @@ public class EditAccount extends JDialog {
 					.addComponent(lblAccName)
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addComponent(AccName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
 					.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(btnOk)
 						.addComponent(btnCancel)
-						.addComponent(btnDelete))
+						.addComponent(btnDelete)
+						.addComponent(btnRefresh))
 					.addContainerGap())
 		);
 		getContentPane().setLayout(layout);
@@ -167,5 +179,16 @@ public class EditAccount extends JDialog {
 		this.setVisible(false);
 		this.dispose();
 	}
-
+	
+	private void btnRefreshActionPerformed() {
+		try {
+			Browser b = new Browser(Account.read(this.id));
+			b.setVisible(true);
+			b.loadURL("https://www.youtube.com");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 }
