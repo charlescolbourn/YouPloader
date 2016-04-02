@@ -33,6 +33,7 @@ public class Browser extends JFrame {
     private WebEngine engine;
     private Account acc;
     private Browser self;
+    private boolean listener;
     private final JPanel panel = new JPanel(new BorderLayout());
     private final JLabel lblStatus = new JLabel();
     private final CookieJar persistentCookieStore = new CookieJar();
@@ -40,9 +41,10 @@ public class Browser extends JFrame {
     private final JTextField txtURL = new JTextField();
     private final JProgressBar progressBar = new JProgressBar();
  
-    public Browser(Account acc) {
+    public Browser(Account acc, boolean listener) {
         super();
         setAlwaysOnTop(true);
+        this.listener = listener;
         Platform.setImplicitExit(false);
     	this.acc = acc;
     	initComponents();
@@ -94,7 +96,7 @@ public class Browser extends JFrame {
  
             	WebView view = new WebView();
                 engine = view.getEngine();
- 
+                engine.setUserAgent(FrmMain.APP_NAME+" "+FrmMain.VERSION);
                 engine.titleProperty().addListener(new ChangeListener<String>() {
                     @Override
                     public void changed(ObservableValue<? extends String> observable, String oldValue, final String newValue) {
@@ -122,8 +124,11 @@ public class Browser extends JFrame {
                 engine.locationProperty().addListener(new ChangeListener<String>() {
                     @Override
                     public void changed(ObservableValue<? extends String> ov, String oldValue, final String newValue) {
-                    	if(newValue.contains("accounts.google.com/o/oauth2/device/usercode?") && !newValue.contains("accounts.google.com/ServiceLogin") && newValue.contains("&pageId=")){
+                    	if(newValue.contains("www.youtube.com") && !newValue.contains("accounts.google.com/ServiceLogin") && !newValue.contains("accounts.google.com/CheckCookie") && !newValue.contains("&pageId=") ){
                     		acc.setCookie(persistentCookieStore.getSerializeableCookies());
+                    		if(listener){
+                    			loadURL("https://google.com/device");
+                    		}
                     	}
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override 

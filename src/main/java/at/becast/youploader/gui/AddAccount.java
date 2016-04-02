@@ -133,9 +133,9 @@ public class AddAccount extends javax.swing.JDialog {
 				Account account = new Account(AccName.getText());
 				String code = o2.getCode();
 				LOG.info("Created Auth code {}", code);
-				Browser browser = new Browser(account);
+				Browser browser = new Browser(account, true);
 				browser.setVisible(true);
-				browser.loadURL("https://google.com/device");
+				browser.loadURL("https://accounts.google.com/ServiceLogin?service=youtube&hl=en&passive=true&continue=https%3A%2F%2Fwww.youtube.com%2Fsignin%3Ffeature%3Dedit_video%26next%3Dmy_videos_upload%26hl%3Dde%26action_handle_signin%3Dtrue%26app%3Ddesktop&uilel=3");
 				parent.prepModal(account, code);
 				Runnable runnable = new Runnable() {
 					public void run() {

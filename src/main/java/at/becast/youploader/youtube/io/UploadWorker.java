@@ -82,6 +82,7 @@ public class UploadWorker extends Thread {
 		} catch (IOException | UploadException e) {
 			LOG.error("Could not prepare upload ",e);
 		}
+		this.upload.setMetadata(this.metadata);
 		SQLite.prepareUpload(this.id,this.upload.url,this.upload.id);
 		this.frame.getlblUrl().setText("https://www.youtube.com/watch?v="+this.upload.id);
 	}

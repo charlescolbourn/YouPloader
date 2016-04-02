@@ -147,8 +147,8 @@ public class UploadManager {
 					MetadataUpdater u = new MetadataUpdater(w.acc_id,w.upload);
 					try {
 						u.updateMetadata();
-					} catch (UnirestException e1) {
-						LOG.error("Error Updating Metadata ", e1);
+					} catch (IOException e) {
+						LOG.error("Error Updating Metadata ", e);
 					}
 					if(w.enddir !=null && !w.enddir.equals("")){
 						LOG.info("Moving file {}",w.file.getName());

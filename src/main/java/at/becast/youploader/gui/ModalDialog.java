@@ -75,7 +75,7 @@ public class ModalDialog extends JDialog {
 			JButton btnNewButton = new JButton("Open Browser to http://google.com/device");
 			btnNewButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					Browser browser = new Browser(Acc);
+					Browser browser = new Browser(Acc, true);
 					browser.setVisible(true);
 					browser.loadURL("https://google.com/device");
 				}
