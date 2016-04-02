@@ -407,9 +407,12 @@ public class EditPanel extends javax.swing.JPanel {
 		}
 	}
 	
-	public void setVisibility(String visibility){
+	public void setVisibility(String visibility, String releaseAt){
 		for (int i = 0; i < cmbVisibility.getItemCount(); i++) {
 			if (cmbVisibility.getItemAt(i).getData().equals(visibility)) {
+				if((releaseAt==null || releaseAt.equals("")) && cmbVisibility.getItemAt(i) == VisibilityType.SCHEDULED){
+					continue;
+				}
 				cmbVisibility.setSelectedIndex(i);
 			}
 		}

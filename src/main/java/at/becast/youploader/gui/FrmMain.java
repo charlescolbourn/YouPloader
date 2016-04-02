@@ -919,7 +919,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 				txtDescription.setText(v.snippet.description);
 				txtTags.setText(prepareTagsfromArray(v.snippet.tags));
 				edit.setLicence(v.status.license);
-				edit.setVisibility(v.status.privacyStatus);
+				edit.setVisibility(v.status.privacyStatus, v.status.publishAt);
 				edit.getChckbxAllowEmbedding().setSelected(v.status.embeddable);
 				edit.getChckbxMakeStatisticsPublic().setSelected(v.status.publicStatsViewable);
 				if (v.status.publishAt != null && !v.status.publishAt.equals("")) {
@@ -1012,7 +1012,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 				&& t.videodata.status.privacyStatus.equals("private")) {
 			edit.getCmbVisibility().setSelectedItem(VisibilityType.PRIVATE);
 		} else {
-			edit.setVisibility(t.videodata.status.privacyStatus);
+			edit.setVisibility(t.videodata.status.privacyStatus, "");
 		}
 		edit.getChckbxAllowEmbedding().setSelected(t.videodata.status.embeddable);
 		edit.getChckbxMakeStatisticsPublic().setSelected(t.videodata.status.publicStatsViewable);
