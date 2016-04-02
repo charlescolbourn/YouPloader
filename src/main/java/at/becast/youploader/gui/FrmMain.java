@@ -394,6 +394,11 @@ public class FrmMain extends JFrame implements IMainMenu {
 		panel.add(lblTitle, "3, 6, left, top");
 
 		JButton btnReset = new JButton(LANG.getString("frmMain.Reset"));
+		btnReset.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				resetEdit();
+			}
+		});
 		panel.add(btnReset, "11, 21, 6, 1, fill, fill");
 		btnSelectMovie.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -861,6 +866,14 @@ public class FrmMain extends JFrame implements IMainMenu {
 		}
 	}
 
+	protected void resetEdit() {
+		if (this.editItem != -1) {
+			btnAddToQueue.setText(LANG.getString("frmMain.addtoQueue"));
+			cmbFile.removeAllItems();
+			this.editItem = -1;
+		}
+	}
+	
 	private void queueButton() {
 		AccountType acc = (AccountType) cmbAccount.getSelectedItem();
 		if (this.editItem != -1) {
@@ -871,6 +884,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 			}
 			btnAddToQueue.setText(LANG.getString("frmMain.addtoQueue"));
 			cmbFile.removeAllItems();
+			this.editItem = -1;
 		} else {
 			if (cmbFile.getSelectedItem() != null && !cmbFile.getSelectedItem().toString().equals("")) {
 				createUpload(cmbFile.getSelectedItem().toString(), txtTitle.getText(), acc.getValue());
