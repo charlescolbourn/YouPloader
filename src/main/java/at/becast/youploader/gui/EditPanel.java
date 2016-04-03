@@ -322,6 +322,7 @@ public class EditPanel extends javax.swing.JPanel {
 		add(chckbxMakeStatisticsPublic, "4, 22, 3, 1, left, default");
 		
 		chckbxAllowComments = new JCheckBox("Allow comments");
+		chckbxAllowComments.setSelected(true);
 		add(chckbxAllowComments, "8, 22, 3, 1, left, default");
 		
 		JLabel lblMessage = new JLabel("Message:");
