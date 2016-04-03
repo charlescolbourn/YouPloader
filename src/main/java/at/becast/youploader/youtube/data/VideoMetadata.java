@@ -24,6 +24,13 @@ public class VideoMetadata {
 	private boolean instream;
 	private boolean product;
 	private boolean productplacement;
+	private boolean share_fb;
+	private boolean share_twitter;
+	private boolean share_gplus;
+	private boolean commentsEnabled;
+	private String message;
+	private String gametitle;
+	private boolean restricted;
 	private boolean monetized = false;
 	
 	public VideoMetadata(){
@@ -108,6 +115,62 @@ public class VideoMetadata {
 
 	public void setThumbnail(String thumbnail) {
 		this.thumbnail = thumbnail;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	public boolean isShare_fb() {
+		return share_fb;
+	}
+
+	public void setShare_fb(boolean share_fb) {
+		this.share_fb = share_fb;
+	}
+
+	public boolean isShare_gplus() {
+		return share_gplus;
+	}
+
+	public void setShare_gplus(boolean share_gplus) {
+		this.share_gplus = share_gplus;
+	}
+
+	public boolean isShare_twitter() {
+		return share_twitter;
+	}
+
+	public void setShare_twitter(boolean share_twitter) {
+		this.share_twitter = share_twitter;
+	}
+
+	public boolean isCommentsEnabled() {
+		return commentsEnabled;
+	}
+
+	public void setCommentsEnabled(boolean commentsEnabled) {
+		this.commentsEnabled = commentsEnabled;
+	}
+
+	public String getGametitle() {
+		return gametitle;
+	}
+
+	public void setGametitle(String gametitle) {
+		this.gametitle = gametitle;
+	}
+
+	public boolean isRestricted() {
+		return restricted;
+	}
+
+	public void setRestricted(boolean restricted) {
+		this.restricted = restricted;
 	}
 
 }

@@ -48,6 +48,7 @@ public class MonetPanel extends javax.swing.JPanel {
 	private JCheckBox chckbxOverlayads;
 	private JCheckBox chckbxSponsoredCards;
 	private JCheckBox chckbxSkippableVideoads;
+	private JCheckBox chckbxProductplacement;
 
 	/**
      * Creates new form editPanel
@@ -74,7 +75,9 @@ public class MonetPanel extends javax.swing.JPanel {
     			FormSpecs.RELATED_GAP_ROWSPEC,
     			RowSpec.decode("25px"),
     			FormSpecs.RELATED_GAP_ROWSPEC,
-    			RowSpec.decode("25px"),}));
+    			RowSpec.decode("25px"),
+    			FormSpecs.RELATED_GAP_ROWSPEC,
+    			FormSpecs.DEFAULT_ROWSPEC,}));
     	
 
     	
@@ -112,6 +115,9 @@ public class MonetPanel extends javax.swing.JPanel {
     		}
     	});
     	add(chckbxMonetize, "2, 2");
+    	
+    	chckbxProductplacement = new JCheckBox(LANG.getString("MonetPanel.ProductPlacement"));
+    	add(chckbxProductplacement, "2, 10, 5, 1");
     }
 
 
@@ -130,5 +136,8 @@ public class MonetPanel extends javax.swing.JPanel {
 	}
 	public JCheckBox getChckbxSkippableVideoads() {
 		return chckbxSkippableVideoads;
+	}
+	public JCheckBox getChckbxProductplacement() {
+		return chckbxProductplacement;
 	}
 }

@@ -512,7 +512,13 @@ public class FrmMain extends JFrame implements IMainMenu {
 		TabQueue.add(buttonPanel, BorderLayout.SOUTH);
 
 		TabQueue.add(TabQueues, BorderLayout.CENTER);
-
+		
+		cmbCategory.addPropertyChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent arg0) {
+				changeCategory();
+			}
+		});
+		
 		QueuePanel.revalidate();
 		pack();
 		ss1.expand();
@@ -1121,6 +1127,37 @@ public class FrmMain extends JFrame implements IMainMenu {
 		}
 	}
 	
+	protected void changeCategory() {
+		EditPanel edit = (EditPanel) ss1.contentPane;
+		edit.getTxtGameTitle().setEnabled(false);
+		if (cmbCategory.getSelectedItem() == Categories.GAMES) {
+			edit.getTxtGameTitle().setEnabled(false); //Disabled until I can figure out how Youtube does it.
+		}
+	}
+	
+	protected void monetisation(boolean disable) {
+		MonetPanel monet = (MonetPanel) ss3.contentPane;
+		if (disable) {
+			monet.getChckbxMonetize().setSelected(false);
+			monet.getChckbxMonetize().setEnabled(false);
+			monet.getChckbxOverlayads().setSelected(false);
+			monet.getChckbxOverlayads().setEnabled(false);
+			monet.getChckbxSkippableVideoads().setSelected(false);
+			monet.getChckbxSkippableVideoads().setEnabled(false);
+			monet.getChckbxSponsoredCards().setSelected(false);
+			monet.getChckbxSponsoredCards().setEnabled(false);
+			for (int i = 0; i < monet.getCmbContentSyndication().getItemCount(); i++) {
+				if (monet.getCmbContentSyndication().getItemAt(i).getData().equals("everywhere")) {
+					monet.getCmbContentSyndication().setSelectedIndex(i);
+				}
+			}
+			monet.getCmbContentSyndication().setEnabled(false);
+		}else{
+			monet.getChckbxMonetize().setEnabled(true);
+			monet.getCmbContentSyndication().setEnabled(true);
+		}
+	}
+	
 	public VideoMetadata createMetadata() {
 		VideoMetadata meta = new VideoMetadata();
 		EditPanel edit = (EditPanel) ss1.contentPane;
@@ -1132,6 +1169,15 @@ public class FrmMain extends JFrame implements IMainMenu {
 		meta.setOverlay(monet.getChckbxOverlayads().isSelected());
 		meta.setProduct(monet.getChckbxSponsoredCards().isSelected());
 		meta.setThumbnail(edit.getTxtThumbnail().getText().trim());
+		meta.setProductplacement(monet.getChckbxProductplacement().isSelected());
+		if(edit.getCmbVisibility().getSelectedItem() == VisibilityType.PUBLIC || edit.getCmbVisibility().getSelectedItem() == VisibilityType.SCHEDULED){
+			meta.setMessage(edit.getTxtMessage().getText());
+		}
+		meta.setShare_fb(edit.getChckbxFacebook().isSelected());
+		meta.setShare_gplus(edit.getChckbxGoogle().isSelected());
+		meta.setShare_twitter(edit.getChckbxTwitter().isSelected());
+		meta.setCommentsEnabled(edit.getChckbxAllowComments().isSelected());
+		meta.setRestricted(edit.getChckbxAgeRestriction().isSelected());
 		return meta;
 	}
 	
@@ -1148,6 +1194,13 @@ public class FrmMain extends JFrame implements IMainMenu {
 		monet.getChckbxSkippableVideoads().setSelected(metadata.isInstream());
 		monet.getChckbxOverlayads().setSelected(metadata.isOverlay());
 		monet.getChckbxSponsoredCards().setSelected(metadata.isProduct());
+		monet.getChckbxProductplacement().setSelected(metadata.getProductplacement());
+		edit.getTxtMessage().setText(metadata.getMessage());
+		edit.getChckbxFacebook().setSelected(metadata.isShare_fb());
+		edit.getChckbxGoogle().setSelected(metadata.isShare_gplus());
+		edit.getChckbxTwitter().setSelected(metadata.isShare_twitter());
+		edit.getChckbxAllowComments().setSelected(metadata.isCommentsEnabled());
+		edit.getChckbxAgeRestriction().setSelected(metadata.isRestricted());
 	}
 
 	public void deleteTemplate(int id) {

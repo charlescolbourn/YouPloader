@@ -51,6 +51,8 @@ import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JTextPane;
 import javax.swing.JScrollPane;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 
 /**
  *
@@ -77,6 +79,13 @@ public class EditPanel extends javax.swing.JPanel {
 	private DateTimePicker dateTimePickerStart;
 	private JCheckBox chckbxAllowEmbedding;
 	private JCheckBox chckbxMakeStatisticsPublic;
+	private JTextPane txtMessage;
+	private JCheckBox chckbxGoogle;
+	private JCheckBox chckbxTwitter;
+	private JCheckBox chckbxFacebook;
+	private JCheckBox chckbxAllowComments;
+	private JCheckBox chckbxAgeRestriction;
+	
 
 	/**
 	 * Creates new form editPanel
@@ -226,18 +235,7 @@ public class EditPanel extends javax.swing.JPanel {
 		calendar.setTime(new Date());
 		dateTimePicker.getMonthView().setLowerBound(calendar.getTime());
 
-		cmbVisibility = new JComboBox<VisibilityType>();
-		cmbVisibility.addPropertyChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent arg0) {
-				if (cmbVisibility.getSelectedItem() == VisibilityType.SCHEDULED) {
-					dateTimePicker.setEnabled(true);
-					dateTimePicker.getEditor().setEnabled(true);
-				} else {
-					dateTimePicker.setEnabled(false);
-					dateTimePicker.getEditor().setEnabled(false);
-				}
-			}
-		});
+		cmbVisibility = new JComboBox<VisibilityType>();		
 		cmbVisibility.setModel(new DefaultComboBoxModel<VisibilityType>(VisibilityType.values()));
 		add(cmbVisibility, "4, 8, 5, 1, fill, fill");
 
@@ -252,9 +250,17 @@ public class EditPanel extends javax.swing.JPanel {
 		cmbLicense = new JComboBox<LicenseType>();
 		cmbLicense.setModel(new DefaultComboBoxModel<LicenseType>(LicenseType.values()));
 		add(cmbLicense, "4, 12, 5, 1, fill, fill");
+		cmbLicense.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(cmbLicense.getSelectedItem() == LicenseType.CC){
+					parent.monetisation(true);
+				}else{
+					parent.monetisation(chckbxAgeRestriction.isSelected());
+				}
+			}
+		});
 		
 		JLabel lblThumbnail = new JLabel(LANG.getString("EditPanel.Thumbnail")+":");
-		lblThumbnail.setEnabled(false);
 		add(lblThumbnail, "2, 14, right, default");
 		
 		txtThumbnail = new JTextField();
@@ -299,14 +305,23 @@ public class EditPanel extends javax.swing.JPanel {
 		chckbxAllowEmbedding = new JCheckBox("Allow embedding");
 		add(chckbxAllowEmbedding, "4, 20, 3, 1");
 		
-		JCheckBox chckbxAgeRestriction = new JCheckBox("Age restriction");
+		chckbxAgeRestriction = new JCheckBox("Age restriction");
+		chckbxAgeRestriction.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				if(chckbxAgeRestriction.isSelected()){
+					parent.monetisation(chckbxAgeRestriction.isSelected());
+				}else{
+					parent.monetisation(cmbLicense.getSelectedItem() == LicenseType.CC);
+				}
+			}
+		});
 		add(chckbxAgeRestriction, "8, 20, 3, 1, left, default");
 		
 		chckbxMakeStatisticsPublic = new JCheckBox("Make statistics publicly visible");
 		chckbxMakeStatisticsPublic.setVerticalAlignment(SwingConstants.TOP);
 		add(chckbxMakeStatisticsPublic, "4, 22, 3, 1, left, default");
 		
-		JCheckBox chckbxAllowComments = new JCheckBox("Allow comments");
+		chckbxAllowComments = new JCheckBox("Allow comments");
 		add(chckbxAllowComments, "8, 22, 3, 1, left, default");
 		
 		JLabel lblMessage = new JLabel("Message:");
@@ -315,21 +330,39 @@ public class EditPanel extends javax.swing.JPanel {
 		JScrollPane scrollPane = new JScrollPane();
 		add(scrollPane, "4, 24, 5, 7, fill, fill");
 		
-		JTextPane txtMessage = new JTextPane();
+		txtMessage = new JTextPane();
 		txtMessage.setEnabled(false);
 		scrollPane.setViewportView(txtMessage);
 		
-		JCheckBox chckbxGoogle = new JCheckBox("Google+");
+		chckbxGoogle = new JCheckBox("Google+");
+		chckbxGoogle.setSelected(true);
 		chckbxGoogle.setEnabled(false);
 		add(chckbxGoogle, "2, 26, left, default");
 		
-		JCheckBox chckbxTwitter = new JCheckBox("Twitter");
+		chckbxTwitter = new JCheckBox("Twitter");
+		chckbxTwitter.setSelected(true);
 		chckbxTwitter.setEnabled(false);
 		add(chckbxTwitter, "2, 28, left, default");
 		
-		JCheckBox chckbxFacebook = new JCheckBox("Facebook");
+		chckbxFacebook = new JCheckBox("Facebook");
+		chckbxFacebook.setSelected(true);
 		chckbxFacebook.setEnabled(false);
 		add(chckbxFacebook, "2, 30, left, default");
+		
+		cmbVisibility.addPropertyChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent arg0) {
+				if (cmbVisibility.getSelectedItem() == VisibilityType.SCHEDULED) {
+					setDateEnabled(true);
+					setMessageEnabled(true);
+				} else if(cmbVisibility.getSelectedItem() == VisibilityType.PUBLIC) {
+					setDateEnabled(false);
+					setMessageEnabled(true);
+				} else {
+					setDateEnabled(false);
+					setMessageEnabled(false);
+				}
+			}
+		});
 	}
 
 	protected void templateCmbChanged(ActionEvent e) {
@@ -348,6 +381,18 @@ public class EditPanel extends javax.swing.JPanel {
 		}
 	}
 
+	private void setDateEnabled(boolean enable){
+		dateTimePicker.setEnabled(enable);
+		dateTimePicker.getEditor().setEnabled(enable);
+	}
+	
+	private void setMessageEnabled(boolean enable){
+		txtMessage.setEnabled(enable);
+		chckbxGoogle.setEnabled(enable);
+		chckbxTwitter.setEnabled(enable);
+		chckbxFacebook.setEnabled(enable);
+	}
+	
 	protected void saveTemplate() {
 		LOG.debug("Saving Template " + cmbTemplate.getSelectedItem());
 		Item t = (Item) cmbTemplate.getSelectedItem();
@@ -417,7 +462,7 @@ public class EditPanel extends javax.swing.JPanel {
 			}
 		}
 	}
-	
+		
 	public JComboBox<VisibilityType> getCmbVisibility() {
 		return cmbVisibility;
 	}
@@ -447,5 +492,23 @@ public class EditPanel extends javax.swing.JPanel {
 	}
 	public JCheckBox getChckbxMakeStatisticsPublic() {
 		return chckbxMakeStatisticsPublic;
+	}
+	public JTextPane getTxtMessage() {
+		return txtMessage;
+	}
+	public JCheckBox getChckbxGoogle() {
+		return chckbxGoogle;
+	}
+	public JCheckBox getChckbxTwitter() {
+		return chckbxTwitter;
+	}
+	public JCheckBox getChckbxFacebook() {
+		return chckbxFacebook;
+	}
+	public JCheckBox getChckbxAllowComments() {
+		return chckbxAllowComments;
+	}
+	public JCheckBox getChckbxAgeRestriction() {
+		return chckbxAgeRestriction;
 	}
 }
