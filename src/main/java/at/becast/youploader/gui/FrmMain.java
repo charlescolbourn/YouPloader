@@ -256,6 +256,12 @@ public class FrmMain extends JFrame implements IMainMenu {
 		int updateAvaiable = v.compare(gitVersion, VERSION);
 		if(updateAvaiable > 0){
 			LOG.info("Update {} avaiable!", gitVersion);
+			int n = JOptionPane.showConfirmDialog(null, String.format(LANG.getString("frmMain.newVersion.Message"),gitVersion),
+					LANG.getString("frmMain.newVersion.title"), JOptionPane.YES_NO_OPTION,
+					JOptionPane.QUESTION_MESSAGE);
+			if (n == JOptionPane.YES_OPTION) {
+				DesktopUtil.openBrowser("https://github.com/becast/youploader/releases");
+			}
 		}
 		
 	}

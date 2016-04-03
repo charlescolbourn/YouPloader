@@ -17,7 +17,7 @@ public class GetVersion {
 	
 	public static String get(){
 		try {
-			HttpResponse<String> response = Unirest.get("https://raw.githubusercontent.com/becast/YouPloader/master/version").asString();
+			HttpResponse<String> response = Unirest.get("https://raw.githubusercontent.com/becast/YouPloader/master/version?"+System.currentTimeMillis()).asString();
 			return response.getBody();
 		} catch (UnirestException e) {
 			LOG.error("Could not get version! ",e);
