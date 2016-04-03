@@ -749,7 +749,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 				} else {
 					f.getBtnEdit().setEnabled(false);
 					f.getProgressBar().setValue(100);
-					f.getProgressBar().setString("100 %");
+					f.getProgressBar().setString("Finished");
 				}
 				this.getQueuePanel().add(f, new CC().wrap());
 				this.getQueuePanel().revalidate();

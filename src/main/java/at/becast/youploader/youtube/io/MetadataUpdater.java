@@ -95,6 +95,10 @@ public class MetadataUpdater {
 			mdata.put("creator_share_twitter", boolConvert(this.upload.metadata.isShare_twitter()));
 		}
 		mdata.put("allow_comments", boolConvert(this.upload.metadata.isCommentsEnabled()));
+		if(this.upload.metadata.isCommentsEnabled()){
+			mdata.put("allow_comments_detail","all");
+			mdata.put("allow_comment_ratings","yes");
+		}
 		mdata.put("self_racy", boolConvert(this.upload.metadata.isRestricted()));
 		mdata.put("product_placement", this.upload.metadata.productplacement());
 		
