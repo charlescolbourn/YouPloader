@@ -22,7 +22,6 @@ import java.net.URL;
  
 import static javafx.concurrent.Worker.State.FAILED;
   
-@SuppressWarnings("restriction")
 public class Browser extends JFrame {
  
     /**

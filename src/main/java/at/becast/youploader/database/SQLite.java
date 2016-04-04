@@ -111,17 +111,17 @@ public class SQLite {
     	prest.executeUpdate();
     }
     
-    public static int addUpload(int account, File file, Video data, String enddir, VideoMetadata metadata) throws SQLException, IOException{
+    public static int addUpload(File file, Video data, VideoMetadata metadata) throws SQLException, IOException{
     	PreparedStatement prest = null;
     	ObjectMapper mapper = new ObjectMapper();
     	String sql	= "INSERT INTO `uploads` (`account`, `file`, `lenght`, `data`,`enddir`, `metadata`, `status`) " +
     			"VALUES (?,?,?,?,?,?,?)";
     	prest = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-    	prest.setInt(1, account);
+    	prest.setInt(1, metadata.getAccount());
     	prest.setString(2, file.getAbsolutePath());
     	prest.setLong(3, file.length());
     	prest.setString(4, mapper.writeValueAsString(data));
-    	prest.setString(5, enddir);
+    	prest.setString(5, metadata.getEndDirectory());
     	prest.setString(6, mapper.writeValueAsString(metadata));
     	prest.setString(7, UploadManager.Status.NOT_STARTED.toString());
     	prest.execute();

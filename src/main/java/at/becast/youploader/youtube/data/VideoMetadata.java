@@ -15,10 +15,16 @@
 package at.becast.youploader.youtube.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import at.becast.youploader.gui.UploadItem;
+
+@JsonIgnoreProperties({"frame"})
 public class VideoMetadata {
 	private String syndication;
 	private String thumbnail;
+	private String endDirectory;
+	private int account;
 	private boolean overlay;
 	private boolean trueview;
 	private boolean instream;
@@ -32,9 +38,10 @@ public class VideoMetadata {
 	private String gametitle;
 	private boolean restricted;
 	private boolean monetized = false;
+	private UploadItem frame;
 	
 	public VideoMetadata(){
-		
+		//Necessary for Jackson serialization
 	}
 	
 	public boolean isMonetized() {
@@ -171,6 +178,30 @@ public class VideoMetadata {
 
 	public void setRestricted(boolean restricted) {
 		this.restricted = restricted;
+	}
+
+	public String getEndDirectory() {
+		return endDirectory;
+	}
+
+	public void setEndDirectory(String endDirectory) {
+		this.endDirectory = endDirectory;
+	}
+
+	public UploadItem getFrame() {
+		return frame;
+	}
+
+	public void setFrame(UploadItem frame) {
+		this.frame = frame;
+	}
+
+	public int getAccount() {
+		return account;
+	}
+
+	public void setAccount(int account) {
+		this.account = account;
 	}
 
 }

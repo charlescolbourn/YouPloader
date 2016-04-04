@@ -46,31 +46,31 @@ public class UploadWorker extends Thread {
 	private AccountManager AccMgr;
 	private static final Logger LOG = LoggerFactory.getLogger(UploadWorker.class);
 	
-	public UploadWorker(int id, UploadItem frame, int acc_id, File file, Video videodata, int speed_limit, String enddir, VideoMetadata metadata){
+	public UploadWorker(int id, File file, Video videodata, int speed_limit, VideoMetadata metadata){
 		this.id = id;
 		this.speed_limit = speed_limit;
-		this.frame = frame;
+		this.frame = metadata.getFrame();
 		this.upload = null;
-		this.acc_id = acc_id;
+		this.acc_id = metadata.getAccount();
 		this.file = file;
 		this.videodata = videodata;
 		this.metadata = metadata;
-		this.enddir = enddir;
+		this.enddir = metadata.getEndDirectory();
 		this.AccMgr = AccountManager.getInstance();
 		this.uploader = new Uploader(this.AccMgr.getAuth(acc_id));
 		this.event = new GuiUploadEvent(frame);
 	}
 	
-	public UploadWorker(int id, UploadItem frame, int acc_id, File file, Video videodata, int speed_limit, String enddir, VideoMetadata metadata, String url, String yt_id){
+	public UploadWorker(int id, File file, Video videodata, int speed_limit, VideoMetadata metadata, String url, String yt_id){
 		this.id = id;
 		this.speed_limit = speed_limit;
-		this.frame = frame;
-		this.acc_id = acc_id;
+		this.frame = metadata.getFrame();
+		this.acc_id = metadata.getAccount();
 		this.file = file;
 		this.upload = new Upload(url,file,yt_id,videodata,metadata);
 		this.videodata = videodata;
 		this.metadata = metadata;
-		this.enddir = enddir;
+		this.enddir = metadata.getEndDirectory();
 		this.AccMgr = AccountManager.getInstance();
 		this.uploader = new Uploader(this.AccMgr.getAuth(acc_id));
 		this.event = new GuiUploadEvent(frame);

@@ -754,21 +754,20 @@ public class FrmMain extends JFrame implements IMainMenu {
 				String yt_id = rs.getString("yt_id");
 				f.getlblUrl().setText("https://www.youtube.com/watch?v=" + yt_id);
 				f.getlblName().setText(v.snippet.title);
+				metadata.setFrame(f);
 				File data = new File(rs.getString("file"));
-				int acc_id = rs.getInt("account");
 				String status = rs.getString("status");
-				String enddir = rs.getString("enddir");
 				long position = rs.getLong("uploaded");
 				long size = rs.getLong("lenght");
 				if (url != null && !url.equals("") && !"FINISHED".equals(status)) {
-					UploadMgr.addResumeableUpload(f, data, v, acc_id, enddir, metadata, url, yt_id);
+					UploadMgr.addResumeableUpload(data, v, metadata, url, yt_id);
 					f.getProgressBar().setString(String.format("%6.2f%%", (float) position / size * 100));
 					f.getProgressBar().setValue((int) ((float) position / size * 100));
 					f.getProgressBar().revalidate();
 					f.revalidate();
 					f.repaint();
 				} else if ("NOT_STARTED".equals(status)) {
-					UploadMgr.addUpload(f, data, v, acc_id, enddir, metadata);
+					UploadMgr.addUpload(data, v, metadata);
 				} else if ("FAILED".equals(status)) {
 					f.getBtnEdit().setEnabled(false);
 					f.getProgressBar().setValue(0);
@@ -839,7 +838,8 @@ public class FrmMain extends JFrame implements IMainMenu {
 		LicenseType license = (LicenseType) edit.getCmbLicense().getSelectedItem();
 		v.status.license = license.getData();
 		File data = new File(File);
-		UploadMgr.addUpload(f, data, v, acc_id, edit.getTxtEndDir().getText(), metadata);
+		metadata.setFrame(f);
+		UploadMgr.addUpload(data, v, metadata);
 		return f;
 	}
 
@@ -975,6 +975,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 				edit.setVisibility(v.status.privacyStatus, v.status.publishAt);
 				edit.getChckbxAllowEmbedding().setSelected(v.status.embeddable);
 				edit.getChckbxMakeStatisticsPublic().setSelected(v.status.publicStatsViewable);
+				edit.getTxtEndDir().setText(metadata.getEndDirectory());
 				if (v.status.publishAt != null && !v.status.publishAt.equals("")) {
 					edit.getDateTimePicker().setEnabled(true);
 					edit.getDateTimePicker().getEditor().setEnabled(true);
@@ -1005,6 +1006,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		EditPanel edit = (EditPanel) ss1.contentPane;
 		Template t = new Template(name);
 		Video v = new Video();
+		VideoMetadata metadata = createMetadata();
 		v.snippet.title = txtTitle.getText();
 		Categories cat = (Categories) cmbCategory.getSelectedItem();
 		v.snippet.categoryId = cat.getID();
@@ -1021,9 +1023,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		if (edit.getTxtStartDir() != null) {
 			t.setStartdir(edit.getTxtStartDir().getText());
 		}
-		if (edit.getTxtEndDir() != null) {
-			t.setEnddir(edit.getTxtEndDir().getText());
-		}
+		t.setMetadata(metadata);
 		t.setVideodata(v);
 		TemplateMgr.save(t);
 		edit.refreshTemplates(t.name);
@@ -1069,10 +1069,6 @@ public class FrmMain extends JFrame implements IMainMenu {
 		}
 		edit.getChckbxAllowEmbedding().setSelected(t.videodata.status.embeddable);
 		edit.getChckbxMakeStatisticsPublic().setSelected(t.videodata.status.publicStatsViewable);
-		if (t.enddir != null) {
-			edit.getTxtEndDir().setText(t.enddir);
-		}
-
 		if (t.startdir != null) {
 			edit.getTxtStartDir().setText(t.startdir);
 		}
@@ -1144,9 +1140,6 @@ public class FrmMain extends JFrame implements IMainMenu {
 		if (edit.getTxtStartDir() != null) {
 			t.setStartdir(edit.getTxtStartDir().getText());
 		}
-		if (edit.getTxtEndDir() != null) {
-			t.setEnddir(edit.getTxtEndDir().getText());
-		}
 		t.setVideodata(v);
 		TemplateMgr.update(id, t);
 		edit.refreshTemplates(t.name);
@@ -1211,6 +1204,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		meta.setShare_twitter(edit.getChckbxTwitter().isSelected());
 		meta.setCommentsEnabled(edit.getChckbxAllowComments().isSelected());
 		meta.setRestricted(edit.getChckbxAgeRestriction().isSelected());
+		meta.setEndDirectory(edit.getTxtEndDir().getText());
 		return meta;
 	}
 	
@@ -1234,6 +1228,9 @@ public class FrmMain extends JFrame implements IMainMenu {
 		edit.getChckbxTwitter().setSelected(metadata.isShare_twitter());
 		edit.getChckbxAllowComments().setSelected(metadata.isCommentsEnabled());
 		edit.getChckbxAgeRestriction().setSelected(metadata.isRestricted());
+		if (metadata.getEndDirectory() != null) {
+			edit.getTxtEndDir().setText(metadata.getEndDirectory());
+		}
 	}
 
 	public void deleteTemplate(int id) {
