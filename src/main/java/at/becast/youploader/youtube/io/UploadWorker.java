@@ -86,11 +86,7 @@ public class UploadWorker extends Thread {
 		SQLite.prepareUpload(this.id,this.upload.url,this.upload.id);
 		this.frame.getlblUrl().setText("https://www.youtube.com/watch?v="+this.upload.id);
 	}
-	
-	public void setMetadata(){
 		
-	}
-	
 	public void setThumbnail(){
 		try {
 			this.uploader.uploadThumbnail(new File(this.metadata.getThumbnail()), upload);
