@@ -21,6 +21,8 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -41,6 +43,7 @@ import at.becast.youploader.account.Account;
 
 public class ModalDialog extends JDialog {
 	private static final long serialVersionUID = -49240475185934236L;
+	private static final ResourceBundle LANG = ResourceBundle.getBundle("lang", Locale.getDefault());
 	private final JPanel contentPanel = new JPanel();
 	private JTextField labelcode;
 	private JLabel check_label;
@@ -117,7 +120,7 @@ public class ModalDialog extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton cancelButton = new JButton("Cancel");
+				JButton cancelButton = new JButton(LANG.getString("Button.cancel"));
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						close();

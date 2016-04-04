@@ -14,15 +14,18 @@
  */
 package at.becast.youploader.youtube;
 
-public enum VisibilityType {
-	PUBLIC("public", "Public"), PRIVATE("private", "Private"), UNLISTED("unlisted", "Unlisted"), SCHEDULED("private", "Scheduled");
+import java.util.Locale;
+import java.util.ResourceBundle;
 
+public enum VisibilityType {
+	PUBLIC("public", "Visibility.Public"), PRIVATE("private", "Visibility.Private"), UNLISTED("unlisted", "Visibility.Unlisted"), SCHEDULED("private", "Visibility.Scheduled");
+	private final ResourceBundle LANG = ResourceBundle.getBundle("lang", Locale.getDefault());
 	private final String term;
 	private final String label;
 
 	VisibilityType(final String term, final String label) {
 		this.term = term;
-		this.label = label;
+		this.label = LANG.getString(label);
 	}
 
 	@Override

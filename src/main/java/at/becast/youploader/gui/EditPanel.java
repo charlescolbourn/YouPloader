@@ -155,30 +155,33 @@ public class EditPanel extends javax.swing.JPanel {
 		add(lblTemplate, "2, 2, right, center");
 		add(cmbTemplate, "4, 2, 5, 1, fill, fill");
 
+		JButton btnDeleteTemplate = new JButton("");
+		btnDeleteTemplate.setToolTipText(LANG.getString("EditPanel.DeleteTemplate"));
+		btnDeleteTemplate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				deleteTemplate();
+			}
+		});
+		
 		JButton btnNewTemplate = new JButton("");
+		btnNewTemplate.setToolTipText(LANG.getString("EditPanel.SaveNewTemplate"));
 		btnNewTemplate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				addTemplate();
 			}
 		});
-		btnNewTemplate.setIcon(new ImageIcon(getClass().getResource("/add.png")));
-		add(btnNewTemplate, "10, 2, fill, fill");
-
+				
 		JButton btnSaveTemplate = new JButton("");
+		btnSaveTemplate.setToolTipText(LANG.getString("EditPanel.SaveTemplate"));
 		btnSaveTemplate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				saveTemplate();
 			}
 		});
 		btnSaveTemplate.setIcon(new ImageIcon(getClass().getResource("/disk.png")));
-		add(btnSaveTemplate, "12, 2, fill, fill");
-
-		JButton btnDeleteTemplate = new JButton("");
-		btnDeleteTemplate.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				deleteTemplate();
-			}
-		});
+		add(btnSaveTemplate, "10, 2, fill, fill");
+		btnNewTemplate.setIcon(new ImageIcon(getClass().getResource("/add.png")));
+		add(btnNewTemplate, "12, 2, fill, fill");
 		btnDeleteTemplate.setIcon(new ImageIcon(getClass().getResource("/cross.png")));
 		add(btnDeleteTemplate, "14, 2, fill, fill");
 
@@ -244,7 +247,7 @@ public class EditPanel extends javax.swing.JPanel {
 
 		add(dateTimePicker, "4, 10, 5, 1, fill, fill");
 
-		JLabel lblLicense = new JLabel("License:");
+		JLabel lblLicense = new JLabel(LANG.getString("EditPanel.License")+":");
 		add(lblLicense, "2, 12, right, default");
 
 		cmbLicense = new JComboBox<LicenseType>();
@@ -299,13 +302,13 @@ public class EditPanel extends javax.swing.JPanel {
 		add(txtGameTitle, "4, 18, 5, 1, fill, fill");
 		txtGameTitle.setColumns(10);
 		
-		JLabel lblAdditionalSettings = new JLabel("Other Settings:");
+		JLabel lblAdditionalSettings = new JLabel(LANG.getString("EditPanel.OtherSettings")+":");
 		add(lblAdditionalSettings, "2, 20, right, default");
 		
-		chckbxAllowEmbedding = new JCheckBox("Allow embedding");
+		chckbxAllowEmbedding = new JCheckBox(LANG.getString("EditPanel.embedding"));
 		add(chckbxAllowEmbedding, "4, 20, 3, 1");
 		
-		chckbxAgeRestriction = new JCheckBox("Age restriction");
+		chckbxAgeRestriction = new JCheckBox(LANG.getString("EditPanel.AgeRestriction"));
 		chckbxAgeRestriction.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				if(chckbxAgeRestriction.isSelected()){
@@ -317,15 +320,15 @@ public class EditPanel extends javax.swing.JPanel {
 		});
 		add(chckbxAgeRestriction, "8, 20, 3, 1, left, default");
 		
-		chckbxMakeStatisticsPublic = new JCheckBox("Make statistics publicly visible");
+		chckbxMakeStatisticsPublic = new JCheckBox(LANG.getString("EditPanel.Statistics"));
 		chckbxMakeStatisticsPublic.setVerticalAlignment(SwingConstants.TOP);
 		add(chckbxMakeStatisticsPublic, "4, 22, 3, 1, left, default");
 		
-		chckbxAllowComments = new JCheckBox("Allow comments");
+		chckbxAllowComments = new JCheckBox(LANG.getString("EditPanel.AllowComments"));
 		chckbxAllowComments.setSelected(true);
 		add(chckbxAllowComments, "8, 22, 3, 1, left, default");
 		
-		JLabel lblMessage = new JLabel("Message:");
+		JLabel lblMessage = new JLabel(LANG.getString("EditPanel.Message")+":");
 		add(lblMessage, "2, 24, right, default");
 		
 		JScrollPane scrollPane = new JScrollPane();

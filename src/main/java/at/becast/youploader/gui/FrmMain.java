@@ -296,22 +296,48 @@ public class FrmMain extends JFrame implements IMainMenu {
 		mainTabLayout.setVerticalGroup(mainTabLayout.createParallelGroup(Alignment.LEADING)
 				.addComponent(sideBar, GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE)
 				.addComponent(panel, GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE));
-		panel.setLayout(new FormLayout(
-				new ColumnSpec[] { ColumnSpec.decode("2px"), FormSpecs.RELATED_GAP_COLSPEC,
-						ColumnSpec.decode("20px:grow"), FormSpecs.LABEL_COMPONENT_GAP_COLSPEC,
-						ColumnSpec.decode("23px"), ColumnSpec.decode("33px"), FormSpecs.UNRELATED_GAP_COLSPEC,
-						ColumnSpec.decode("61px"), FormSpecs.DEFAULT_COLSPEC, FormSpecs.RELATED_GAP_COLSPEC,
-						ColumnSpec.decode("24px"), ColumnSpec.decode("28px"), ColumnSpec.decode("40px"),
-						ColumnSpec.decode("36px"), FormSpecs.LABEL_COMPONENT_GAP_COLSPEC, ColumnSpec.decode("28px"),
-						FormSpecs.LABEL_COMPONENT_GAP_COLSPEC, ColumnSpec.decode("58px"), },
-				new RowSpec[] { RowSpec.decode("2px"), FormSpecs.RELATED_GAP_ROWSPEC, RowSpec.decode("14px"),
-						RowSpec.decode("25px"), FormSpecs.RELATED_GAP_ROWSPEC, RowSpec.decode("14px"),
-						RowSpec.decode("25px"), FormSpecs.LINE_GAP_ROWSPEC, RowSpec.decode("14px"),
-						RowSpec.decode("25px"), FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC,
-						RowSpec.decode("64dlu"), RowSpec.decode("14px"), FormSpecs.RELATED_GAP_ROWSPEC,
-						RowSpec.decode("max(64dlu;default):grow"), FormSpecs.RELATED_GAP_ROWSPEC,
-						FormSpecs.DEFAULT_ROWSPEC, RowSpec.decode("25px"), FormSpecs.PARAGRAPH_GAP_ROWSPEC,
-						RowSpec.decode("24px"), RowSpec.decode("23px"), }));
+		panel.setLayout(new FormLayout(new ColumnSpec[] {
+				ColumnSpec.decode("2px"),
+				FormSpecs.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("20px:grow"),
+				FormSpecs.LABEL_COMPONENT_GAP_COLSPEC,
+				ColumnSpec.decode("23px"),
+				ColumnSpec.decode("33px"),
+				FormSpecs.UNRELATED_GAP_COLSPEC,
+				ColumnSpec.decode("61px"),
+				FormSpecs.DEFAULT_COLSPEC,
+				FormSpecs.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("24px"),
+				ColumnSpec.decode("28px"),
+				ColumnSpec.decode("40px"),
+				ColumnSpec.decode("36px"),
+				FormSpecs.LABEL_COMPONENT_GAP_COLSPEC,
+				ColumnSpec.decode("28px"),
+				FormSpecs.LABEL_COMPONENT_GAP_COLSPEC,
+				ColumnSpec.decode("58px"),},
+			new RowSpec[] {
+				RowSpec.decode("2px"),
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("14px"),
+				RowSpec.decode("25px"),
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("14px"),
+				RowSpec.decode("25px"),
+				FormSpecs.LINE_GAP_ROWSPEC,
+				RowSpec.decode("14px"),
+				RowSpec.decode("25px"),
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
+				RowSpec.decode("64dlu"),
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
+				RowSpec.decode("max(64dlu;default):grow"),
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
+				RowSpec.decode("25px"),
+				FormSpecs.PARAGRAPH_GAP_ROWSPEC,
+				RowSpec.decode("24px"),
+				RowSpec.decode("23px"),}));
 
 		lbltitlelenght = new JLabel("(0/100)");
 		panel.add(lbltitlelenght, "14, 6, 3, 1, right, top");
@@ -327,13 +353,13 @@ public class FrmMain extends JFrame implements IMainMenu {
 		});
 
 		JLabel lblCategory = new JLabel(LANG.getString("frmMain.Category"));
-		panel.add(lblCategory, "3, 9, 4, 1, left, top");
+		panel.add(lblCategory, "3, 9, 4, 1, left, bottom");
 		panel.add(cmbCategory, "3, 10, 14, 1, fill, fill");
 
 		JLabel lblDescription = new JLabel(LANG.getString("frmMain.Description"));
 		panel.add(lblDescription, "3, 12, 4, 1, left, bottom");
 
-		lblDesclenght = new JLabel("(0/1000)");
+		lblDesclenght = new JLabel("(0/5000)");
 		panel.add(lblDesclenght, "14, 12, 3, 1, right, bottom");
 
 		JScrollPane DescriptionScrollPane = new JScrollPane();
@@ -350,12 +376,12 @@ public class FrmMain extends JFrame implements IMainMenu {
 				calcNotifies();
 			}
 		});
-
-		JLabel lblTags = new JLabel(LANG.getString("frmMain.Tags"));
-		panel.add(lblTags, "3, 14, left, top");
-
-		lblTagslenght = new JLabel("(0/500)");
-		panel.add(lblTagslenght, "14, 14, 3, 1, right, top");
+		
+				JLabel lblTags = new JLabel(LANG.getString("frmMain.Tags"));
+				panel.add(lblTags, "3, 15, 4, 1, left, bottom");
+		
+				lblTagslenght = new JLabel("(0/500)");
+				panel.add(lblTagslenght, "14, 15, 3, 1, right, top");
 
 		JScrollPane TagScrollPane = new JScrollPane();
 		panel.add(TagScrollPane, "3, 16, 14, 1, fill, fill");
@@ -374,7 +400,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		});
 
 		JLabel lblAccount = new JLabel(LANG.getString("frmMain.Account"));
-		panel.add(lblAccount, "3, 18, 4, 1, left, top");
+		panel.add(lblAccount, "3, 18, 4, 1, left, bottom");
 		cmbAccount = new JComboBox<AccountType>();
 		panel.add(cmbAccount, "3, 19, 14, 1, fill, fill");
 
@@ -387,17 +413,18 @@ public class FrmMain extends JFrame implements IMainMenu {
 			}
 		});
 		JLabel lblSelectVideo = new JLabel();
-		panel.add(lblSelectVideo, "3, 3, 4, 1, left, top");
+		panel.add(lblSelectVideo, "3, 3, 4, 1, left, bottom");
 
 		lblSelectVideo.setText(LANG.getString("frmMain.selectVideoFile"));
 		cmbFile = new JComboBox<String>();
 		panel.add(cmbFile, "3, 4, 14, 1, fill, fill");
 		JButton btnSelectMovie = new JButton();
+		btnSelectMovie.setToolTipText("Select Video File");
 		panel.add(btnSelectMovie, "18, 4, center, top");
 		btnSelectMovie.setIcon(new ImageIcon(getClass().getResource("/film_add.png")));
 
 		JLabel lblTitle = new JLabel(LANG.getString("frmMain.Title"));
-		panel.add(lblTitle, "3, 6, left, top");
+		panel.add(lblTitle, "3, 6, 4, 1, left, bottom");
 
 		JButton btnReset = new JButton(LANG.getString("frmMain.Reset"));
 		btnReset.addActionListener(new ActionListener() {
@@ -1067,16 +1094,16 @@ public class FrmMain extends JFrame implements IMainMenu {
 		}
 		lblTagslenght.setText("(" + txtTags.getText().length() + "/500)");
 
-		if (txtDescription.getText().length() > 900) {
+		if (txtDescription.getText().length() > 4900) {
 			lblDesclenght.setForeground(Color.RED);
 		} else {
 			lblDesclenght.setForeground(Color.BLACK);
 		}
-		if (txtDescription.getText().length() >= 1001) {
-			txtDescription.setText(txtDescription.getText().substring(0, 1000));
+		if (txtDescription.getText().length() >= 5001) {
+			txtDescription.setText(txtDescription.getText().substring(0, 5000));
 
 		}
-		lblDesclenght.setText("(" + txtDescription.getText().length() + "/1000)");
+		lblDesclenght.setText("(" + txtDescription.getText().length() + "/5000)");
 
 		if (txtTitle.getText().length() > 90) {
 			lbltitlelenght.setForeground(Color.RED);
