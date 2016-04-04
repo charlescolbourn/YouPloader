@@ -1,15 +1,17 @@
 package at.becast.youploader.templates;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import at.becast.youploader.youtube.data.Video;
 import at.becast.youploader.youtube.data.VideoMetadata;
 
+@JsonIgnoreProperties({"enddir"})
 public class Template {
 	
 	public String name;
 	public Video videodata;
 	public VideoMetadata metadata;
 	public String startdir;
-	public String enddir;
 	
 	public Template(String name){
 		this.name=name;
@@ -19,10 +21,9 @@ public class Template {
 
 	}
 	
-	public Template(String name, String startdir, String enddir, Video videodata, VideoMetadata metadata){
+	public Template(String name, String startdir, Video videodata, VideoMetadata metadata){
 		this.name=name;
 		this.startdir=startdir;
-		this.enddir=enddir;
 		this.videodata=videodata;
 		this.metadata=metadata;
 	}
@@ -63,17 +64,6 @@ public class Template {
 	public void setStartdir(String startdir) {
 		this.startdir = startdir;
 	}
-
-
-	public String getEnddir() {
-		return enddir;
-	}
-
-
-	public void setEnddir(String enddir) {
-		this.enddir = enddir;
-	}
-
 	
 	@Override
 	public String toString(){

@@ -833,6 +833,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 				f.getlblRelease().setText("public");
 			}
 		}
+		metadata.setAccount(acc_id);
 		v.status.embeddable = edit.getChckbxAllowEmbedding().isSelected();
 		v.status.publicStatsViewable = edit.getChckbxMakeStatisticsPublic().isSelected();
 		LicenseType license = (LicenseType) edit.getCmbLicense().getSelectedItem();
