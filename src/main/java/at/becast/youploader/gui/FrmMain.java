@@ -1051,6 +1051,11 @@ public class FrmMain extends JFrame implements IMainMenu {
 			v.snippet.tags = trimTags(txtTags.getText());
 		}
 		VisibilityType visibility = (VisibilityType) edit.getCmbVisibility().getSelectedItem();
+		if (visibility == VisibilityType.SCHEDULED) {
+			v.status.publishAt = edit.getDateTimePicker().getEditor().getText();
+		} else {
+			v.status.publishAt = "0";
+		}
 		v.status.privacyStatus = visibility.getData();
 		LicenseType license = (LicenseType) edit.getCmbLicense().getSelectedItem();
 		v.status.license = license.getData();
@@ -1094,12 +1099,14 @@ public class FrmMain extends JFrame implements IMainMenu {
 		txtDescription.setText(t.videodata.snippet.description);
 		txtTags.setText(prepareTagsfromArray(t.videodata.snippet.tags));
 		edit.setLicence(t.videodata.status.license);
-		if (t.videodata.status.publishAt != null && t.videodata.status.publishAt.equals("1")
+		if (t.videodata.status.publishAt != null && !t.videodata.status.publishAt.equals("0")
 				&& t.videodata.status.privacyStatus.equals("private")) {
 			edit.getCmbVisibility().setSelectedItem(VisibilityType.SCHEDULED);
+			edit.getDateTimePicker().getEditor().setText(t.videodata.status.publishAt);
 		} else if (t.videodata.status.publishAt != null && t.videodata.status.publishAt.equals("0")
 				&& t.videodata.status.privacyStatus.equals("private")) {
 			edit.getCmbVisibility().setSelectedItem(VisibilityType.PRIVATE);
+			edit.getDateTimePicker().getEditor().setText("");
 		} else {
 			edit.setVisibility(t.videodata.status.privacyStatus, "");
 		}
@@ -1164,7 +1171,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		}
 		VisibilityType visibility = (VisibilityType) edit.getCmbVisibility().getSelectedItem();
 		if (visibility == VisibilityType.SCHEDULED) {
-			v.status.publishAt = "1";
+			v.status.publishAt = edit.getDateTimePicker().getEditor().getText();
 		} else {
 			v.status.publishAt = "0";
 		}
