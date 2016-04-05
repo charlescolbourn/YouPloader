@@ -123,8 +123,10 @@ public class FrmMain extends JFrame implements IMainMenu {
 	private static final long serialVersionUID = 6965358827253585528L;
 	public static final String DB_FILE = System.getProperty("user.home") + "/YouPloader/data/data.db";
 	public static final String APP_NAME = "YouPloader";
-	public static final String VERSION = "0.4";
-	public static final int DB_VERSION = 4;
+	public static final String VERSION = "0.5";
+	public static final int DB_VERSION = 5;
+	private static final String DEFAULT_WIDTH = "900";
+	private static final String DEFAULT_HEIGHT = "580";
 	private static final Logger LOG = LoggerFactory.getLogger(FrmMain.class);
 	public static UploadManager UploadMgr;
 	public static TemplateManager TemplateMgr;
@@ -215,6 +217,10 @@ public class FrmMain extends JFrame implements IMainMenu {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				LOG.info(APP_NAME + " " + VERSION + " closing.", FrmMain.class);
+				s.put("left", String.valueOf(getX()));
+				s.put("top", String.valueOf(getY()));
+				s.put("width", String.valueOf(getWidth()));
+				s.put("height", String.valueOf(getHeight()));
 				LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
 				loggerContext.stop();
 				e.getWindow().dispose();
@@ -225,7 +231,6 @@ public class FrmMain extends JFrame implements IMainMenu {
 		initMenuBar();
 		loadAccounts();
 		this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/yp.png")));
-		this.setLocationRelativeTo(null);
 		try {
 			loadQueue();
 		} catch (SQLException | IOException e) {
@@ -271,6 +276,11 @@ public class FrmMain extends JFrame implements IMainMenu {
 	 */
 	public void initComponents() {
 		LOG.debug("init Components", FrmMain.class);
+		int left = Integer.parseInt(s.get("left","0"));
+		int top = Integer.parseInt(s.get("top","0"));
+		int width = Integer.parseInt(s.get("width",DEFAULT_WIDTH));
+		int height = Integer.parseInt(s.get("height", DEFAULT_HEIGHT));
+		setBounds(left, top, width, height);
 		TabbedPane = new JTabbedPane();
 		cmbCategory = new JComboBox<Categories>();
 		cmbCategory.setModel(new DefaultComboBoxModel<Categories>(Categories.values()));
@@ -328,10 +338,10 @@ public class FrmMain extends JFrame implements IMainMenu {
 				RowSpec.decode("25px"),
 				FormSpecs.RELATED_GAP_ROWSPEC,
 				FormSpecs.DEFAULT_ROWSPEC,
-				RowSpec.decode("64dlu"),
+				RowSpec.decode("64dlu:grow"),
 				FormSpecs.RELATED_GAP_ROWSPEC,
 				FormSpecs.DEFAULT_ROWSPEC,
-				RowSpec.decode("max(64dlu;default):grow"),
+				RowSpec.decode("max(64dlu;default)"),
 				FormSpecs.RELATED_GAP_ROWSPEC,
 				FormSpecs.DEFAULT_ROWSPEC,
 				RowSpec.decode("25px"),
@@ -553,7 +563,6 @@ public class FrmMain extends JFrame implements IMainMenu {
 		});
 		
 		QueuePanel.revalidate();
-		pack();
 		ss1.expand();
 	}
 	

@@ -75,6 +75,14 @@ public class SQLite {
 			prest.executeUpdate();
 			prest = c.prepareStatement("INSERT INTO `settings` VALUES('notify_updates','1')");
 			prest.executeUpdate();
+			prest = c.prepareStatement("INSERT INTO `settings` VALUES('width','900')");
+			prest.executeUpdate();
+			prest = c.prepareStatement("INSERT INTO `settings` VALUES('height','580')");
+			prest.executeUpdate();
+			prest = c.prepareStatement("INSERT INTO `settings` VALUES('left','0')");
+			prest.executeUpdate();
+			prest = c.prepareStatement("INSERT INTO `settings` VALUES('top','0')");
+			prest.executeUpdate();
 			prest = c.prepareStatement("CREATE TABLE `accounts` (`id` INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , `name` VARCHAR NOT NULL , `refresh_token` VARCHAR, `cookie` VARCHAR, `active` INTEGER DEFAULT 0)");
 			prest.executeUpdate();
 			prest = c.prepareStatement("CREATE TABLE `templates` (`id` INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , `name` VARCHAR, `data` VARCHAR)");
@@ -320,6 +328,15 @@ public class SQLite {
 					prest = c.prepareStatement("INSERT INTO `settings` VALUES('notify_updates','1')");
 					prest.executeUpdate();
 					prest = c.prepareStatement("ALTER TABLE `uploads` ADD COLUMN 'metadata' VARCHAR");
+					prest.executeUpdate();
+				case 4:
+					prest = c.prepareStatement("INSERT INTO `settings` VALUES('width','900')");
+					prest.executeUpdate();
+					prest = c.prepareStatement("INSERT INTO `settings` VALUES('height','580')");
+					prest.executeUpdate();
+					prest = c.prepareStatement("INSERT INTO `settings` VALUES('left','0')");
+					prest.executeUpdate();
+					prest = c.prepareStatement("INSERT INTO `settings` VALUES('top','0')");
 					prest.executeUpdate();
 				default:
 					setVersion(FrmMain.getDBVersion());

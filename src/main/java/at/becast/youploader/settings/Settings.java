@@ -63,6 +63,24 @@ public class Settings {
 		stmt.close();
 		return true;
 	}
+	
+	public String get(String value, String defaultValue){
+		if(this.setting.containsKey(value) && this.setting.get(value)!=null){
+			return this.setting.get(value);
+		}else if(!this.setting.containsKey(value)){
+			setting.put(value, defaultValue);
+			insert(value,defaultValue);
+			return defaultValue;
+		}else{
+			setting.put(value, defaultValue);
+			save(value);
+			return defaultValue;
+		}
+	}
+	
+	public String get(String value){
+		return this.get(value,"0");
+	}
 
 	public boolean save(String name) {
 		PreparedStatement prest = null;
@@ -79,5 +97,27 @@ public class Settings {
 			return false;
 		}
 
+	}
+	
+	public boolean insert(String name, String value) {
+		PreparedStatement prest = null;
+		String sql = "INSERT INTO `settings` VALUES(?,?)";
+		try {
+			prest = c.prepareStatement(sql);
+			prest.setString(1, name);
+			prest.setString(2, value);
+			boolean res = prest.execute();
+			prest.close();
+			return res;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+
+	}
+
+	public void put(String string, String valueOf) {
+		this.setting.put(string, valueOf);
+		this.save(string);
 	}
 }
