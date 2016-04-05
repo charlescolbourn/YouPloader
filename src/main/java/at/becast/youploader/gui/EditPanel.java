@@ -53,6 +53,7 @@ import javax.swing.JTextPane;
 import javax.swing.JScrollPane;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
+import java.awt.Font;
 
 /**
  *
@@ -335,6 +336,7 @@ public class EditPanel extends javax.swing.JPanel {
 		add(scrollPane, "4, 24, 5, 7, fill, fill");
 		
 		txtMessage = new JTextPane();
+		txtMessage.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		txtMessage.setEnabled(false);
 		scrollPane.setViewportView(txtMessage);
 		

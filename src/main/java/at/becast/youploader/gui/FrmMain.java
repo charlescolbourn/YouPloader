@@ -376,8 +376,8 @@ public class FrmMain extends JFrame implements IMainMenu {
 		panel.add(DescriptionScrollPane, "3, 13, 14, 1, fill, fill");
 
 		txtDescription = new JTextArea();
+		txtDescription.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		DescriptionScrollPane.setViewportView(txtDescription);
-		txtDescription.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		txtDescription.setWrapStyleWord(true);
 		txtDescription.setLineWrap(true);
 		txtDescription.addKeyListener(new KeyAdapter() {
@@ -387,18 +387,18 @@ public class FrmMain extends JFrame implements IMainMenu {
 			}
 		});
 		
-				JLabel lblTags = new JLabel(LANG.getString("frmMain.Tags"));
-				panel.add(lblTags, "3, 15, 4, 1, left, bottom");
-		
-				lblTagslenght = new JLabel("(0/500)");
-				panel.add(lblTagslenght, "14, 15, 3, 1, right, top");
+		JLabel lblTags = new JLabel(LANG.getString("frmMain.Tags"));
+		panel.add(lblTags, "3, 15, 4, 1, left, bottom");
+
+		lblTagslenght = new JLabel("(0/500)");
+		panel.add(lblTagslenght, "14, 15, 3, 1, right, top");
 
 		JScrollPane TagScrollPane = new JScrollPane();
 		panel.add(TagScrollPane, "3, 16, 14, 1, fill, fill");
 
 		txtTags = new JTextArea();
+		txtTags.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		TagScrollPane.setViewportView(txtTags);
-		txtTags.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		txtTags.setWrapStyleWord(true);
 		txtTags.setLineWrap(true);
 		txtTags.setBorder(BorderFactory.createEtchedBorder());
