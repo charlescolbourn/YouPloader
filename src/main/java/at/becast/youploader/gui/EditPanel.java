@@ -44,6 +44,7 @@ import com.jgoodies.forms.layout.RowSpec;
 import at.becast.youploader.templates.Item;
 import at.becast.youploader.templates.Template;
 import at.becast.youploader.templates.TemplateManager;
+import at.becast.youploader.util.NativeJFileChooser;
 import at.becast.youploader.youtube.LicenseType;
 import at.becast.youploader.youtube.VisibilityType;
 import javax.swing.JCheckBox;
@@ -196,7 +197,7 @@ public class EditPanel extends javax.swing.JPanel {
 		JButton btnStartDir = new JButton("");
 		btnStartDir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JFileChooser chooser = new JFileChooser();
+				NativeJFileChooser chooser = new NativeJFileChooser();
 				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				int returnVal = chooser.showOpenDialog(getParent());
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -217,7 +218,7 @@ public class EditPanel extends javax.swing.JPanel {
 		JButton btnEndDir = new JButton("");
 		btnEndDir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				JFileChooser chooser = new JFileChooser();
+				NativeJFileChooser chooser = new NativeJFileChooser();
 				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				int returnVal = chooser.showOpenDialog(getParent());
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -274,7 +275,7 @@ public class EditPanel extends javax.swing.JPanel {
 		JButton btnThumbnail = new JButton("");
 		btnThumbnail.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JFileChooser chooser = new JFileChooser();
+				NativeJFileChooser chooser = new NativeJFileChooser();
 				chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				chooser.setFileFilter(new FileNameExtensionFilter("Image Files", "jpg", "jpeg", "png"));
 				int returnVal = chooser.showOpenDialog(getParent());

@@ -99,6 +99,7 @@ import at.becast.youploader.templates.Template;
 import at.becast.youploader.templates.TemplateManager;
 import at.becast.youploader.util.DesktopUtil;
 import at.becast.youploader.util.GetVersion;
+import at.becast.youploader.util.NativeJFileChooser;
 import at.becast.youploader.util.VersionComparator;
 import at.becast.youploader.youtube.Categories;
 import at.becast.youploader.youtube.LicenseType;
@@ -445,10 +446,12 @@ public class FrmMain extends JFrame implements IMainMenu {
 		panel.add(btnReset, "11, 21, 6, 1, fill, fill");
 		btnSelectMovie.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JFileChooser chooser = new JFileChooser();
 				EditPanel edit = (EditPanel) ss1.contentPane;
+				NativeJFileChooser chooser;
 				if (edit.getTxtStartDir() != null && !edit.getTxtStartDir().equals("")) {
-					chooser.setCurrentDirectory(new File(edit.getTxtStartDir().getText().trim()));
+					chooser = new NativeJFileChooser(edit.getTxtStartDir().getText().trim());
+				}else{
+					chooser = new NativeJFileChooser();
 				}
 				int returnVal = chooser.showOpenDialog((Component) self);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
