@@ -19,8 +19,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Map.Entry;
@@ -55,6 +57,10 @@ import javax.swing.JScrollPane;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 import java.awt.Font;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDropEvent;
 
 /**
  *
@@ -269,6 +275,26 @@ public class EditPanel extends javax.swing.JPanel {
 		add(lblThumbnail, "2, 14, right, default");
 		
 		txtThumbnail = new JTextField();
+		txtThumbnail.setDragEnabled(true);
+		txtThumbnail.setDropTarget(new DropTarget() {
+			private static final long serialVersionUID = 8809983794742040683L;
+			public synchronized void drop(DropTargetDropEvent evt) {
+	            try {
+	                evt.acceptDrop(DnDConstants.ACTION_COPY);
+	                @SuppressWarnings("unchecked")
+					List<File> droppedFiles = (List<File>) evt
+	                        .getTransferable().getTransferData(
+	                                DataFlavor.javaFileListFlavor);
+	                for (File file : droppedFiles) {
+	                	if(file.getName().endsWith(".jpg") || file.getName().endsWith(".png") || file.getName().endsWith(".jpeg")){
+	                		txtThumbnail.setText(file.getAbsolutePath());
+	                	}
+	                }
+	            } catch (Exception ex) {
+	                ex.printStackTrace();
+	            }
+	        }
+	    });
 		add(txtThumbnail, "4, 14, 5, 1, fill, fill");
 		txtThumbnail.setColumns(10);
 		

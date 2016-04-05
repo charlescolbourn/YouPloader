@@ -22,6 +22,10 @@ import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.Toolkit;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDropEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -41,6 +45,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.ResourceBundle;
@@ -428,6 +433,24 @@ public class FrmMain extends JFrame implements IMainMenu {
 
 		lblSelectVideo.setText(LANG.getString("frmMain.selectVideoFile"));
 		cmbFile = new JComboBox<String>();
+		cmbFile.setDropTarget(new DropTarget() {
+			private static final long serialVersionUID = 8809983794742040683L;
+			public synchronized void drop(DropTargetDropEvent evt) {
+	            try {
+	                evt.acceptDrop(DnDConstants.ACTION_COPY);
+	                @SuppressWarnings("unchecked")
+					List<File> droppedFiles = (List<File>) evt
+	                        .getTransferable().getTransferData(
+	                                DataFlavor.javaFileListFlavor);
+	                for (File file : droppedFiles) {
+                		cmbFile.removeAllItems();
+    					cmbFile.addItem(file.getAbsolutePath());
+	                }
+	            } catch (Exception ex) {
+	                ex.printStackTrace();
+	            }
+	        }
+	    });
 		panel.add(cmbFile, "3, 4, 14, 1, fill, fill");
 		JButton btnSelectMovie = new JButton();
 		btnSelectMovie.setToolTipText("Select Video File");
