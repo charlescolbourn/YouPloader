@@ -105,6 +105,7 @@ import at.becast.youploader.templates.TemplateManager;
 import at.becast.youploader.util.DesktopUtil;
 import at.becast.youploader.util.GetVersion;
 import at.becast.youploader.util.NativeJFileChooser;
+import at.becast.youploader.util.TagUtil;
 import at.becast.youploader.util.VersionComparator;
 import at.becast.youploader.youtube.Categories;
 import at.becast.youploader.youtube.LicenseType;
@@ -846,7 +847,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		v.snippet.categoryId = cat.getID();
 		v.snippet.description = txtDescription.getText();
 		if (txtTags != null && !txtTags.getText().equals("")) {
-			v.snippet.tags = trimTags(txtTags.getText());
+			v.snippet.tags = TagUtil.trimTags(txtTags.getText());
 		}
 		VideoMetadata metadata = createMetadata();
 		VisibilityType visibility = (VisibilityType) edit.getCmbVisibility().getSelectedItem();
@@ -906,7 +907,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 				v.snippet.categoryId = cat.getID();
 				v.snippet.description = txtDescription.getText();
 				if (txtTags != null && !txtTags.getText().equals("")) {
-					v.snippet.tags = trimTags(txtTags.getText());
+					v.snippet.tags = TagUtil.trimTags(txtTags.getText());
 				}
 				VideoMetadata metadata = createMetadata();
 				VisibilityType visibility = (VisibilityType) edit.getCmbVisibility().getSelectedItem();
@@ -1006,7 +1007,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 				txtTitle.setText(v.snippet.title);
 				cmbAccount.setSelectedItem(rs.getString("account"));
 				txtDescription.setText(v.snippet.description);
-				txtTags.setText(prepareTagsfromArray(v.snippet.tags));
+				txtTags.setText(TagUtil.prepareTagsfromArray(v.snippet.tags));
 				edit.setLicence(v.status.license);
 				edit.setVisibility(v.status.privacyStatus, v.status.publishAt);
 				edit.getChckbxAllowEmbedding().setSelected(v.status.embeddable);
@@ -1048,7 +1049,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		v.snippet.categoryId = cat.getID();
 		v.snippet.description = txtDescription.getText();
 		if (txtTags != null && !txtTags.getText().equals("")) {
-			v.snippet.tags = trimTags(txtTags.getText());
+			v.snippet.tags = TagUtil.trimTags(txtTags.getText());
 		}
 		VisibilityType visibility = (VisibilityType) edit.getCmbVisibility().getSelectedItem();
 		if (visibility == VisibilityType.SCHEDULED) {
@@ -1070,34 +1071,13 @@ public class FrmMain extends JFrame implements IMainMenu {
 		edit.refreshTemplates(t.name);
 	}
 
-	private String prepareTagsfromArray(String[] in) {
-		String tags = "";
-		for (int i = 0; i < in.length; i++) {
-			if (i == 0) {
-				tags = in[i];
-			} else {
-				tags += "," + in[i];
-			}
-		}
-		return tags;
-	}
-	
-	private String[] trimTags(String in){
-		String[] tags = in.split(",");
-		String[] trimmedtags = new String[tags.length];
-		for (int i = 0; i < tags.length; i++) {
-			trimmedtags[i] = tags[i].trim();
-		}
-		return trimmedtags;
-	}
-
 	public void loadTemplate(Item item) {
 		EditPanel edit = (EditPanel) ss1.contentPane;
 		Template t = item.getTemplate();
 		this.setCategory(t.videodata.snippet.categoryId);
 		txtTitle.setText(t.videodata.snippet.title);
 		txtDescription.setText(t.videodata.snippet.description);
-		txtTags.setText(prepareTagsfromArray(t.videodata.snippet.tags));
+		txtTags.setText(TagUtil.prepareTagsfromArray(t.videodata.snippet.tags));
 		edit.setLicence(t.videodata.status.license);
 		if (t.videodata.status.publishAt != null && !t.videodata.status.publishAt.equals("0")
 				&& t.videodata.status.privacyStatus.equals("private")) {
@@ -1167,7 +1147,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		v.snippet.categoryId = cat.getID();
 		v.snippet.description = txtDescription.getText();
 		if (txtTags != null && !txtTags.getText().equals("")) {
-			v.snippet.tags = trimTags(txtTags.getText());
+			v.snippet.tags = TagUtil.trimTags(txtTags.getText());
 		}
 		VisibilityType visibility = (VisibilityType) edit.getCmbVisibility().getSelectedItem();
 		if (visibility == VisibilityType.SCHEDULED) {

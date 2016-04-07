@@ -15,14 +15,12 @@
 package at.becast.youploader.gui;
 
 import javax.swing.JPanel;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
-
-import javax.swing.SpringLayout;
-import java.awt.Font;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
+import com.jgoodies.forms.layout.FormSpecs;
+import javax.swing.JScrollPane;
+import javax.swing.JButton;
 
 public class PlaylistPanel extends JPanel {
 
@@ -35,8 +33,22 @@ public class PlaylistPanel extends JPanel {
 	 * Create the panel.
 	 */
 	public PlaylistPanel() {
-		setLayout(new FormLayout(new ColumnSpec[] {},
-			new RowSpec[] {}));
+		setLayout(new FormLayout(new ColumnSpec[] {
+				FormSpecs.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("max(212dlu;default):grow"),
+				FormSpecs.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("right:default:grow"),},
+			new RowSpec[] {
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("default:grow"),
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,}));
+		
+		JScrollPane scrollPane = new JScrollPane();
+		add(scrollPane, "2, 2, 3, 1, fill, fill");
+		
+		JButton btnAddPlaylist = new JButton("Add Playlist");
+		add(btnAddPlaylist, "4, 4");
 		initComponents();
 	}
 	
