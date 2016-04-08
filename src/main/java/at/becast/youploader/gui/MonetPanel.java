@@ -24,6 +24,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
 
+import at.becast.youploader.util.UTF8ResourceBundle;
 import at.becast.youploader.youtube.SyndicationType;
 
 import com.jgoodies.forms.layout.FormSpecs;
@@ -42,7 +43,7 @@ public class MonetPanel extends javax.swing.JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private static final ResourceBundle LANG = ResourceBundle.getBundle("lang", Locale.getDefault());
+	private static final ResourceBundle LANG = UTF8ResourceBundle.getBundle("lang", Locale.getDefault());
 	private JCheckBox chckbxMonetize;
 	private JComboBox<SyndicationType> cmbContentSyndication;
 	private JCheckBox chckbxOverlayads;

@@ -47,6 +47,7 @@ import at.becast.youploader.templates.Item;
 import at.becast.youploader.templates.Template;
 import at.becast.youploader.templates.TemplateManager;
 import at.becast.youploader.util.NativeJFileChooser;
+import at.becast.youploader.util.UTF8ResourceBundle;
 import at.becast.youploader.youtube.LicenseType;
 import at.becast.youploader.youtube.VisibilityType;
 import javax.swing.JCheckBox;
@@ -72,7 +73,7 @@ public class EditPanel extends javax.swing.JPanel {
 	 */
 	private static final long serialVersionUID = -2023946504262191056L;
 	private static final Logger LOG = LoggerFactory.getLogger(EditPanel.class);
-	private static final ResourceBundle LANG = ResourceBundle.getBundle("lang", Locale.getDefault());
+	private static final ResourceBundle LANG = UTF8ResourceBundle.getBundle("lang", Locale.getDefault());
 	private JComboBox<Item> cmbTemplate;
 	private JTextField txtStartDir;
 	private JTextField txtEndDir;

@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import at.becast.youploader.account.Account;
 import at.becast.youploader.oauth.OAuth2;
 import at.becast.youploader.settings.Settings;
+import at.becast.youploader.util.UTF8ResourceBundle;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -49,7 +50,7 @@ public class AddAccount extends javax.swing.JDialog {
 	private FrmMain parent;
 	private JTextField AccName;
 	private static final Logger LOG = LoggerFactory.getLogger(AddAccount.class);
-	private static final ResourceBundle LANG = ResourceBundle.getBundle("lang", Locale.getDefault());
+	private static final ResourceBundle LANG = UTF8ResourceBundle.getBundle("lang", Locale.getDefault());
 
 	/**
 	 * Creates new form AddAccount
