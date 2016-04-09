@@ -952,6 +952,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		if (this.editItem != -1) {
 			btnAddToQueue.setText(LANG.getString("frmMain.addtoQueue"));
 			cmbFile.removeAllItems();
+			cmbAccount.setEnabled(true);
 			this.editItem = -1;
 		}
 	}
@@ -964,8 +965,9 @@ public class FrmMain extends JFrame implements IMainMenu {
 			} catch (SQLException | IOException e) {
 				LOG.error("Error updating upload",e);
 			}
-			btnAddToQueue.setText(LANG.getString("frmMain.addtoQueue"));
 			cmbFile.removeAllItems();
+			btnAddToQueue.setText(LANG.getString("frmMain.addtoQueue"));
+			cmbAccount.setEnabled(true);
 			this.editItem = -1;
 		} else {
 			if (cmbFile.getSelectedItem() != null && !cmbFile.getSelectedItem().toString().equals("")) {
@@ -1011,7 +1013,8 @@ public class FrmMain extends JFrame implements IMainMenu {
 				cmbFile.addItem(rs.getString("file"));
 				this.setCategory(v.snippet.categoryId);
 				txtTitle.setText(v.snippet.title);
-				cmbAccount.setSelectedItem(rs.getString("account"));
+				cmbAccount.setSelectedItem(metadata.getAccount());
+				cmbAccount.setEnabled(false);
 				txtDescription.setText(v.snippet.description);
 				txtTags.setText(TagUtil.prepareTagsfromArray(v.snippet.tags));
 				edit.setLicence(v.status.license);
