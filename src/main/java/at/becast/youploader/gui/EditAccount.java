@@ -26,6 +26,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import at.becast.youploader.account.AccountManager;
+import at.becast.youploader.util.UTF8ResourceBundle;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.GroupLayout;
 import javax.swing.LayoutStyle.ComponentPlacement;
@@ -50,7 +51,7 @@ public class EditAccount extends JDialog {
 	private String name;
 	private JTextField AccName;
 	private static final Logger LOG = LoggerFactory.getLogger(EditAccount.class);
-	private static final ResourceBundle LANG = ResourceBundle.getBundle("lang", Locale.getDefault());
+	private static final ResourceBundle LANG = UTF8ResourceBundle.getBundle("lang", Locale.getDefault());
 	/**
 	 * Creates new form AddAccount
 	 * @param name 

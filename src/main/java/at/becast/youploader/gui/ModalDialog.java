@@ -40,10 +40,11 @@ import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
 import at.becast.youploader.account.Account;
+import at.becast.youploader.util.UTF8ResourceBundle;
 
 public class ModalDialog extends JDialog {
 	private static final long serialVersionUID = -49240475185934236L;
-	private static final ResourceBundle LANG = ResourceBundle.getBundle("lang", Locale.getDefault());
+	private static final ResourceBundle LANG = UTF8ResourceBundle.getBundle("lang", Locale.getDefault());
 	private final JPanel contentPanel = new JPanel();
 	private JTextField labelcode;
 	private JLabel check_label;
