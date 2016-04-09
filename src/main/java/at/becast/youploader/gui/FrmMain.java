@@ -874,13 +874,13 @@ public class FrmMain extends JFrame implements IMainMenu {
 				f.getlblRelease().setText("public");
 			}
 		}
-		metadata.setAccount(acc_id);
 		v.status.embeddable = edit.getChckbxAllowEmbedding().isSelected();
 		v.status.publicStatsViewable = edit.getChckbxMakeStatisticsPublic().isSelected();
 		LicenseType license = (LicenseType) edit.getCmbLicense().getSelectedItem();
 		v.status.license = license.getData();
 		File data = new File(File);
 		metadata.setFrame(f);
+		metadata.setAccount(acc_id);
 		UploadMgr.addUpload(data, v, metadata);
 		return f;
 	}
@@ -935,6 +935,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 				v.status.embeddable = edit.getChckbxAllowEmbedding().isSelected();
 				v.status.publicStatsViewable = edit.getChckbxMakeStatisticsPublic().isSelected();
 				v.status.license = license.getData();
+				metadata.setAccount(acc_id);
 				if (video_id != null && !video_id.equals("")) {
 					SQLite.updateUploadData(v,metadata, upload_id);
 				} else {
@@ -1107,12 +1108,14 @@ public class FrmMain extends JFrame implements IMainMenu {
 	}
 
 	private void calcNotifies() {
-		if (txtTags.getText().length() > 450) {
+		// Special handling for Tags
+		int taglength = TagUtil.calculateTagLenght(txtTags.getText());
+		if (taglength > 450) {
 			lblTagslenght.setForeground(Color.RED);
 		} else {
 			lblTagslenght.setForeground(Color.BLACK);
 		}
-		if (txtTags.getText().length() >= 501) {
+		if (taglength >= 501) {
 			txtTags.setText(txtTags.getText().substring(0, 500));
 
 		}
