@@ -17,6 +17,7 @@ package at.becast.youploader.gui;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Toolkit;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.swing.ImageIcon;
@@ -34,6 +35,7 @@ import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
 import at.becast.youploader.util.DesktopUtil;
+import at.becast.youploader.util.UTF8ResourceBundle;
 
 import java.awt.Font;
 import java.awt.Color;
@@ -50,6 +52,7 @@ public class FrmAbout extends JDialog {
 	 */
 	private static final long serialVersionUID = -8005016163820525203L;
 	private final JPanel contentPanel = new JPanel();
+	private static final ResourceBundle LANG = UTF8ResourceBundle.getBundle("lang", Locale.getDefault());
 
 	/**
 	 * Create the dialog.
@@ -57,7 +60,7 @@ public class FrmAbout extends JDialog {
 	public FrmAbout() {
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setResizable(false);
-		setTitle("About YouPloader");
+		setTitle(String.format(LANG.getString("About.title"),FrmMain.APP_NAME));
         ResourceBundle bundle = ResourceBundle.getBundle( "build" );
         String rev = bundle.getString( "git-sha-1" );
         String build = bundle.getString( "jenkins-build" );

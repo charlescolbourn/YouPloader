@@ -98,6 +98,7 @@ import at.becast.youploader.account.AccountType;
 import at.becast.youploader.database.SQLite;
 import at.becast.youploader.gui.slider.SideBar;
 import at.becast.youploader.gui.slider.SidebarSection;
+import at.becast.youploader.gui.spinner.SpeedValuesSpinnerEditor;
 import at.becast.youploader.settings.Settings;
 import at.becast.youploader.templates.Item;
 import at.becast.youploader.templates.Template;
@@ -516,7 +517,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 						FormSpecs.DEFAULT_ROWSPEC, FormSpecs.RELATED_GAP_ROWSPEC,
 						RowSpec.decode("max(0dlu;default)"), }));
 
-		JButton btnStart = new JButton("Start");
+		JButton btnStart = new JButton(LANG.getString("frmMain.start"));
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				startUploads();
@@ -524,7 +525,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		});
 		buttonPanel.add(btnStart, "2, 4");
 
-		JButton btnStop = new JButton("Stop");
+		JButton btnStop = new JButton(LANG.getString("frmMain.stop"));
 		btnStop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				UploadMgr.stop();
@@ -532,7 +533,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		});
 		buttonPanel.add(btnStop, "6, 4");
 
-		JLabel lblUploads = new JLabel("Uploads:");
+		JLabel lblUploads = new JLabel(LANG.getString("frmMain.uploads")+":");
 		buttonPanel.add(lblUploads, "18, 4, right, fill");
 
 		JSlider slider = new JSlider();
@@ -552,12 +553,13 @@ public class FrmMain extends JFrame implements IMainMenu {
 		slider.setPaintLabels(true);
 		buttonPanel.add(slider, "20, 4, fill, fill");
 
-		JLabel lblUploadSpeed = new JLabel("Upload Speed:");
+		JLabel lblUploadSpeed = new JLabel(LANG.getString("frmMain.uploadspeed")+":");
 		lblUploadSpeed.setHorizontalAlignment(SwingConstants.TRAILING);
 		buttonPanel.add(lblUploadSpeed, "24, 4");
 
 		spinner = new JSpinner();
 		spinner.setModel(new SpinnerNumberModel(new Integer(0), new Integer(0), null, new Integer(10)));
+		spinner.setEditor(new SpeedValuesSpinnerEditor(spinner));
 		spinner.addChangeListener(new ChangeListener() {
 
 			@Override
@@ -678,6 +680,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 	protected void startUploads() {
 		if ("0".equals(s.setting.get("tos_agreed")) && !this.tos) {
 			//Dummy JFrame to keep Dialog on top
+			LOG.info("Asking about ToS Agreement");
 			JFrame frmOpt = new JFrame();
 		    frmOpt.setAlwaysOnTop(true);
 			JCheckBox checkbox = new JCheckBox(LANG.getString("frmMain.tos.Remember"));
@@ -689,6 +692,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 						JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
 			} while (n == JOptionPane.CLOSED_OPTION);
 			if (n == JOptionPane.OK_OPTION) {
+				LOG.info("Agreed to ToS");
 				if (checkbox.isSelected()) {
 					s.setting.put("tos_agreed", "1");
 					s.save("tos_agreed");
@@ -698,6 +702,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 			}
 			frmOpt.dispose();
 		} else {
+			LOG.info("Previously agreed to ToS");
 			UploadMgr.start();
 		}
 	}
