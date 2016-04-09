@@ -46,11 +46,10 @@ public class Settings {
 	}
 
 	public static Settings getInstance() {
-		if (Settings.instance == null) {
-			return new Settings();
-		} else {
-			return Settings.instance;
+		if (instance == null) {
+			instance = new Settings();
 		}
+		return instance;
 	}
 
 	public boolean load() throws SQLException {
