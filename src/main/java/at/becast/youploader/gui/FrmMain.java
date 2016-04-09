@@ -677,12 +677,15 @@ public class FrmMain extends JFrame implements IMainMenu {
 
 	protected void startUploads() {
 		if ("0".equals(s.setting.get("tos_agreed")) && !this.tos) {
+			//Dummy JFrame to keep Dialog on top
+			JFrame frmOpt = new JFrame();
+		    frmOpt.setAlwaysOnTop(true);
 			JCheckBox checkbox = new JCheckBox(LANG.getString("frmMain.tos.Remember"));
 			String message = LANG.getString("frmMain.tos.Message");
 			Object[] params = { message, checkbox };
 			int n;
 			do {
-				n = JOptionPane.showConfirmDialog(null, params, LANG.getString("frmMain.tos.Title"),
+				n = JOptionPane.showConfirmDialog(frmOpt, params, LANG.getString("frmMain.tos.Title"),
 						JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
 			} while (n == JOptionPane.CLOSED_OPTION);
 			if (n == JOptionPane.OK_OPTION) {
@@ -693,6 +696,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 				this.tos = true;
 				UploadMgr.start();
 			}
+			frmOpt.dispose();
 		} else {
 			UploadMgr.start();
 		}
