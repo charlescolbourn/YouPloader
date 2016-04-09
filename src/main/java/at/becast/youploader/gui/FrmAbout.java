@@ -70,7 +70,7 @@ public class FrmAbout extends JDialog {
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(new FormLayout(new ColumnSpec[] {
-				ColumnSpec.decode("max(164dlu;default)"),
+				ColumnSpec.decode("max(166dlu;default)"),
 				FormSpecs.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("210px:grow"),},
 			new RowSpec[] {
@@ -125,12 +125,17 @@ public class FrmAbout extends JDialog {
 		lblHttpsgithubcombecastyouploader.setFont(new Font("Arial", Font.PLAIN, 13));
 		contentPanel.add(lblHttpsgithubcombecastyouploader, "3, 10");
 		
-		JScrollPane scrollPane = new JScrollPane();
-		contentPanel.add(scrollPane, "1, 18, 3, 1, fill, fill");
+		JLabel lblCredits = new JLabel("Credits:");
+		contentPanel.add(lblCredits, "1, 14");
 		
-		JTextPane textPane = new JTextPane();
-		textPane.setEditable(false);
-		scrollPane.setViewportView(textPane);
+		JScrollPane scrollPane = new JScrollPane();
+		contentPanel.add(scrollPane, "1, 16, 3, 3, fill, fill");
+		
+		JTextPane txtCredits = new JTextPane();
+		txtCredits.setText("Thanks to everyone who contributed!\r\n\r\nGerman Translation\r\nMeduax - https://github.com/Meduax - https://www.youtube.com/user/Meduax\r\n\r\nTesting:\r\nWePlaydThis\r\n@WePlaydThis\r\nhttps://www.youtube.com/user/WePlaydThis\r\n\r\nTheJessaChannel\r\n@TheJessaChannel\r\nhttps://www.youtube.com/user/TheJessaChannel\r\n\r\nThe kind people of /r/letsplay\r\n");
+		txtCredits.setCaretPosition(0);
+		txtCredits.setEditable(false);
+		scrollPane.setViewportView(txtCredits);
 		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
