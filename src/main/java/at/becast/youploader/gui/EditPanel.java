@@ -46,6 +46,7 @@ import com.jgoodies.forms.layout.RowSpec;
 import at.becast.youploader.templates.Item;
 import at.becast.youploader.templates.Template;
 import at.becast.youploader.templates.TemplateManager;
+import at.becast.youploader.util.AutocompleteComboBox;
 import at.becast.youploader.util.NativeJFileChooser;
 import at.becast.youploader.util.UTF8ResourceBundle;
 import at.becast.youploader.youtube.LicenseType;
@@ -84,7 +85,6 @@ public class EditPanel extends javax.swing.JPanel {
 	private JComboBox<LicenseType> cmbLicense;
 	private TemplateManager TemplateMgr = TemplateManager.getInstance();
 	private JTextField txtThumbnail;
-	private JTextField txtGameTitle;
 	private DateTimePicker dateTimePickerStart;
 	private JCheckBox chckbxAllowEmbedding;
 	private JCheckBox chckbxMakeStatisticsPublic;
@@ -94,6 +94,7 @@ public class EditPanel extends javax.swing.JPanel {
 	private JCheckBox chckbxFacebook;
 	private JCheckBox chckbxAllowComments;
 	private JCheckBox chckbxAgeRestriction;
+	private AutocompleteComboBox cmbGameTitle;
 	
 
 	/**
@@ -326,11 +327,9 @@ public class EditPanel extends javax.swing.JPanel {
 		lblGameTitle.setEnabled(false);
 		add(lblGameTitle, "2, 18, right, default");
 		
-		txtGameTitle = new JTextField();
-		txtGameTitle.setEnabled(false);
-		add(txtGameTitle, "4, 18, 5, 1, fill, fill");
-		txtGameTitle.setColumns(10);
-		
+		cmbGameTitle = new AutocompleteComboBox();
+		add(cmbGameTitle, "4, 18, 5, 1, fill, fill");
+				
 		JLabel lblAdditionalSettings = new JLabel(LANG.getString("EditPanel.OtherSettings")+":");
 		add(lblAdditionalSettings, "2, 20, right, default");
 		
@@ -512,9 +511,6 @@ public class EditPanel extends javax.swing.JPanel {
 	public JComboBox<LicenseType> getCmbLicense() {
 		return cmbLicense;
 	}
-	public JTextField getTxtGameTitle() {
-		return txtGameTitle;
-	}
 	public JTextField getTxtThumbnail() {
 		return txtThumbnail;
 	}
@@ -544,5 +540,8 @@ public class EditPanel extends javax.swing.JPanel {
 	}
 	public JCheckBox getChckbxAgeRestriction() {
 		return chckbxAgeRestriction;
+	}
+	public AutocompleteComboBox getCmbGameTitle() {
+		return cmbGameTitle;
 	}
 }

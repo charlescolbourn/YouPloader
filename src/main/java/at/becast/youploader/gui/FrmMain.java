@@ -1189,9 +1189,9 @@ public class FrmMain extends JFrame implements IMainMenu {
 	
 	protected void changeCategory() {
 		EditPanel edit = (EditPanel) ss1.contentPane;
-		edit.getTxtGameTitle().setEnabled(false);
+		edit.getCmbGameTitle().setEnabled(false);
 		if (cmbCategory.getSelectedItem() == Categories.GAMES) {
-			edit.getTxtGameTitle().setEnabled(false); //Disabled until I can figure out how Youtube does it.
+			edit.getCmbGameTitle().setEnabled(false); //Disabled until further Test
 		}
 	}
 	

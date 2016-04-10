@@ -124,6 +124,20 @@ public class Account {
 			return -1;
 		}
 	}
+	
+	public void updateCookie(int id) throws IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		LOG.info("Updating account");
+	  	try {
+			PreparedStatement stmt = c.prepareStatement("UPDATE `accounts` SET `cookie`=? WHERE `id`=?");
+			stmt.setString(1, mapper.writeValueAsString(this.cdata));
+			stmt.setInt(2, id);
+			stmt.execute();
+		    stmt.close();
+		} catch (SQLException e) {
+			LOG.error("Could not update account Ex:",e);
+		}
+	}
   
 	public static boolean exists(String name) {
 		Connection c = SQLite.getInstance();

@@ -38,7 +38,7 @@ public class MetadataUpdater {
 	private Upload upload;
 	private Account acc;
 	private static final Logger LOG = LoggerFactory.getLogger(MetadataUpdater.class);
-	
+	private CookieJar persistentCookieStore = new CookieJar();
 	public MetadataUpdater(int acc_id, Upload upload) {
 		this.upload = upload;
 		try {
@@ -46,7 +46,6 @@ public class MetadataUpdater {
 		} catch (IOException e) {
 			LOG.error("Unable to read Account ", e);
 		}
-	    CookieJar persistentCookieStore = new CookieJar();
 	    CookieManager cmrCookieMan = new CookieManager(persistentCookieStore, null);
 		persistentCookieStore.setSerializeableCookies(this.acc.getCookie());
 		CookieHandler.setDefault(cmrCookieMan);
@@ -74,7 +73,10 @@ public class MetadataUpdater {
 		}
 		in.close();
 		LOG.debug(response.toString());
-		
+		if(responseCode < 400){
+			acc.setCookie(persistentCookieStore.getSerializeableCookies());
+			acc.updateCookie(this.acc.id);
+		}
 		updateAsBrowser(response.toString());
 		
 	}
