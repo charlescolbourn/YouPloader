@@ -24,6 +24,7 @@ import at.becast.youploader.youtube.io.UploadStream;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,11 +49,12 @@ public class Uploader {
 		Map<String, String> headers = new HashMap<>();
 		headers.put("Authorization", this.oAuth2.getHeader());
 		headers.put("Content-Type", "application/json; charset=UTF-8");
+		headers.put("Slug", URLEncoder.encode(file.getName(),"UTF-8"));
 		headers.put("X-Upload-Content-Length", String.valueOf(file.length()));
 		headers.put("X-Upload-Content-Type", "video/*");
 
 		String[] result = http.post(
-				"https://www.googleapis.com//upload/youtube/v3/videos?uploadType=resumable&part=snippet,status",
+				"https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status",
 				headers, new ObjectMapper().writeValueAsString(video));
 		Upload url = new Upload(result[0], file, result[1], video);
 
