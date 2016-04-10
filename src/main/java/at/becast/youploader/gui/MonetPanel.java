@@ -63,7 +63,7 @@ public class MonetPanel extends javax.swing.JPanel {
     			FormSpecs.RELATED_GAP_COLSPEC,
     			ColumnSpec.decode("max(80dlu;default)"),
     			FormSpecs.RELATED_GAP_COLSPEC,
-    			ColumnSpec.decode("80dlu"),
+    			ColumnSpec.decode("80dlu:grow"),
     			FormSpecs.RELATED_GAP_COLSPEC,
     			FormSpecs.DEFAULT_COLSPEC,
     			FormSpecs.RELATED_GAP_COLSPEC,
