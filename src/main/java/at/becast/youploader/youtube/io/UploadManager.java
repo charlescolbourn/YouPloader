@@ -44,6 +44,7 @@ public class UploadManager {
 	private static final Logger LOG = LoggerFactory.getLogger(UploadManager.class);
 	public static enum Status{NOT_STARTED,PREPARED,STOPPED,UPLOADING,FINISHED,ABORTED,FAILED};
 	private FrmMain parent;
+	private boolean uploading = false;
 	private LinkedList<UploadWorker> _ToUpload = new LinkedList<UploadWorker>();
 	private LinkedList<UploadWorker> _Uploading = new LinkedList<UploadWorker>();
 	private int speed_limit = 0;
@@ -98,19 +99,16 @@ public class UploadManager {
 	
 	public void start(){
 		LOG.info("Starting uploads");
-		if(!_ToUpload.isEmpty()){
-			for(int i=0;i<=upload_limit-_Uploading.size();i++){
-					UploadWorker w = _ToUpload.removeFirst();
-					w.start();
-					LOG.info("Upload {} started",w.videodata.snippet.title);
-					_Uploading.add(w);
-			}
+		if(!_ToUpload.isEmpty() && !uploading){
+			uploading = true;
+			startNextUpload();
 		}
 	}
 	
 	public void stop(){
 		LOG.info("Stopping uploads");
-		if(!_Uploading.isEmpty()){
+		if(!_Uploading.isEmpty() && uploading){
+			uploading = false;
 			for(int i=0;i<_Uploading.size();i++){
 				UploadWorker w = _Uploading.get(i);
 				w.abort();
@@ -127,6 +125,9 @@ public class UploadManager {
 	}
 	
 	public void setUploadlimit(int limit){
+		if(this.upload_limit<limit){
+			startNextUpload();
+		}
 		this.upload_limit = limit;
 	}
 
@@ -160,6 +161,7 @@ public class UploadManager {
 					}
 					w.frame.getProgressBar().setString(String.format("Finished"));
 					_Uploading.remove(i);
+					startNextUpload();
 				}
 			}
 		}
@@ -173,6 +175,7 @@ public class UploadManager {
 					w.abort();
 					_Uploading.remove(i);
 					w.delete();
+					startNextUpload();
 				}
 			}
 		}
@@ -195,6 +198,19 @@ public class UploadManager {
 			this.parent.editUpload(upload_id);
 		} catch (SQLException | IOException e) {
 			LOG.error("Could not edit upload", e);
+		}
+	}
+	
+	public void startNextUpload(){
+		if(!_ToUpload.isEmpty()){
+			for(int i=0;i<=upload_limit-_Uploading.size();i++){
+				UploadWorker w = _ToUpload.removeFirst();
+				w.start();
+				LOG.info("Upload {} started",w.videodata.snippet.title);
+				_Uploading.add(w);
+			}
+		}else{
+			uploading = false;
 		}
 	}
 
@@ -314,6 +330,7 @@ public class UploadManager {
 				UploadWorker o = _Uploading.get(i);
 				_Uploading.remove(i);
 				o.delete();
+				startNextUpload();
 			}
 		}		
 	}

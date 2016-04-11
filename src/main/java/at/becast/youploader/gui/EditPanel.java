@@ -116,11 +116,11 @@ public class EditPanel extends javax.swing.JPanel {
 		});
 		setLayout(new FormLayout(new ColumnSpec[] {
 				FormSpecs.RELATED_GAP_COLSPEC,
-				ColumnSpec.decode("79px"),
+				ColumnSpec.decode("110px"),
 				FormSpecs.LABEL_COMPONENT_GAP_COLSPEC,
 				ColumnSpec.decode("center:max(51dlu;default):grow"),
 				FormSpecs.LABEL_COMPONENT_GAP_COLSPEC,
-				ColumnSpec.decode("center:max(10dlu;pref):grow"),
+				ColumnSpec.decode("center:max(28dlu;pref):grow"),
 				FormSpecs.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("center:max(10dlu;pref):grow"),
 				FormSpecs.LABEL_COMPONENT_GAP_COLSPEC,
@@ -334,9 +334,11 @@ public class EditPanel extends javax.swing.JPanel {
 		add(lblAdditionalSettings, "2, 20, right, default");
 		
 		chckbxAllowEmbedding = new JCheckBox(LANG.getString("EditPanel.embedding"));
+		chckbxAllowEmbedding.setToolTipText(LANG.getString("EditPanel.embedding"));
 		add(chckbxAllowEmbedding, "4, 20, 3, 1");
 		
 		chckbxAgeRestriction = new JCheckBox(LANG.getString("EditPanel.AgeRestriction"));
+		chckbxAgeRestriction.setToolTipText(LANG.getString("EditPanel.AgeRestriction"));
 		chckbxAgeRestriction.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				if(chckbxAgeRestriction.isSelected()){
@@ -349,10 +351,12 @@ public class EditPanel extends javax.swing.JPanel {
 		add(chckbxAgeRestriction, "8, 20, 3, 1, left, default");
 		
 		chckbxMakeStatisticsPublic = new JCheckBox(LANG.getString("EditPanel.Statistics"));
+		chckbxMakeStatisticsPublic.setToolTipText(LANG.getString("EditPanel.Statistics"));
 		chckbxMakeStatisticsPublic.setVerticalAlignment(SwingConstants.TOP);
-		add(chckbxMakeStatisticsPublic, "4, 22, 3, 1, left, default");
+		add(chckbxMakeStatisticsPublic, "4, 22, 3, 1, fill, default");
 		
 		chckbxAllowComments = new JCheckBox(LANG.getString("EditPanel.AllowComments"));
+		chckbxAllowComments.setToolTipText(LANG.getString("EditPanel.AllowComments"));
 		chckbxAllowComments.setSelected(true);
 		add(chckbxAllowComments, "8, 22, 3, 1, left, default");
 		
@@ -370,17 +374,17 @@ public class EditPanel extends javax.swing.JPanel {
 		chckbxGoogle = new JCheckBox("Google+");
 		chckbxGoogle.setSelected(true);
 		chckbxGoogle.setEnabled(false);
-		add(chckbxGoogle, "2, 26, left, default");
+		add(chckbxGoogle, "2, 26, fill, default");
 		
 		chckbxTwitter = new JCheckBox("Twitter");
 		chckbxTwitter.setSelected(true);
 		chckbxTwitter.setEnabled(false);
-		add(chckbxTwitter, "2, 28, left, default");
+		add(chckbxTwitter, "2, 28, fill, default");
 		
 		chckbxFacebook = new JCheckBox("Facebook");
 		chckbxFacebook.setSelected(true);
 		chckbxFacebook.setEnabled(false);
-		add(chckbxFacebook, "2, 30, left, default");
+		add(chckbxFacebook, "2, 30, fill, default");
 		
 		cmbVisibility.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent arg0) {

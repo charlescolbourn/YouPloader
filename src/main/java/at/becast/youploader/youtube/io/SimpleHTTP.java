@@ -4,12 +4,14 @@ import org.apache.http.Header;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -155,6 +157,15 @@ public class SimpleHTTP {
     	return false;
     }
 
+  }
+  
+  public String get(String url) throws IOException {
+	HttpGet request = new HttpGet(url);
+    response = this.chc.execute(request);
+
+    String responseBody = EntityUtils.toString(response.getEntity());
+    response.close();
+    return responseBody;
   }
   
   public void setAborted(boolean aborted) {

@@ -1,11 +1,11 @@
 package at.becast.youploader.util;
 
+import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
+import at.becast.youploader.youtube.io.SimpleHTTP;
 
 
 public class GetVersion {
@@ -17,9 +17,9 @@ public class GetVersion {
 	
 	public static String get(){
 		try {
-			HttpResponse<String> response = Unirest.get("https://raw.githubusercontent.com/becast/YouPloader/master/version?"+System.currentTimeMillis()).asString();
-			return response.getBody();
-		} catch (UnirestException e) {
+			SimpleHTTP http = new SimpleHTTP();
+			return http.get("https://raw.githubusercontent.com/becast/YouPloader/master/version?"+System.currentTimeMillis());
+		} catch (IOException e) {
 			LOG.error("Could not get version! ",e);
 			return "0.0";
 		}
