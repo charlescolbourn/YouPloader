@@ -3,6 +3,8 @@ package at.becast.youploader.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import at.becast.youploader.gui.FrmMain;
+
 public class TagUtil {
 	private static final Logger LOG = LoggerFactory.getLogger(TagUtil.class);
 	public static String prepareTagsfromArray(String[] in) {
@@ -27,7 +29,9 @@ public class TagUtil {
 	}
 
 	public static int calculateTagLenght(String text) {
-		LOG.info("Calculating lenght for Tags. Text lenght: {}",text.length());
+		if(FrmMain.debug)
+			LOG.debug("Calculating lenght for Tags. Text lenght: {}",text.length());
+		
 		String[] tags = trimTags(text);
 		int lenght = 0;
 		for(int i=0;i<tags.length;i++){
@@ -37,7 +41,9 @@ public class TagUtil {
 				lenght += tags[0].length();
 			}
 		}
-		LOG.info("Tags lenght: {}",lenght);
+		if(FrmMain.debug)
+			LOG.debug("Tags lenght: {}",lenght);
+		
 		return lenght;
 	}
 }

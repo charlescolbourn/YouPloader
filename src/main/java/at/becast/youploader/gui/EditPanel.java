@@ -406,12 +406,16 @@ public class EditPanel extends javax.swing.JPanel {
 		if(cmbTemplate.getSelectedItem() != null){
 			String temp = cmbTemplate.getSelectedItem().toString();
 			if ("comboBoxEdited".equals(e.getActionCommand())) {
-				LOG.debug("AddTemplate " + temp);
+				if(FrmMain.debug)
+					LOG.debug("AddTemplate " + temp);
+				
 				cmbTemplate.setEditable(false);
 				parent.createTemplate(temp);
 				this.adding = false;
 			}else if("comboBoxChanged".equals(e.getActionCommand()) && !this.adding){
-				LOG.debug("Load Template " + temp);
+				if(FrmMain.debug)
+					LOG.debug("Load Template " + temp);
+				
 				Item t = (Item) cmbTemplate.getSelectedItem();
 				parent.loadTemplate(t);
 			}
@@ -431,13 +435,17 @@ public class EditPanel extends javax.swing.JPanel {
 	}
 	
 	protected void saveTemplate() {
-		LOG.debug("Saving Template " + cmbTemplate.getSelectedItem());
+		if(FrmMain.debug)
+			LOG.debug("Saving Template " + cmbTemplate.getSelectedItem());
+		
 		Item t = (Item) cmbTemplate.getSelectedItem();
 		parent.saveTemplate(t.getId());
 	}
 	
 	protected void deleteTemplate() {
-		LOG.debug("Deleting Template" + cmbTemplate.getSelectedItem());
+		if(FrmMain.debug)
+			LOG.debug("Deleting Template" + cmbTemplate.getSelectedItem());
+		
 		Item t = (Item) cmbTemplate.getSelectedItem();
 		parent.deleteTemplate(t.getId());
 	}

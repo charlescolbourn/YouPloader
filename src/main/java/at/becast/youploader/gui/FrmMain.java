@@ -157,6 +157,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 	private SidebarSection ss1, ss2, ss3;
 	public transient static HashMap<Integer, JMenuItem> _accounts = new HashMap<Integer, JMenuItem>();
 	private int editItem = -1;
+	public static boolean debug = false;
 
 	/**
 	 * @param args
@@ -167,6 +168,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 			LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 			// print logback's internal status
 			StatusPrinter.print(lc);
+			debug = true;
 		}
 
 		try {
@@ -279,7 +281,9 @@ public class FrmMain extends JFrame implements IMainMenu {
 	 * 
 	 */
 	public void initComponents() {
-		LOG.debug("init Components", FrmMain.class);
+		if(debug)
+			LOG.debug("init Components", FrmMain.class);
+
 		int left = Integer.parseInt(s.get("left","0"));
 		int top = Integer.parseInt(s.get("top","0"));
 		int width = Integer.parseInt(s.get("width",DEFAULT_WIDTH));
@@ -680,7 +684,9 @@ public class FrmMain extends JFrame implements IMainMenu {
 	protected void startUploads() {
 		if ("0".equals(s.setting.get("tos_agreed")) && !this.tos) {
 			//Dummy JFrame to keep Dialog on top
-			LOG.info("Asking about ToS Agreement");
+			if(debug)
+				LOG.debug("Asking about ToS Agreement");
+			
 			JFrame frmOpt = new JFrame();
 		    frmOpt.setAlwaysOnTop(true);
 			JCheckBox checkbox = new JCheckBox(LANG.getString("frmMain.tos.Remember"));
@@ -692,7 +698,9 @@ public class FrmMain extends JFrame implements IMainMenu {
 						JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
 			} while (n == JOptionPane.CLOSED_OPTION);
 			if (n == JOptionPane.OK_OPTION) {
-				LOG.info("Agreed to ToS");
+				if(debug)
+					LOG.debug("Agreed to ToS");
+				
 				if (checkbox.isSelected()) {
 					s.setting.put("tos_agreed", "1");
 					s.save("tos_agreed");
@@ -702,7 +710,9 @@ public class FrmMain extends JFrame implements IMainMenu {
 			}
 			frmOpt.dispose();
 		} else {
-			LOG.info("Previously agreed to ToS");
+			if(debug)
+				LOG.debug("Previously agreed to ToS");
+			
 			UploadMgr.start();
 		}
 	}
@@ -1113,16 +1123,17 @@ public class FrmMain extends JFrame implements IMainMenu {
 	private void calcNotifies() {
 		// Special handling for Tags
 		int taglength = TagUtil.calculateTagLenght(txtTags.getText());
+
 		if (taglength > 450) {
 			lblTagslenght.setForeground(Color.RED);
 		} else {
 			lblTagslenght.setForeground(Color.BLACK);
 		}
 		if (taglength >= 501) {
-			txtTags.setText(txtTags.getText().substring(0, 500));
-
+			//txtTags.setText(txtTags.getText().substring(0, 500));
+			
 		}
-		lblTagslenght.setText("(" + txtTags.getText().length() + "/500)");
+		lblTagslenght.setText("(" + taglength + "/500)");
 
 		if (txtDescription.getText().length() > 4900) {
 			lblDesclenght.setForeground(Color.RED);
