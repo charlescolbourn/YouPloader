@@ -293,9 +293,9 @@ public class FrmMain extends JFrame implements IMainMenu {
 		cmbCategory = new JComboBox<Categories>();
 		cmbCategory.setModel(new DefaultComboBoxModel<Categories>(Categories.values()));
 		SideBar sideBar = new SideBar(SideBar.SideBarMode.TOP_LEVEL, true, 300, true);
-		ss1 = new SidebarSection(sideBar, LANG.getString("frmMain.Sidebar.Settings"), new EditPanel(this), null);
-		ss2 = new SidebarSection(sideBar, LANG.getString("frmMain.Sidebar.Playlists"), new PlaylistPanel(this), null);
-		ss3 = new SidebarSection(sideBar, LANG.getString("frmMain.Sidebar.Monetisation"), new MonetPanel(), null);
+		ss1 = new SidebarSection(sideBar, LANG.getString("frmMain.Sidebar.Settings"), new EditPanel(this), new ImageIcon(getClass().getResource("/pencil.png")));
+		ss2 = new SidebarSection(sideBar, LANG.getString("frmMain.Sidebar.Playlists"), new PlaylistPanel(this), new ImageIcon(getClass().getResource("/layers.png")));
+		ss3 = new SidebarSection(sideBar, LANG.getString("frmMain.Sidebar.Monetisation"), new MonetPanel(), new ImageIcon(getClass().getResource("/money.png")));
 		sideBar.addSection(ss1, false);
 		sideBar.addSection(ss2);
 		sideBar.addSection(ss3);
