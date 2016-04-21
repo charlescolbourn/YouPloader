@@ -20,13 +20,9 @@ import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
 import com.jgoodies.forms.layout.FormSpecs;
 import javax.swing.JScrollPane;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.GridLayout;
-import java.awt.Toolkit;
-
 import javax.swing.JCheckBox;
-import javax.swing.SwingConstants;
 
 public class PlaylistPanel extends JPanel {
 
@@ -55,22 +51,13 @@ public class PlaylistPanel extends JPanel {
 		
 		JPanel panel = new JPanel();
 		scrollPane.setViewportView(panel);
-		panel.setLayout(new GridLayout(0, 2, 0, 0));
+		panel.setLayout(new GridLayout(0, 1, 0, 0));
 		
-		JCheckBox chckbxNewCheckBox = new JCheckBox("dsds");
-		chckbxNewCheckBox.setVerticalAlignment(SwingConstants.TOP);
-		chckbxNewCheckBox.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/yp.png"))));
+		JCheckBox chckbxNewCheckBox = new JCheckBox("New check box");
 		panel.add(chckbxNewCheckBox);
 		
-		JCheckBox chckbxNewCheckBox1 = new JCheckBox("dsds");
-		chckbxNewCheckBox1.setVerticalAlignment(SwingConstants.TOP);
-		chckbxNewCheckBox1.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/yp.png"))));
-		panel.add(chckbxNewCheckBox1);
-		
-		JCheckBox chckbxNewCheckBox2 = new JCheckBox("dsds");
-		chckbxNewCheckBox2.setVerticalAlignment(SwingConstants.TOP);
-		chckbxNewCheckBox2.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/yp.png"))));
-		panel.add(chckbxNewCheckBox2);
+		JCheckBox chckbxNewCheckBox_1 = new JCheckBox("New check box");
+		panel.add(chckbxNewCheckBox_1);
 		
 		JButton btnAddPlaylist = new JButton("Add Playlist");
 		add(btnAddPlaylist, "4, 4");
