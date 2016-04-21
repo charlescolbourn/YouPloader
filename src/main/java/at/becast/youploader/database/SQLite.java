@@ -89,6 +89,8 @@ public class SQLite {
 			prest.executeUpdate();
 			prest = c.prepareStatement("CREATE TABLE `uploads` (`id` INTEGER PRIMARY KEY  NOT NULL ,`file` VARCHAR,`account` INTEGER DEFAULT (null),`yt_id` VARCHAR, `enddir` VARCHAR ,`url` VARCHAR,`uploaded` INTEGER DEFAULT (null) ,`lenght` INTEGER DEFAULT (null) ,`data` VARCHAR,`metadata` VARCHAR, `status` VARCHAR)");
 			prest.executeUpdate();
+			prest = c.prepareStatement("CREATE TABLE `playlists` (`id` INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL , `name` VARCHAR, `playlistid` VARCHAR, `image` BLOB)");
+			prest.executeUpdate();
 			setVersion(FrmMain.getDBVersion());
 		} catch (SQLException e) {
 			LOG.error("Error creating Database",e);
@@ -337,6 +339,9 @@ public class SQLite {
 					prest = c.prepareStatement("INSERT INTO `settings` VALUES('left','0')");
 					prest.executeUpdate();
 					prest = c.prepareStatement("INSERT INTO `settings` VALUES('top','0')");
+					prest.executeUpdate();
+				case 5:
+					prest = c.prepareStatement("CREATE TABLE `playlists` (`id` INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL , `name` VARCHAR, `playlistid` VARCHAR, `image` BLOB)");
 					prest.executeUpdate();
 				default:
 					setVersion(FrmMain.getDBVersion());

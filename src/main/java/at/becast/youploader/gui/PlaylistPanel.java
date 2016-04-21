@@ -18,28 +18,52 @@ import javax.swing.JPanel;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
+
+import at.becast.youploader.account.AccountManager;
+import at.becast.youploader.account.AccountType;
+import at.becast.youploader.util.UTF8ResourceBundle;
+import at.becast.youploader.youtube.playlists.PlaylistData;
+
 import com.jgoodies.forms.layout.FormSpecs;
 import javax.swing.JScrollPane;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.swing.JButton;
 import java.awt.GridLayout;
-import javax.swing.JCheckBox;
+import java.awt.event.ActionListener;
+import java.util.Locale;
+import java.util.ResourceBundle;
+import java.awt.event.ActionEvent;
 
 public class PlaylistPanel extends JPanel {
 
-	/**
-	 * 
-	 */
+	//private static final Logger LOG = LoggerFactory.getLogger(PlaylistPanel.class);
+	//private static final ResourceBundle LANG = UTF8ResourceBundle.getBundle("lang", Locale.getDefault());
 	private static final long serialVersionUID = -870661666925769377L;
-
+	private FrmMain parent;
+	private AccountManager AccMgr = AccountManager.getInstance();
 	/**
 	 * Create the panel.
 	 */
-	public PlaylistPanel() {
+	public PlaylistPanel(FrmMain parent) {
+		this.parent = parent;
+		initComponents();
+	}
+	
+	protected void refreshPlaylists() {
+		AccountType acc = (AccountType) parent.getCmbAccount().getSelectedItem();
+		PlaylistData pl = new PlaylistData(this.AccMgr.getAuth(acc.getValue()));
+		pl.get();		
+	}
+
+	private void initComponents(){
 		setLayout(new FormLayout(new ColumnSpec[] {
 				FormSpecs.RELATED_GAP_COLSPEC,
-				ColumnSpec.decode("max(212dlu;default):grow"),
+				ColumnSpec.decode("max(122dlu;default):grow"),
 				FormSpecs.RELATED_GAP_COLSPEC,
-				ColumnSpec.decode("right:default:grow"),},
+				ColumnSpec.decode("right:max(70dlu;default)"),},
 			new RowSpec[] {
 				FormSpecs.RELATED_GAP_ROWSPEC,
 				RowSpec.decode("default:grow"),
@@ -53,18 +77,22 @@ public class PlaylistPanel extends JPanel {
 		scrollPane.setViewportView(panel);
 		panel.setLayout(new GridLayout(0, 1, 0, 0));
 		
-		JCheckBox chckbxNewCheckBox = new JCheckBox("New check box");
-		panel.add(chckbxNewCheckBox);
+		PlaylistItem i = new PlaylistItem("1", "Test 1", "");
+		panel.add(i);
 		
-		JCheckBox chckbxNewCheckBox_1 = new JCheckBox("New check box");
-		panel.add(chckbxNewCheckBox_1);
+		PlaylistItem i1 = new PlaylistItem("2", "Test 2", "");
+		panel.add(i1);
+		
+		JButton btnGetPlaylists = new JButton("Get Playlists");
+		btnGetPlaylists.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				refreshPlaylists();
+			}
+		});
+		add(btnGetPlaylists, "2, 4");
 		
 		JButton btnAddPlaylist = new JButton("Add Playlist");
 		add(btnAddPlaylist, "4, 4");
-		initComponents();
-	}
-	
-	private void initComponents(){
 	}
 
 }

@@ -63,6 +63,7 @@ public class SimpleHTTP {
     response.close();
     return location;
   }
+  
 
   public void put(String url, Map<String, String> headers, InputStream stream, UploadEvent callback) throws IOException {
     this.put = new HttpPut(url);
@@ -158,6 +159,19 @@ public class SimpleHTTP {
     }
 
   }
+  
+  public String get(String url, Map<String, String> headers) throws IOException {
+	    HttpGet get = new HttpGet(url);
+
+	    for (String key : headers.keySet()) {
+	    	get.setHeader(key, headers.get(key));
+	    }
+	    response = this.chc.execute(get);
+	    String responseBody = EntityUtils.toString(response.getEntity());
+	
+	    response.close();
+	    return responseBody;
+}
   
   public String get(String url) throws IOException {
 	HttpGet request = new HttpGet(url);

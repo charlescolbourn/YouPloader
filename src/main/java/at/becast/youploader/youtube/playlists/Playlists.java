@@ -8,14 +8,27 @@ public class Playlists {
 	public String prevPageToken;
 	public String etag;
 	public PageInfo pageInfo;
-	public ArrayList<Items> items = new ArrayList<Items>();
+	public ArrayList<Item> items = new ArrayList<Item>();
 	
 	public class PageInfo{
-		int totalResults;
-		int resultsPerPage;
+		public int totalResults;
+		public int resultsPerPage;
 	}
 	
-	public class Items{
+	public class Item{
+		public String kind;
+		public String etag;
+		public String id;
+		public Snippet snippet;
+		
+		public class Snippet{
+			public String publishedAt;
+			public String channelId;
+			public String title;
+			public String description;
+			public String channelTitle;
+			
+		}
 		/*
    "kind": "youtube#playlist",
    "etag": "\"CuSCwMPVmgi8taDtE2LV6HdgkN0/IGbxGrjhFPxxsPFLNA4o03YVde0\"",

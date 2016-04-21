@@ -294,7 +294,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		cmbCategory.setModel(new DefaultComboBoxModel<Categories>(Categories.values()));
 		SideBar sideBar = new SideBar(SideBar.SideBarMode.TOP_LEVEL, true, 300, true);
 		ss1 = new SidebarSection(sideBar, LANG.getString("frmMain.Sidebar.Settings"), new EditPanel(this), null);
-		ss2 = new SidebarSection(sideBar, LANG.getString("frmMain.Sidebar.Playlists"), new PlaylistPanel(), null);
+		ss2 = new SidebarSection(sideBar, LANG.getString("frmMain.Sidebar.Playlists"), new PlaylistPanel(this), null);
 		ss3 = new SidebarSection(sideBar, LANG.getString("frmMain.Sidebar.Monetisation"), new MonetPanel(), null);
 		sideBar.addSection(ss1, false);
 		sideBar.addSection(ss2);
@@ -420,7 +420,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		JLabel lblAccount = new JLabel(LANG.getString("frmMain.Account"));
 		panel.add(lblAccount, "3, 18, 4, 1, left, bottom");
 		cmbAccount = new JComboBox<AccountType>();
-		panel.add(cmbAccount, "3, 19, 14, 1, fill, fill");
+		panel.add(getCmbAccount(), "3, 19, 14, 1, fill, fill");
 
 		btnAddToQueue = new JButton(LANG.getString("frmMain.addtoQueue"));
 		btnAddToQueue.setEnabled(false);
@@ -745,7 +745,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 			mnuAcc.remove(_accounts.get(i));
 			_accounts.remove(i);
 		}
-		cmbAccount.removeAllItems();
+		getCmbAccount().removeAllItems();
 		btnAddToQueue.setEnabled(false);
 		loadAccounts();
 	}
@@ -754,11 +754,11 @@ public class FrmMain extends JFrame implements IMainMenu {
 		int i = 0;
 		HashMap<AccountType, Integer> accounts = accMng.load();
 		for (Entry<AccountType, Integer> entry : accounts.entrySet()) {
-			cmbAccount.addItem(entry.getKey());
+			getCmbAccount().addItem(entry.getKey());
 			JMenuItem rdoBtn = new JMenuItem(entry.getKey().toString());
 			if (entry.getValue() == 1) {
 				rdoBtn.setSelected(true);
-				cmbAccount.setSelectedItem(entry.getKey());
+				getCmbAccount().setSelectedItem(entry.getKey());
 			}
 			rdoBtn.setActionCommand(entry.getKey().toString());
 			rdoBtn.addActionListener(new ActionListener() {
@@ -962,13 +962,13 @@ public class FrmMain extends JFrame implements IMainMenu {
 		if (this.editItem != -1) {
 			btnAddToQueue.setText(LANG.getString("frmMain.addtoQueue"));
 			cmbFile.removeAllItems();
-			cmbAccount.setEnabled(true);
+			getCmbAccount().setEnabled(true);
 			this.editItem = -1;
 		}
 	}
 	
 	private void queueButton() {
-		AccountType acc = (AccountType) cmbAccount.getSelectedItem();
+		AccountType acc = (AccountType) getCmbAccount().getSelectedItem();
 		if (this.editItem != -1) {
 			try {
 				update(cmbFile.getSelectedItem().toString(), acc.getValue(), this.editItem);
@@ -977,7 +977,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 			}
 			cmbFile.removeAllItems();
 			btnAddToQueue.setText(LANG.getString("frmMain.addtoQueue"));
-			cmbAccount.setEnabled(true);
+			getCmbAccount().setEnabled(true);
 			this.editItem = -1;
 		} else {
 			if (cmbFile.getSelectedItem() != null && !cmbFile.getSelectedItem().toString().equals("")) {
@@ -1023,8 +1023,8 @@ public class FrmMain extends JFrame implements IMainMenu {
 				cmbFile.addItem(rs.getString("file"));
 				this.setCategory(v.snippet.categoryId);
 				txtTitle.setText(v.snippet.title);
-				cmbAccount.setSelectedItem(metadata.getAccount());
-				cmbAccount.setEnabled(false);
+				getCmbAccount().setSelectedItem(metadata.getAccount());
+				getCmbAccount().setEnabled(false);
 				txtDescription.setText(v.snippet.description);
 				txtTags.setText(TagUtil.prepareTagsfromArray(v.snippet.tags));
 				edit.setLicence(v.status.license);
@@ -1302,5 +1302,9 @@ public class FrmMain extends JFrame implements IMainMenu {
 
 	public static int getDBVersion() {
 		return DB_VERSION;
+	}
+
+	public JComboBox<AccountType> getCmbAccount() {
+		return cmbAccount;
 	}
 }
