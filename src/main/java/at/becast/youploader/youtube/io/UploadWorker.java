@@ -98,6 +98,14 @@ public class UploadWorker extends Thread {
 		}
 	}
 	
+	public void setPlaylists(){
+		try {
+			this.uploader.setPlaylists(this.metadata.getPlaylists(), upload);
+		} catch (UploadException | IOException e) {
+			LOG.error("Could not set Playlists ",e);
+		}
+	}
+	
 	@Override
 	public void run(){
 		setName( "Uploader-" + getId() );

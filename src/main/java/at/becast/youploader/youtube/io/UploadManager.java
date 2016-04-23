@@ -25,6 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import at.becast.youploader.account.AccountManager;
 import at.becast.youploader.database.SQLite;
 import at.becast.youploader.gui.FrmMain;
+import at.becast.youploader.util.UTF8ResourceBundle;
 import at.becast.youploader.youtube.VisibilityType;
 import at.becast.youploader.youtube.data.Video;
 import at.becast.youploader.youtube.data.VideoMetadata;
@@ -48,6 +50,7 @@ public class UploadManager {
 	private LinkedList<UploadWorker> _ToUpload = new LinkedList<UploadWorker>();
 	private LinkedList<UploadWorker> _Uploading = new LinkedList<UploadWorker>();
 	private int speed_limit = 0;
+	private static final ResourceBundle LANG = UTF8ResourceBundle.getBundle("lang", Locale.getDefault());
 	
 	private UploadManager(){
 		
@@ -139,11 +142,16 @@ public class UploadManager {
 					LOG.info("Upload {} finished",w.videodata.snippet.title);
 					if(w.metadata.getThumbnail()!=null && !w.metadata.getThumbnail().trim().equals("")){
 						LOG.info("Uploading Thumbnail {}",w.metadata.getThumbnail());
-						w.frame.getProgressBar().setString(String.format("Uploading Thumbnail"));
+						w.frame.getProgressBar().setString(String.format(LANG.getString("Upload.UploadingThumbnail")));
 						w.uploadThumbnail();
 					}
+					if(!w.metadata.getPlaylists().isEmpty()){
+						LOG.info("Adding to Playlists");
+						w.frame.getProgressBar().setString(String.format(LANG.getString("Upload.AddingPlaylists")));
+						w.setPlaylists();
+					}
 					LOG.info("Updating Metadata");
-					w.frame.getProgressBar().setString(String.format("Updating Metadata"));
+					w.frame.getProgressBar().setString(String.format(LANG.getString("Upload.Metadata")));
 					MetadataUpdater u = new MetadataUpdater(w.acc_id,w.upload);
 					try {
 						u.updateMetadata();
@@ -152,14 +160,14 @@ public class UploadManager {
 					}
 					if(w.enddir !=null && !w.enddir.equals("")){
 						LOG.info("Moving file {}",w.file.getName());
-						w.frame.getProgressBar().setString(String.format("Moving File"));
+						w.frame.getProgressBar().setString(String.format(LANG.getString("Upload.MovingFile")));
 						try {
 							Files.move(w.file.toPath(), Paths.get(w.enddir.trim()).resolve(w.file.getName()));
 						} catch (IOException e) {
 							LOG.error("Could not move file {}",w.file.getName(), e);
 						}
 					}
-					w.frame.getProgressBar().setString(String.format("Finished"));
+					w.frame.getProgressBar().setString(String.format(LANG.getString("Upload.Finished")));
 					_Uploading.remove(i);
 					startNextUpload();
 				}
@@ -299,7 +307,7 @@ public class UploadManager {
 				if(o.retrys<5){
 					try {
 						for(int s = 10; s>0;s--){
-							o.frame.getProgressBar().setString(String.format("Error - Retrying in %s seconds", s));
+							o.frame.getProgressBar().setString(String.format(LANG.getString("Upload.Error"), s));
 							Thread.sleep(1000);
 						}
 					} catch (InterruptedException e) {
@@ -312,7 +320,7 @@ public class UploadManager {
 					_Uploading.set(i, worker);
 					worker.start();
 				}else{
-					o.frame.getProgressBar().setString("Failed - You can try restarting");
+					o.frame.getProgressBar().setString(LANG.getString("Upload.Failed"));
 					o.frame.getProgressBar().setValue(0);
 					LOG.info("Retried 5 times. Failing Upload {}",o.videodata.snippet.title);
 					_Uploading.remove(i);

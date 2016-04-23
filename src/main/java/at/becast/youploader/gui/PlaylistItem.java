@@ -14,6 +14,7 @@ public class PlaylistItem extends JPanel {
 	private int id;
 	private String YTId;
 	private static final long serialVersionUID = 5097223862797550174L;
+	private JCheckBox chkIsSelected;
 
 	/**
 	 * Create the panel.
@@ -29,8 +30,8 @@ public class PlaylistItem extends JPanel {
 				RowSpec.decode("fill:46px:grow"),
 				FormSpecs.LINE_GAP_ROWSPEC,}));
 		
-		JCheckBox chckbxNewCheckBox = new JCheckBox(name);
-		add(chckbxNewCheckBox, "1, 2, left, fill");
+		chkIsSelected = new JCheckBox(name);
+		add(chkIsSelected, "1, 2, left, fill");
 		
 		JLabel lblNewLabel = new JLabel("");
 		lblNewLabel.setIcon(Image);
@@ -50,4 +51,11 @@ public class PlaylistItem extends JPanel {
 		YTId = yTId;
 	}
 
+	public boolean isSelected() {
+		return chkIsSelected.isSelected();
+	}
+	
+	public void setSelected(boolean selected) {
+		chkIsSelected.setSelected(selected);
+	}
 }

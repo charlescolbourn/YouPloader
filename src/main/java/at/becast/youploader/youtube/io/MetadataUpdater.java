@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Joiner;
 import at.becast.youploader.account.Account;
 import at.becast.youploader.gui.FrmMain;
+import at.becast.youploader.youtube.VisibilityType;
 import at.becast.youploader.youtube.data.CookieJar;
 import at.becast.youploader.youtube.data.Upload;
 
@@ -90,7 +91,7 @@ public class MetadataUpdater {
 		mdata.put("video_monetization_style", this.upload.metadata.getMonetization());
 		mdata.put("ad_formats", this.upload.metadata.getAdFormats());
 		mdata.put("syndication", this.upload.metadata.getSyndication());
-		if(this.upload.metadata.getMessage() != null && !this.upload.metadata.getMessage().trim().equals("") && this.upload.video.status.publishAt != null && !this.upload.video.status.publishAt.equals("")){
+		if(this.upload.metadata.getMessage() != null && !this.upload.metadata.getMessage().trim().equals("") && ((this.upload.video.status.publishAt != null && !this.upload.video.status.publishAt.equals("")) || this.upload.video.status.privacyStatus.equals(VisibilityType.PUBLIC.getData()))){
 			mdata.put("creator_share_custom_message", URLEncoder.encode(this.upload.metadata.getMessage(),"UTF-8"));
 			mdata.put("creator_share_gplus", boolConvert(this.upload.metadata.isShare_gplus()));
 			mdata.put("creator_share_facebook", boolConvert(this.upload.metadata.isShare_gplus()));
@@ -136,7 +137,6 @@ public class MetadataUpdater {
 			response.append(inputLine);
 		}
 		in.close();
-		LOG.debug(response.toString());
 	}
 	
 	private String boolConvert(boolean value){

@@ -1233,7 +1233,9 @@ public class FrmMain extends JFrame implements IMainMenu {
 	public VideoMetadata createMetadata() {
 		VideoMetadata meta = new VideoMetadata();
 		EditPanel edit = (EditPanel) ss1.contentPane;
+		PlaylistPanel play = (PlaylistPanel) ss2.contentPane;
 		MonetPanel monet = (MonetPanel) ss3.contentPane;
+		meta.setPlaylists(play.getSelectedPlaylists());
 		meta.setMonetized(monet.getChckbxMonetize().isSelected());
 		SyndicationType syn = (SyndicationType) monet.getCmbContentSyndication().getSelectedItem();
 		meta.setSyndication(syn.getData());
@@ -1256,6 +1258,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 	
 	private void resetMetadata(VideoMetadata metadata) {
 		EditPanel edit = (EditPanel) ss1.contentPane;
+		PlaylistPanel play = (PlaylistPanel) ss2.contentPane;
 		MonetPanel monet = (MonetPanel) ss3.contentPane;		
 		for (int i = 0; i < monet.getCmbContentSyndication().getItemCount(); i++) {
 			if (monet.getCmbContentSyndication().getItemAt(i).getData().equals(metadata.getSyndication())) {
@@ -1268,6 +1271,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		monet.getChckbxOverlayads().setSelected(metadata.isOverlay());
 		monet.getChckbxSponsoredCards().setSelected(metadata.isProduct());
 		monet.getChckbxProductplacement().setSelected(metadata.getProductplacement());
+		play.setSelectedPlaylists(metadata.getPlaylists());
 		edit.getTxtMessage().setText(metadata.getMessage());
 		edit.getChckbxFacebook().setSelected(metadata.isShare_fb());
 		edit.getChckbxGoogle().setSelected(metadata.isShare_gplus());

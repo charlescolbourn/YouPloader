@@ -36,9 +36,9 @@ public class TagUtil {
 		int lenght = 0;
 		for(int i=0;i<tags.length;i++){
 			if(tags[i].contains(" ")){
-				lenght += tags[0].length()+2;
+				lenght += tags[i].length()+2;
 			} else {
-				lenght += tags[0].length();
+				lenght += tags[i].length();
 			}
 		}
 		if(FrmMain.debug)

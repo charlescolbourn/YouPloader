@@ -14,6 +14,8 @@
  */
 package at.becast.youploader.youtube.data;
 
+import java.util.ArrayList;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -36,6 +38,7 @@ public class VideoMetadata {
 	private boolean commentsEnabled;
 	private String message;
 	private String gametitle;
+	private ArrayList<String> playlists = new ArrayList<String>();
 	private boolean restricted;
 	private boolean monetized = false;
 	private UploadItem frame;
@@ -204,4 +207,19 @@ public class VideoMetadata {
 		this.account = account;
 	}
 
+	public ArrayList<String> getPlaylists() {
+		return playlists;
+	}
+
+	public void setPlaylists(ArrayList<String> playlists) {
+		this.playlists = playlists;
+	}
+	@JsonIgnore
+	public void addToPlaylists(String playlist) {
+		this.playlists.add(playlist);
+	}
+	@JsonIgnore
+	public void removeFromPlaylists(String playlist) {
+		this.playlists.remove(playlist);
+	}
 }

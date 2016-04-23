@@ -21,10 +21,12 @@ import at.becast.youploader.youtube.exceptions.UploadException;
 import at.becast.youploader.youtube.io.SimpleHTTP;
 import at.becast.youploader.youtube.io.UploadEvent;
 import at.becast.youploader.youtube.io.UploadStream;
+import at.becast.youploader.youtube.playlists.PlaylistItem;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -89,7 +91,18 @@ public class Uploader {
 		this.http.close();
 	}
 	
-
+	public void setPlaylists(ArrayList<String> playlists, Upload upload) throws IOException, UploadException {
+		
+		Map<String, String> headers = new HashMap<>();
+		headers.put("Authorization", this.oAuth2.getHeader());
+		headers.put("Content-Type", "application/json; charset=UTF-8");
+		for(String s : playlists){
+			this.http = new SimpleHTTP();
+			this.http.post("https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&fields=snippet", headers, new ObjectMapper().writeValueAsString(new PlaylistItem(s,upload.id)));
+			this.http.close();
+		}
+	}
+	
 	public void abort() {
 		try {
 			this.http.setAborted(true);

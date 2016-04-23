@@ -27,8 +27,11 @@ import com.jgoodies.forms.layout.FormSpecs;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.JButton;
+
+import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 
 public class PlaylistPanel extends JPanel {
@@ -38,7 +41,7 @@ public class PlaylistPanel extends JPanel {
 	private static final long serialVersionUID = -870661666925769377L;
 	private FrmMain parent;
 	private PlaylistManager pl;
-	private JPanel panel = new JPanel();
+	private JPanel playlistPanel = new JPanel();
 	/**
 	 * Create the panel.
 	 */
@@ -68,11 +71,32 @@ public class PlaylistPanel extends JPanel {
 				if(!pl.getPlaylists().isEmpty()){
 					for(Playlist p : pl.getPlaylists().get(acc.getValue())){
 						PlaylistItem i = new PlaylistItem(p.id, p.ytId, p.name, p.image);
-						panel.add(i);
+						playlistPanel.add(i);
 					}
 				}
 		      }
 	    });
+	}
+	
+	public ArrayList<String> getSelectedPlaylists() {
+		ArrayList<String> selected = new ArrayList<String>();
+    	for(Component c : playlistPanel.getComponents()){
+    		PlaylistItem s = (PlaylistItem) c;
+    		if(s.isSelected()){
+    			selected.add(s.getYTId());
+    		}
+    	}
+    	return selected;
+	}
+	
+	public void setSelectedPlaylists(ArrayList<String> selected) {
+    	for(Component c : playlistPanel.getComponents()){
+    		PlaylistItem s = (PlaylistItem) c;
+    		s.setSelected(false);
+    		if(selected.contains(s.getYTId())){
+    			s.setSelected(true);
+    		}
+    	}
 	}
 
 	private void initComponents(){
@@ -90,8 +114,8 @@ public class PlaylistPanel extends JPanel {
 		JScrollPane scrollPane = new JScrollPane();
 		add(scrollPane, "2, 2, 3, 1, fill, fill");
 		
-		scrollPane.setViewportView(panel);
-		panel.setLayout(new GridLayout(0, 1, 0, 0));
+		scrollPane.setViewportView(playlistPanel);
+		playlistPanel.setLayout(new GridLayout(0, 1, 0, 0));
 		
 		/*PlaylistItem i = new PlaylistItem("1", "Test 1", "");
 		panel.add(i);
