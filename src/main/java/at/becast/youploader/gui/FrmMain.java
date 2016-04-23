@@ -254,6 +254,8 @@ public class FrmMain extends JFrame implements IMainMenu {
 			if (n == JOptionPane.YES_OPTION) {
 				mntmAddAccountActionPerformed();
 			}
+		}else{
+			((PlaylistPanel) ss2.contentPane).loadPlaylists();
 		}
 		
 		if(s.setting.get("notify_updates").equals("1")){
@@ -590,7 +592,6 @@ public class FrmMain extends JFrame implements IMainMenu {
 				changeCategory();
 			}
 		});
-		
 		QueuePanel.revalidate();
 		ss1.expand();
 	}

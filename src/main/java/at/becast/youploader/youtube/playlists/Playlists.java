@@ -22,11 +22,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 public class Playlists {
-	public String kind;
 	public String nextPageToken;
-	public String prevPageToken;
-	public String etag;
-	public PageInfo pageInfo;
 	@JsonDeserialize(as=ArrayList.class, contentAs=Item.class)
 	public List<Item> items;
 	
@@ -34,19 +30,8 @@ public class Playlists {
 		//Empty for Jackson
 	}
 	
-	public static class PageInfo{
-		public int totalResults;
-		public int resultsPerPage;
-		
-		public PageInfo(){
-			//Empty for Jackson
-		}
-	}
 	
 	public static class Item{
-		@JsonIgnore(true)
-		public String kind;
-		public String etag;
 		public String id;
 		public Snippet snippet;
 		

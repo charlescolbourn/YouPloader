@@ -17,6 +17,8 @@ package at.becast.youploader.database;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -27,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +41,7 @@ import at.becast.youploader.youtube.data.Video;
 import at.becast.youploader.youtube.data.VideoMetadata;
 import at.becast.youploader.youtube.io.UploadManager;
 import at.becast.youploader.youtube.io.UploadManager.Status;
+import at.becast.youploader.youtube.playlists.Playlists;
 
 public class SQLite {
 	
@@ -89,7 +93,7 @@ public class SQLite {
 			prest.executeUpdate();
 			prest = c.prepareStatement("CREATE TABLE `uploads` (`id` INTEGER PRIMARY KEY  NOT NULL ,`file` VARCHAR,`account` INTEGER DEFAULT (null),`yt_id` VARCHAR, `enddir` VARCHAR ,`url` VARCHAR,`uploaded` INTEGER DEFAULT (null) ,`lenght` INTEGER DEFAULT (null) ,`data` VARCHAR,`metadata` VARCHAR, `status` VARCHAR)");
 			prest.executeUpdate();
-			prest = c.prepareStatement("CREATE TABLE `playlists` (`id` INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL , `name` VARCHAR, `playlistid` VARCHAR, `image` BLOB)");
+			prest = c.prepareStatement("CREATE TABLE `playlists` (`id` INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL , `name` VARCHAR, `playlistid` VARCHAR, `image` BLOB, `account` INTEGER DEFAULT (null))");
 			prest.executeUpdate();
 			setVersion(FrmMain.getDBVersion());
 		} catch (SQLException e) {
@@ -293,7 +297,7 @@ public class SQLite {
         	return -1;
         }
     }
-
+    
 	public static Boolean updateTemplate(int id, Template template) throws SQLException, IOException {
 		PreparedStatement prest = null;
     	ObjectMapper mapper = new ObjectMapper();
@@ -320,7 +324,26 @@ public class SQLite {
 			return false;
 		}			
 	}
-
+	
+    public static void savePlaylists(Playlists playlists, int account) throws SQLException, IOException{
+    	PreparedStatement prest = null;
+    	String sql	= "INSERT INTO `playlists` (`name`, `playlistid`,`image`,`account`) " +
+    			"VALUES (?,?,?,?)";
+    	for(Playlists.Item i : playlists.items){
+        	prest = c.prepareStatement(sql);
+        	prest.setString(1, i.snippet.title);
+        	prest.setString(2, i.id);
+        	URL url = new URL(i.snippet.thumbnails.default__.url);
+        	InputStream is = null;
+        	is = url.openStream ();
+        	byte[] imageBytes = IOUtils.toByteArray(is);
+        	prest.setBytes(3,imageBytes);
+        	prest.setInt(4, account);
+        	prest.execute();
+            prest.close();
+    	}
+    }
+	
 	public static void update() {
 		PreparedStatement prest = null;
 		try {
@@ -341,7 +364,7 @@ public class SQLite {
 					prest = c.prepareStatement("INSERT INTO `settings` VALUES('top','0')");
 					prest.executeUpdate();
 				case 5:
-					prest = c.prepareStatement("CREATE TABLE `playlists` (`id` INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL , `name` VARCHAR, `playlistid` VARCHAR, `image` BLOB)");
+					prest = c.prepareStatement("CREATE TABLE `playlists` (`id` INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL , `name` VARCHAR, `playlistid` VARCHAR, `image` BLOB, `account` INTEGER DEFAULT (null))");
 					prest.executeUpdate();
 				default:
 					setVersion(FrmMain.getDBVersion());

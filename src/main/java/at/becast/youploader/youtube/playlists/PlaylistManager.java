@@ -15,7 +15,13 @@
 package at.becast.youploader.youtube.playlists;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -23,18 +29,25 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import at.becast.youploader.account.AccountManager;
+import at.becast.youploader.database.SQLite;
 import at.becast.youploader.gui.EditPanel;
 import at.becast.youploader.oauth.OAuth2;
 import at.becast.youploader.youtube.io.SimpleHTTP;
 
-public class PlaylistData {
+public class PlaylistManager {
 
 	private SimpleHTTP http;
 	private OAuth2 oAuth2;
+	private int account;
 	private ObjectMapper mapper = new ObjectMapper();
+	private AccountManager AccMgr = AccountManager.getInstance();
 	private static final Logger LOG = LoggerFactory.getLogger(EditPanel.class);
-	public PlaylistData(OAuth2 oAuth2){
-		this.oAuth2 = oAuth2;
+	private HashMap<Integer,List<Playlist>> playlists = new HashMap<Integer,List<Playlist>>();
+
+	public PlaylistManager(int account){
+		this.account = account;
+		this.oAuth2 = this.AccMgr.getAuth(account);
 	}
 	
 	public Playlists get(){
@@ -56,6 +69,44 @@ public class PlaylistData {
 		return lists;
 	}
 	
+	public void save(){
+		try {
+			SQLite.savePlaylists(get(),this.account);
+		} catch (SQLException | IOException e) {
+			LOG.error("Error saving Playlists: ",e);
+		}
+	}
+	
+
+	public void load() {
+		Connection c = SQLite.getInstance();
+		Statement stmt;
+		try {
+			stmt = c.createStatement();
+			String sql = "SELECT * FROM `playlists`"; 
+			ResultSet rs = stmt.executeQuery(sql);
+			if(rs.isBeforeFirst()){
+				while(rs.next()){
+					Playlist l = new Playlist(rs.getInt("id"), rs.getString("playlistid"), rs.getString("name"), rs.getBytes("image"));
+					if(playlists.get(rs.getInt("account"))==null){
+						List<Playlist> list = new ArrayList<Playlist>();
+						list.add(l);
+						playlists.put(rs.getInt("account"),list);
+					}else{
+						playlists.get(rs.getInt("account")).add(l);
+					}
+				}
+				rs.close();
+				stmt.close();
+			}else{
+				rs.close();
+				stmt.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public String get(String page){
 		this.http = new SimpleHTTP();
 		String getpage="";
@@ -67,7 +118,7 @@ public class PlaylistData {
 			headers.put("Authorization", this.oAuth2.getHeader());
 			headers.put("Content-Type", "application/json; charset=UTF-8");
 			String result = http.get(
-					"https://www.googleapis.com/youtube/v3/playlists?part=snippet&maxResults=50&mine=true"+getpage,
+					"https://www.googleapis.com/youtube/v3/playlists?part=snippet&maxResults=50&fields=items(id%2Csnippet)&mine=true"+getpage,
 					headers);
 			this.http.close();
 			return result;
@@ -75,5 +126,9 @@ public class PlaylistData {
 			LOG.error("Exception while getting Playlists: ", e);
 		}
 		return null;
+	}
+	
+	public HashMap<Integer, List<Playlist>> getPlaylists() {
+		return playlists;
 	}
 }

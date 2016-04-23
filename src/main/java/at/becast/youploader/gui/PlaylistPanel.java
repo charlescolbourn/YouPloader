@@ -19,13 +19,13 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
 
-import at.becast.youploader.account.AccountManager;
 import at.becast.youploader.account.AccountType;
-import at.becast.youploader.youtube.playlists.PlaylistData;
+import at.becast.youploader.youtube.playlists.Playlist;
+import at.becast.youploader.youtube.playlists.PlaylistManager;
 
 import com.jgoodies.forms.layout.FormSpecs;
 import javax.swing.JScrollPane;
-
+import javax.swing.SwingUtilities;
 import javax.swing.JButton;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
@@ -37,7 +37,8 @@ public class PlaylistPanel extends JPanel {
 	//private static final ResourceBundle LANG = UTF8ResourceBundle.getBundle("lang", Locale.getDefault());
 	private static final long serialVersionUID = -870661666925769377L;
 	private FrmMain parent;
-	private AccountManager AccMgr = AccountManager.getInstance();
+	private PlaylistManager pl;
+	private JPanel panel = new JPanel();
 	/**
 	 * Create the panel.
 	 */
@@ -46,10 +47,32 @@ public class PlaylistPanel extends JPanel {
 		initComponents();
 	}
 	
-	protected void refreshPlaylists() {
-		AccountType acc = (AccountType) parent.getCmbAccount().getSelectedItem();
-		PlaylistData pl = new PlaylistData(this.AccMgr.getAuth(acc.getValue()));
-		pl.get();		
+	
+	public void refreshPlaylists() {
+    	AccountType acc = (AccountType) parent.getCmbAccount().getSelectedItem();
+		this.pl = new PlaylistManager(acc.getValue());
+		SwingUtilities.invokeLater(new Runnable() {
+		    public void run() {
+				pl.save();
+		      }
+	    });
+		loadPlaylists();
+	}
+	
+	public void loadPlaylists() {
+    	AccountType acc = (AccountType) parent.getCmbAccount().getSelectedItem();
+		this.pl = new PlaylistManager(acc.getValue());
+		SwingUtilities.invokeLater(new Runnable() {
+		    public void run() {
+				pl.load();
+				if(!pl.getPlaylists().isEmpty()){
+					for(Playlist p : pl.getPlaylists().get(acc.getValue())){
+						PlaylistItem i = new PlaylistItem(p.id, p.ytId, p.name, p.image);
+						panel.add(i);
+					}
+				}
+		      }
+	    });
 	}
 
 	private void initComponents(){
@@ -67,19 +90,23 @@ public class PlaylistPanel extends JPanel {
 		JScrollPane scrollPane = new JScrollPane();
 		add(scrollPane, "2, 2, 3, 1, fill, fill");
 		
-		JPanel panel = new JPanel();
 		scrollPane.setViewportView(panel);
 		panel.setLayout(new GridLayout(0, 1, 0, 0));
 		
-		PlaylistItem i = new PlaylistItem("1", "Test 1", "");
+		/*PlaylistItem i = new PlaylistItem("1", "Test 1", "");
 		panel.add(i);
 		
 		PlaylistItem i1 = new PlaylistItem("2", "Test 2", "");
-		panel.add(i1);
+		panel.add(i1);*/
 		
 		JButton btnGetPlaylists = new JButton("Get Playlists");
 		btnGetPlaylists.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+				    public void run() {
+				    	
+				    }
+				});
 				refreshPlaylists();
 			}
 		});
@@ -88,5 +115,5 @@ public class PlaylistPanel extends JPanel {
 		JButton btnAddPlaylist = new JButton("Add Playlist");
 		add(btnAddPlaylist, "4, 4");
 	}
-
+	
 }
