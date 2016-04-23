@@ -21,20 +21,14 @@ import com.jgoodies.forms.layout.RowSpec;
 
 import at.becast.youploader.account.AccountManager;
 import at.becast.youploader.account.AccountType;
-import at.becast.youploader.util.UTF8ResourceBundle;
 import at.becast.youploader.youtube.playlists.PlaylistData;
 
 import com.jgoodies.forms.layout.FormSpecs;
 import javax.swing.JScrollPane;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.swing.JButton;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
-import java.util.Locale;
-import java.util.ResourceBundle;
 import java.awt.event.ActionEvent;
 
 public class PlaylistPanel extends JPanel {

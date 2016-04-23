@@ -1,6 +1,11 @@
 package at.becast.youploader.youtube.playlists;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 public class Playlists {
 	public String kind;
@@ -8,25 +13,73 @@ public class Playlists {
 	public String prevPageToken;
 	public String etag;
 	public PageInfo pageInfo;
-	public ArrayList<Item> items = new ArrayList<Item>();
+	@JsonDeserialize(as=ArrayList.class, contentAs=Item.class)
+	public List<Item> items;
 	
-	public class PageInfo{
-		public int totalResults;
-		public int resultsPerPage;
+	public Playlists() {
+		this.kind = "";
+		this.nextPageToken = "";
+		this.prevPageToken = "";
+		this.etag = "";
+		this.pageInfo = new PageInfo();
 	}
 	
-	public class Item{
+	public static class PageInfo{
+		public int totalResults;
+		public int resultsPerPage;
+		
+		public PageInfo(){
+			
+		}
+	}
+	
+	public static class Item{
+		@JsonIgnore(true)
 		public String kind;
 		public String etag;
 		public String id;
 		public Snippet snippet;
 		
-		public class Snippet{
+		public Item(){
+
+		}
+		
+		public static class Snippet{
 			public String publishedAt;
 			public String channelId;
 			public String title;
 			public String description;
 			public String channelTitle;
+			public ThumbnailDetails thumbnails;
+			@JsonIgnore
+			public String localized;
+			
+			public static class ThumbnailDetails{
+				@JsonProperty("default")
+				public Thumbnail default__;
+				@JsonIgnore
+				public Thumbnail medium;
+				@JsonIgnore
+				public Thumbnail high;
+				@JsonIgnore
+				public Thumbnail standard;
+				@JsonIgnore
+				public Thumbnail maxres;
+				
+				public static class Thumbnail{
+					public String url;
+					public int width;
+					public int height;
+					
+					public Thumbnail(){
+						
+					}
+				}
+				
+			}
+			public Snippet(){
+				
+			}
 			
 		}
 		/*
