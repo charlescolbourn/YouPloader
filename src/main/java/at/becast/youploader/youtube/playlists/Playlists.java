@@ -31,11 +31,7 @@ public class Playlists {
 	public List<Item> items;
 	
 	public Playlists() {
-		this.kind = "";
-		this.nextPageToken = "";
-		this.prevPageToken = "";
-		this.etag = "";
-		this.pageInfo = new PageInfo();
+		//Empty for Jackson
 	}
 	
 	public static class PageInfo{
@@ -43,7 +39,7 @@ public class Playlists {
 		public int resultsPerPage;
 		
 		public PageInfo(){
-			
+			//Empty for Jackson
 		}
 	}
 	
@@ -55,7 +51,7 @@ public class Playlists {
 		public Snippet snippet;
 		
 		public Item(){
-
+			//Empty for Jackson
 		}
 		
 		public static class Snippet{
@@ -86,59 +82,15 @@ public class Playlists {
 					public int height;
 					
 					public Thumbnail(){
-						
+						//Empty for Jackson
 					}
 				}
 				
 			}
 			public Snippet(){
-				
+				//Empty for Jackson
 			}
 			
 		}
-		/*
-   "kind": "youtube#playlist",
-   "etag": "\"CuSCwMPVmgi8taDtE2LV6HdgkN0/IGbxGrjhFPxxsPFLNA4o03YVde0\"",
-   "id": "PLpgcsjzutNdyabOR-eaSBZtGnuqNq7w4m",
-   "snippet": {
-    "publishedAt": "2016-04-03T07:36:46.000Z",
-    "channelId": "UCnoTmaT3LmE9Aq5gQ7B1ziw",
-    "title": "Move Or Die",
-    "description": "",
-    "thumbnails": {
-     "default": {
-      "url": "https://i.ytimg.com/vi/JwdoyZIE4uE/default.jpg",
-      "width": 120,
-      "height": 90
-     },
-     "medium": {
-      "url": "https://i.ytimg.com/vi/JwdoyZIE4uE/mqdefault.jpg",
-      "width": 320,
-      "height": 180
-     },
-     "high": {
-      "url": "https://i.ytimg.com/vi/JwdoyZIE4uE/hqdefault.jpg",
-      "width": 480,
-      "height": 360
-     },
-     "standard": {
-      "url": "https://i.ytimg.com/vi/JwdoyZIE4uE/sddefault.jpg",
-      "width": 640,
-      "height": 480
-     },
-     "maxres": {
-      "url": "https://i.ytimg.com/vi/JwdoyZIE4uE/maxresdefault.jpg",
-      "width": 1280,
-      "height": 720
-     }
-    },
-    "channelTitle": "GenuineParts",
-    "localized": {
-     "title": "Move Or Die",
-     "description": ""
-    }
-   }
-  }
-		 */
 	}
 }

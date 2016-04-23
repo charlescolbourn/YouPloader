@@ -18,8 +18,12 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import at.becast.youploader.gui.EditPanel;
 import at.becast.youploader.oauth.OAuth2;
 import at.becast.youploader.youtube.io.SimpleHTTP;
 
@@ -28,6 +32,7 @@ public class PlaylistData {
 	private SimpleHTTP http;
 	private OAuth2 oAuth2;
 	private ObjectMapper mapper = new ObjectMapper();
+	private static final Logger LOG = LoggerFactory.getLogger(EditPanel.class);
 	public PlaylistData(OAuth2 oAuth2){
 		this.oAuth2 = oAuth2;
 	}
@@ -36,10 +41,17 @@ public class PlaylistData {
 		Playlists lists = null;
 		try {
 			lists = mapper.readValue(get(null),Playlists.class);
-			System.out.println(lists);
+			if(lists.nextPageToken!=null){
+				Playlists next;
+				String token = lists.nextPageToken;
+				do{
+					next = mapper.readValue(get(token),Playlists.class);
+					lists.items.addAll(next.items);
+					token = next.nextPageToken;
+				}while(next.nextPageToken!=null);
+			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.error("Exception while getting Playlists: ", e);
 		}
 		return lists;
 	}
@@ -57,15 +69,11 @@ public class PlaylistData {
 			String result = http.get(
 					"https://www.googleapis.com/youtube/v3/playlists?part=snippet&maxResults=50&mine=true"+getpage,
 					headers);
-			System.out.println(result);
 			this.http.close();
 			return result;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.error("Exception while getting Playlists: ", e);
 		}
-		//Upload url = new Upload(result[0], file, result[1], video);
-
 		return null;
 	}
 }
