@@ -116,6 +116,7 @@ import ch.qos.logback.core.util.StatusPrinter;
 import net.miginfocom.layout.CC;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JCheckBoxMenuItem;
+import at.becast.youploader.gui.statusbar.StatusBar;
 
 /**
  *
@@ -158,6 +159,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 	public transient static HashMap<Integer, JMenuItem> _accounts = new HashMap<Integer, JMenuItem>();
 	private int editItem = -1;
 	public static boolean debug = false;
+	private StatusBar statusBar;
 
 	/**
 	 * @param args
@@ -259,7 +261,9 @@ public class FrmMain extends JFrame implements IMainMenu {
 		}
 		
 		if(s.setting.get("notify_updates").equals("1")){
+			statusBar.setMessage(LANG.getString("Status.UpdateCheck"));
 			checkUpdates();
+			statusBar.setMessage(LANG.getString("Status.Ready"));
 		}
 	}
 
@@ -307,15 +311,20 @@ public class FrmMain extends JFrame implements IMainMenu {
 		JPanel mainTab = new JPanel();
 		JPanel panel = new JPanel();
 		GroupLayout mainTabLayout = new GroupLayout(mainTab);
-		mainTabLayout
-				.setHorizontalGroup(mainTabLayout.createParallelGroup(Alignment.LEADING).addGroup(Alignment.TRAILING,
-						mainTabLayout.createSequentialGroup()
-								.addComponent(panel, GroupLayout.DEFAULT_SIZE, 469, Short.MAX_VALUE)
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(sideBar, GroupLayout.DEFAULT_SIZE, 416, Short.MAX_VALUE)));
-		mainTabLayout.setVerticalGroup(mainTabLayout.createParallelGroup(Alignment.LEADING)
-				.addComponent(sideBar, GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE)
-				.addComponent(panel, GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE));
+		mainTabLayout.setHorizontalGroup(
+			mainTabLayout.createParallelGroup(Alignment.TRAILING)
+				.addGroup(mainTabLayout.createSequentialGroup()
+					.addComponent(panel, GroupLayout.DEFAULT_SIZE, 465, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(sideBar, GroupLayout.DEFAULT_SIZE, 408, Short.MAX_VALUE))
+		);
+		mainTabLayout.setVerticalGroup(
+			mainTabLayout.createParallelGroup(Alignment.LEADING)
+				.addComponent(panel, GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE)
+				.addGroup(mainTabLayout.createSequentialGroup()
+					.addComponent(sideBar, GroupLayout.DEFAULT_SIZE, 469, Short.MAX_VALUE)
+					.addContainerGap())
+		);
 		panel.setLayout(new FormLayout(new ColumnSpec[] {
 				ColumnSpec.decode("2px"),
 				FormSpecs.RELATED_GAP_COLSPEC,
@@ -489,12 +498,22 @@ public class FrmMain extends JFrame implements IMainMenu {
 		});
 		mainTab.setLayout(mainTabLayout);
 		TabbedPane.addTab(LANG.getString("frmMain.Tabs.VideoSettings"), mainTab);
+		
+		statusBar = new StatusBar();
 
 		GroupLayout layout = new GroupLayout(getContentPane());
-		layout.setHorizontalGroup(layout.createParallelGroup(Alignment.LEADING)
-				.addGroup(layout.createSequentialGroup().addContainerGap().addComponent(TabbedPane).addContainerGap()));
-		layout.setVerticalGroup(layout.createParallelGroup(Alignment.LEADING).addComponent(TabbedPane,
-				GroupLayout.DEFAULT_SIZE, 501, Short.MAX_VALUE));
+		layout.setHorizontalGroup(
+			layout.createParallelGroup(Alignment.LEADING)
+				.addComponent(statusBar, GroupLayout.DEFAULT_SIZE, 884, Short.MAX_VALUE)
+				.addComponent(TabbedPane, GroupLayout.DEFAULT_SIZE, 884, Short.MAX_VALUE)
+		);
+		layout.setVerticalGroup(
+			layout.createParallelGroup(Alignment.LEADING)
+				.addGroup(Alignment.TRAILING, layout.createSequentialGroup()
+					.addComponent(TabbedPane, GroupLayout.PREFERRED_SIZE, 498, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(statusBar, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+		);
 
 		JScrollPane TabQueues = new JScrollPane();
 		QueuePanel = new JPanel();
@@ -627,6 +646,9 @@ public class FrmMain extends JFrame implements IMainMenu {
 		});
 		mnuAcc.add(mntmAddAccount);
 		mnuAcc.add(separator);
+		
+		JMenu mnLanguage = new JMenu("Language");
+		mnuBar.add(mnLanguage);
 
 		JMenu menu = new JMenu("?");
 		mnuBar.add(menu);
@@ -1311,5 +1333,8 @@ public class FrmMain extends JFrame implements IMainMenu {
 
 	public JComboBox<AccountType> getCmbAccount() {
 		return cmbAccount;
+	}
+	public StatusBar getStatusBar() {
+		return statusBar;
 	}
 }

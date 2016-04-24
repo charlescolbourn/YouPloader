@@ -98,9 +98,9 @@ public class UploadWorker extends Thread {
 		}
 	}
 	
-	public void setPlaylists(){
+	public void setPlaylists(String playlist){
 		try {
-			this.uploader.setPlaylists(this.metadata.getPlaylists(), upload);
+			this.uploader.setPlaylists(playlist, upload);
 		} catch (UploadException | IOException e) {
 			LOG.error("Could not set Playlists ",e);
 		}

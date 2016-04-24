@@ -147,8 +147,11 @@ public class UploadManager {
 					}
 					if(!w.metadata.getPlaylists().isEmpty()){
 						LOG.info("Adding to Playlists");
-						w.frame.getProgressBar().setString(String.format(LANG.getString("Upload.AddingPlaylists")));
-						w.setPlaylists();
+						int p = w.metadata.getPlaylists().size();
+						for(int s=0;s<p;s++){
+							w.frame.getProgressBar().setString(String.format(LANG.getString("Upload.AddingPlaylists"),s+1,p));
+							w.setPlaylists(w.metadata.getPlaylists().get(s));
+						}
 					}
 					LOG.info("Updating Metadata");
 					w.frame.getProgressBar().setString(String.format(LANG.getString("Upload.Metadata")));
