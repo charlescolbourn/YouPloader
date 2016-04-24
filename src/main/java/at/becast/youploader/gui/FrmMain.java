@@ -111,6 +111,7 @@ import at.becast.youploader.youtube.VisibilityType;
 import at.becast.youploader.youtube.data.Video;
 import at.becast.youploader.youtube.data.VideoMetadata;
 import at.becast.youploader.youtube.io.UploadManager;
+import at.becast.youploader.youtube.playlists.PlaylistUpdater;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.util.StatusPrinter;
 import net.miginfocom.layout.CC;
@@ -244,10 +245,6 @@ public class FrmMain extends JFrame implements IMainMenu {
 		} catch (SQLException | IOException e) {
 			LOG.error("Error: ", e);
 		}
-		EditPanel edit = (EditPanel) ss1.contentPane;
-		if (edit.getCmbTemplate().getModel().getSize() > 0) {
-			edit.getCmbTemplate().setSelectedIndex(0);
-		}
 		this.setVisible(true);
 		if (firstlaunch) {
 			int n = JOptionPane.showConfirmDialog(null, LANG.getString("frmMain.initialAccount.Message"),
@@ -257,13 +254,18 @@ public class FrmMain extends JFrame implements IMainMenu {
 				mntmAddAccountActionPerformed();
 			}
 		}else{
-			((PlaylistPanel) ss2.contentPane).loadPlaylists();
+			PlaylistPanel pl = (PlaylistPanel) ss2.contentPane;
+			pl.loadPlaylists();
+			PlaylistUpdater pu = new PlaylistUpdater(this);
+			Thread updater = new Thread(pu);
+			updater.start();
 		}
-		
+		EditPanel edit = (EditPanel) ss1.contentPane;
+		if (edit.getCmbTemplate().getModel().getSize() > 0) {
+			edit.getCmbTemplate().setSelectedIndex(0);
+		}
 		if(s.setting.get("notify_updates").equals("1")){
-			statusBar.setMessage(LANG.getString("Status.UpdateCheck"));
 			checkUpdates();
-			statusBar.setMessage(LANG.getString("Status.Ready"));
 		}
 	}
 
@@ -1310,7 +1312,11 @@ public class FrmMain extends JFrame implements IMainMenu {
 		TemplateMgr.delete(id);
 		edit.refreshTemplates();
 	}
-
+	
+	public PlaylistPanel getPlaylistPanel() {
+		return (PlaylistPanel) ss2.contentPane;
+	}
+	
 	private JPanel getQueuePanel() {
 		return QueuePanel;
 	}

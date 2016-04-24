@@ -76,7 +76,6 @@ public class PlaylistManager {
 			LOG.error("Error saving Playlists: ",e);
 		}
 	}
-	
 
 	public void load() {
 		Connection c = SQLite.getInstance();

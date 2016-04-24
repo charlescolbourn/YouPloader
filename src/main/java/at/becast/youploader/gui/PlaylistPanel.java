@@ -22,10 +22,12 @@ import com.jgoodies.forms.layout.RowSpec;
 import at.becast.youploader.account.AccountType;
 import at.becast.youploader.youtube.playlists.Playlist;
 import at.becast.youploader.youtube.playlists.PlaylistManager;
+import at.becast.youploader.youtube.playlists.PlaylistUpdater;
 
 import com.jgoodies.forms.layout.FormSpecs;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 import java.awt.Component;
@@ -42,6 +44,7 @@ public class PlaylistPanel extends JPanel {
 	private FrmMain parent;
 	private PlaylistManager pl;
 	private JPanel playlistPanel = new JPanel();
+
 	/**
 	 * Create the panel.
 	 */
@@ -89,6 +92,12 @@ public class PlaylistPanel extends JPanel {
     	return selected;
 	}
 	
+	public void clearPlaylists() {
+    	for(Component c : playlistPanel.getComponents()){
+    		playlistPanel.remove(c);	
+    	}
+	}
+	
 	public void setSelectedPlaylists(ArrayList<String> selected) {
     	for(Component c : playlistPanel.getComponents()){
     		PlaylistItem s = (PlaylistItem) c;
@@ -102,42 +111,43 @@ public class PlaylistPanel extends JPanel {
 	private void initComponents(){
 		setLayout(new FormLayout(new ColumnSpec[] {
 				FormSpecs.RELATED_GAP_COLSPEC,
-				ColumnSpec.decode("max(122dlu;default):grow"),
+				ColumnSpec.decode("default:grow"),
+				FormSpecs.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("max(105dlu;default)"),
+				FormSpecs.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("max(24dlu;default)"),
 				FormSpecs.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("right:max(70dlu;default)"),},
 			new RowSpec[] {
 				FormSpecs.RELATED_GAP_ROWSPEC,
-				RowSpec.decode("default:grow"),
+				RowSpec.decode("max(204dlu;default):grow"),
 				FormSpecs.RELATED_GAP_ROWSPEC,
 				FormSpecs.DEFAULT_ROWSPEC,}));
 		
 		JScrollPane scrollPane = new JScrollPane();
-		add(scrollPane, "2, 2, 3, 1, fill, fill");
+		add(scrollPane, "2, 2, 7, 1, fill, fill");
 		
 		scrollPane.setViewportView(playlistPanel);
 		playlistPanel.setLayout(new GridLayout(0, 1, 0, 0));
-		
-		/*PlaylistItem i = new PlaylistItem("1", "Test 1", "");
-		panel.add(i);
-		
-		PlaylistItem i1 = new PlaylistItem("2", "Test 2", "");
-		panel.add(i1);*/
-		
-		JButton btnGetPlaylists = new JButton("Get Playlists");
+
+		JButton btnGetPlaylists = new JButton("");
+		btnGetPlaylists.setIcon(new ImageIcon(getClass().getResource("/arrow_refresh.png")));
 		btnGetPlaylists.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				SwingUtilities.invokeLater(new Runnable() {
-				    public void run() {
-				    	
-				    }
-				});
-				refreshPlaylists();
+				PlaylistUpdater pu = new PlaylistUpdater(parent);
+				Thread updater = new Thread(pu);
+				updater.start();
 			}
 		});
-		add(btnGetPlaylists, "2, 4");
+		add(btnGetPlaylists, "6, 4, fill, fill");
 		
 		JButton btnAddPlaylist = new JButton("Add Playlist");
-		add(btnAddPlaylist, "4, 4");
+		btnAddPlaylist.setIcon(new ImageIcon(getClass().getResource("/add.png")));
+		add(btnAddPlaylist, "8, 4, fill, center");
+	}
+	
+	public JPanel getPlaylistPanel() {
+		return playlistPanel;
 	}
 	
 }
