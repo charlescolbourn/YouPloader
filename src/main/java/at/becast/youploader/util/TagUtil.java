@@ -35,7 +35,7 @@ public class TagUtil {
 		String[] tags = trimTags(text);
 		int lenght = 0;
 		for(int i=0;i<tags.length;i++){
-			if(i<tags.length){
+			if(i<tags.length-1){
 				lenght += 1;
 			}
 			if(tags[i].contains(" ")){
