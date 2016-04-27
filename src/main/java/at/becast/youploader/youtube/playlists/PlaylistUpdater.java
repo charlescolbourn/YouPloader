@@ -5,7 +5,6 @@ import java.util.ResourceBundle;
 
 import at.becast.youploader.account.AccountType;
 import at.becast.youploader.gui.FrmMain;
-import at.becast.youploader.gui.PlaylistItem;
 import at.becast.youploader.util.UTF8ResourceBundle;
 
 public class PlaylistUpdater implements Runnable {
@@ -24,10 +23,7 @@ public class PlaylistUpdater implements Runnable {
 		pm.save();
 		pm.load();
 		parent.getPlaylistPanel().clearPlaylists();
-		for(Playlist p : pm.getPlaylists().get(acc.getValue())){
-			PlaylistItem i = new PlaylistItem(p.id, p.ytId, p.name, p.image);
-			parent.getPlaylistPanel().getPlaylistPanel().add(i);
-		}
+		parent.getPlaylistPanel().loadPlaylists();
 		parent.getStatusBar().getProgressBar().setIndeterminate(false);
 		parent.getStatusBar().setMessage(LANG.getString("Status.Ready"));
 	}

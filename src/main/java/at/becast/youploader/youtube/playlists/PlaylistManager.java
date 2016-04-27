@@ -34,6 +34,7 @@ import at.becast.youploader.database.SQLite;
 import at.becast.youploader.gui.EditPanel;
 import at.becast.youploader.oauth.OAuth2;
 import at.becast.youploader.youtube.io.SimpleHTTP;
+import at.becast.youploader.youtube.playlists.Playlists.Item;
 
 public class PlaylistManager {
 
@@ -66,15 +67,48 @@ public class PlaylistManager {
 		} catch (IOException e) {
 			LOG.error("Exception while getting Playlists: ", e);
 		}
+		for(int i=0;i<lists.items.size();i++){
+			if(lists.items.get(i).id.startsWith("FL")){
+				lists.items.remove(i);
+			}
+		}
 		return lists;
 	}
 	
 	public void save(){
-		try {
-			SQLite.savePlaylists(get(),this.account);
-		} catch (SQLException | IOException e) {
-			LOG.error("Error saving Playlists: ",e);
+		this.playlists.clear();
+		this.load();
+		Playlists lists = this.get();
+		if(this.playlists.get(this.account)==null || this.playlists.get(this.account).isEmpty()){
+			try {
+				SQLite.savePlaylists(lists,this.account);
+			} catch (SQLException | IOException e) {
+				LOG.error("Error saving Playlists: ",e);
+			}
+		}else{
+			for(Item s : lists.items){
+				String id = s.id;
+				boolean found = false;
+				for(int i=0; i<this.playlists.get(this.account).size();i++){
+					if(this.playlists.get(this.account).get(i).ytId.equals(id)){
+						found = true;
+						try {
+							SQLite.updatePlaylist(s);
+						} catch (SQLException | IOException e) {
+							LOG.error("Error updating Playlists: ",e);
+						}
+					}
+				}
+				if(!found){
+					try {
+						SQLite.insertPlaylist(s,this.account);
+					} catch (SQLException | IOException e) {
+						LOG.error("Error adding Playlists: ",e);
+					}
+				}
+			}
 		}
+		
 	}
 
 	public void load() {

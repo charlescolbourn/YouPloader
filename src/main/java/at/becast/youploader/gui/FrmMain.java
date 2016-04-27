@@ -254,8 +254,6 @@ public class FrmMain extends JFrame implements IMainMenu {
 				mntmAddAccountActionPerformed();
 			}
 		}else{
-			PlaylistPanel pl = (PlaylistPanel) ss2.contentPane;
-			pl.loadPlaylists();
 			PlaylistUpdater pu = new PlaylistUpdater(this);
 			Thread updater = new Thread(pu);
 			updater.start();
@@ -434,7 +432,11 @@ public class FrmMain extends JFrame implements IMainMenu {
 		panel.add(lblAccount, "3, 18, 4, 1, left, bottom");
 		cmbAccount = new JComboBox<AccountType>();
 		panel.add(getCmbAccount(), "3, 19, 14, 1, fill, fill");
-
+		cmbAccount.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				changeUser();
+			}
+		});
 		btnAddToQueue = new JButton(LANG.getString("frmMain.addtoQueue"));
 		btnAddToQueue.setEnabled(false);
 		panel.add(btnAddToQueue, "3, 21, 6, 1, fill, fill");
@@ -773,6 +775,14 @@ public class FrmMain extends JFrame implements IMainMenu {
 		getCmbAccount().removeAllItems();
 		btnAddToQueue.setEnabled(false);
 		loadAccounts();
+	}
+	
+	public void changeUser() {
+		PlaylistPanel pl = (PlaylistPanel) ss2.contentPane;
+		pl.clearPlaylists();
+		pl.loadPlaylists();
+		TabbedPane.repaint();
+		TabbedPane.revalidate();
 	}
 
 	public void loadAccounts() {

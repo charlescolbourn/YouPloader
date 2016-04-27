@@ -68,17 +68,13 @@ public class PlaylistPanel extends JPanel {
 	public void loadPlaylists() {
     	AccountType acc = (AccountType) parent.getCmbAccount().getSelectedItem();
 		this.pl = new PlaylistManager(acc.getValue());
-		SwingUtilities.invokeLater(new Runnable() {
-		    public void run() {
-				pl.load();
-				if(!pl.getPlaylists().isEmpty()){
-					for(Playlist p : pl.getPlaylists().get(acc.getValue())){
-						PlaylistItem i = new PlaylistItem(p.id, p.ytId, p.name, p.image);
-						playlistPanel.add(i);
-					}
-				}
-		      }
-	    });
+		pl.load();
+		if(!pl.getPlaylists().isEmpty()){
+			for(Playlist p : pl.getPlaylists().get(acc.getValue())){
+				PlaylistItem i = new PlaylistItem(p.id, p.ytId, p.name, p.image);
+				playlistPanel.add(i);
+			}
+		}
 	}
 	
 	public ArrayList<String> getSelectedPlaylists() {

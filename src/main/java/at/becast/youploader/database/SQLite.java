@@ -42,6 +42,7 @@ import at.becast.youploader.youtube.data.VideoMetadata;
 import at.becast.youploader.youtube.io.UploadManager;
 import at.becast.youploader.youtube.io.UploadManager.Status;
 import at.becast.youploader.youtube.playlists.Playlists;
+import at.becast.youploader.youtube.playlists.Playlists.Item;
 
 public class SQLite {
 	
@@ -343,6 +344,39 @@ public class SQLite {
             prest.close();
     	}
     }
+    
+	public static void updatePlaylist(Item item) throws SQLException, IOException {
+		PreparedStatement prest = null;
+    	String sql	= "UPDATE `playlists` SET `name`=?,`image`=? WHERE `playlistid`=?";
+    	prest = c.prepareStatement(sql);
+    	prest.setString(1, item.snippet.title);
+    	URL url = new URL(item.snippet.thumbnails.default__.url);
+    	InputStream is = null;
+    	is = url.openStream ();
+    	byte[] imageBytes = IOUtils.toByteArray(is);
+    	prest.setBytes(2,imageBytes);
+    	prest.setString(3, item.id);
+    	prest.execute();
+        prest.close();
+		
+	}
+
+	public static void insertPlaylist(Item item, int account) throws SQLException, IOException {
+		PreparedStatement prest = null;
+    	String sql	= "INSERT INTO `playlists` (`name`, `playlistid`,`image`,`account`) " +
+    			"VALUES (?,?,?,?)";
+    	prest = c.prepareStatement(sql);
+    	prest.setString(1, item.snippet.title);
+    	prest.setString(2, item.id);
+    	URL url = new URL(item.snippet.thumbnails.default__.url);
+    	InputStream is = null;
+    	is = url.openStream ();
+    	byte[] imageBytes = IOUtils.toByteArray(is);
+    	prest.setBytes(3,imageBytes);
+    	prest.setInt(4, account);
+    	prest.execute();
+        prest.close();	
+	}
 	
 	public static void update() {
 		PreparedStatement prest = null;
@@ -396,6 +430,9 @@ public class SQLite {
 			LOG.error("Could not create Database Backup ",e);
 		}
 	}
+
+
+
 	
 
     
