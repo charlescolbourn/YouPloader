@@ -33,6 +33,7 @@ import at.becast.youploader.account.AccountManager;
 import at.becast.youploader.database.SQLite;
 import at.becast.youploader.gui.EditPanel;
 import at.becast.youploader.oauth.OAuth2;
+import at.becast.youploader.youtube.exceptions.UploadException;
 import at.becast.youploader.youtube.io.SimpleHTTP;
 import at.becast.youploader.youtube.playlists.Playlists.Item;
 
@@ -111,6 +112,23 @@ public class PlaylistManager {
 		
 	}
 
+	public void add(String name){
+		this.http = new SimpleHTTP();
+		Map<String, String> headers = new HashMap<>();
+		try {
+			headers.put("Authorization", this.oAuth2.getHeader());
+			headers.put("Content-Type", "application/json; charset=UTF-8");
+			PlaylistAdd add = new PlaylistAdd(name);
+			http.postPL(
+						"https://www.googleapis.com/youtube/v3/playlists?part=snippet,status&fields=snippet%2Cstatus",
+						headers, new ObjectMapper().writeValueAsString(add));
+			this.http.close();
+		} catch (UploadException | IOException e) {
+			LOG.error("Exception while adding Playlists: ", e);
+		}
+	}
+
+	
 	public void load() {
 		Connection c = SQLite.getInstance();
 		Statement stmt;

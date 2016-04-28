@@ -138,10 +138,22 @@ public class PlaylistPanel extends JPanel {
 		add(btnGetPlaylists, "6, 4, fill, fill");
 		
 		JButton btnAddPlaylist = new JButton("Add Playlist");
+		btnAddPlaylist.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				addPlaylist();
+			}
+		});
 		btnAddPlaylist.setIcon(new ImageIcon(getClass().getResource("/add.png")));
 		add(btnAddPlaylist, "8, 4, fill, center");
 	}
 	
+	protected void addPlaylist() {
+		AddPlaylist acc = new AddPlaylist(this.parent);
+		acc.setVisible(true);
+		
+	}
+
+
 	public JPanel getPlaylistPanel() {
 		return playlistPanel;
 	}

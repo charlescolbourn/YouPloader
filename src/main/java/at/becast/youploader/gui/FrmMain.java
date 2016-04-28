@@ -652,6 +652,8 @@ public class FrmMain extends JFrame implements IMainMenu {
 		mnuAcc.add(separator);
 		
 		JMenu mnLanguage = new JMenu("Language");
+		mnLanguage.setVisible(false);
+		mnLanguage.setEnabled(false);
 		mnuBar.add(mnLanguage);
 
 		JMenu menu = new JMenu("?");

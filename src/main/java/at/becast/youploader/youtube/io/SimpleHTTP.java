@@ -64,6 +64,17 @@ public class SimpleHTTP {
     return location;
   }
   
+  public void postPL(String url, Map<String, String> headers, String body) throws IOException, UploadException {
+	    HttpPost post = new HttpPost(url);
+
+	    for (String key : headers.keySet()) {
+	      post.setHeader(key, headers.get(key));
+	    }
+
+	    post.setEntity(new ByteArrayEntity(body.getBytes("UTF-8")));
+	    response = this.chc.execute(post);
+	    response.close();
+	  }
 
   public void put(String url, Map<String, String> headers, InputStream stream, UploadEvent callback) throws IOException {
     this.put = new HttpPut(url);
