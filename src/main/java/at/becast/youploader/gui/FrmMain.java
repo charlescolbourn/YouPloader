@@ -129,7 +129,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 	private static final long serialVersionUID = 6965358827253585528L;
 	public static final String DB_FILE = System.getProperty("user.home") + "/YouPloader/data/data.db";
 	public static final String APP_NAME = "YouPloader";
-	public static final String VERSION = "0.5";
+	public static final String VERSION = "0.5.1";
 	public static final int DB_VERSION = 5;
 	private static final String DEFAULT_WIDTH = "900";
 	private static final String DEFAULT_HEIGHT = "580";

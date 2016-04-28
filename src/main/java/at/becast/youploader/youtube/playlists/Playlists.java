@@ -46,6 +46,7 @@ public class Playlists {
 			public String description;
 			public String channelTitle;
 			public ThumbnailDetails thumbnails;
+			public String defaultLanguage;
 			@JsonIgnore
 			public String localized;
 			
