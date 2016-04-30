@@ -329,7 +329,6 @@ public class EditPanel extends javax.swing.JPanel {
 		add(dateTimePickerStart, "4, 16, 5, 1, fill, fill");
 		
 		JLabel lblGameTitle = new JLabel(LANG.getString("EditPanel.Gametitle")+":");
-		lblGameTitle.setEnabled(false);
 		add(lblGameTitle, "2, 18, right, default");
 		
 		cmbGameTitle = new AutocompleteComboBox();
@@ -481,7 +480,11 @@ public class EditPanel extends javax.swing.JPanel {
 		cmbTemplate.setEditable(true);
 		cmbTemplate.grabFocus();
 	}
-
+	
+	public void setUpdating(boolean updating){
+		cmbGameTitle.setUpdating(updating);
+	}
+	
 	public JTextField getTxtStartDir() {
 		return txtStartDir;
 	}

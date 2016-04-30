@@ -104,7 +104,9 @@ public class MetadataUpdater {
 		}
 		mdata.put("self_racy", boolConvert(this.upload.metadata.isRestricted()));
 		mdata.put("product_placement", this.upload.metadata.productplacement());
-		
+		if(this.upload.metadata.getGame()!=null){
+			mdata.put("game_title", this.upload.metadata.getGame());
+		}
 		String modified = Joiner.on(",").join(mdata.keySet());
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("session_token", token);

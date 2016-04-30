@@ -38,6 +38,7 @@ public class VideoMetadata {
 	private boolean commentsEnabled;
 	private String message;
 	private String gametitle;
+	private String gameid;
 	private ArrayList<String> playlists = new ArrayList<String>();
 	private boolean restricted;
 	private boolean monetized = false;
@@ -174,7 +175,25 @@ public class VideoMetadata {
 	public void setGametitle(String gametitle) {
 		this.gametitle = gametitle;
 	}
+	
+	public String getGameid() {
+		return gameid;
+	}
+	@JsonIgnore
+	public String getGame() {
+		if(getGameid() != null && !getGameid().equals("")){
+			return "{\"mid\":\""+getGameid()+"\"}";
+		}else if(getGametitle() != null){
+			return "{\"title\":\""+getGametitle()+"\"}";
+		}else{
+			return null;
+		}
+	}
 
+	public void setGameid(String gameid) {
+		this.gameid = gameid;
+	}
+	
 	public boolean isRestricted() {
 		return restricted;
 	}

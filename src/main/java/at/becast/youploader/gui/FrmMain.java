@@ -108,6 +108,7 @@ import at.becast.youploader.youtube.Categories;
 import at.becast.youploader.youtube.LicenseType;
 import at.becast.youploader.youtube.SyndicationType;
 import at.becast.youploader.youtube.VisibilityType;
+import at.becast.youploader.youtube.data.GameDataItem;
 import at.becast.youploader.youtube.data.Video;
 import at.becast.youploader.youtube.data.VideoMetadata;
 import at.becast.youploader.youtube.io.UploadManager;
@@ -129,7 +130,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 	private static final long serialVersionUID = 6965358827253585528L;
 	public static final String DB_FILE = System.getProperty("user.home") + "/YouPloader/data/data.db";
 	public static final String APP_NAME = "YouPloader";
-	public static final String VERSION = "0.5.1";
+	public static final String VERSION = "0.6";
 	public static final int DB_VERSION = 5;
 	private static final String DEFAULT_WIDTH = "900";
 	private static final String DEFAULT_HEIGHT = "580";
@@ -1131,6 +1132,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 	public void loadTemplate(Item item) {
 		EditPanel edit = (EditPanel) ss1.contentPane;
 		Template t = item.getTemplate();
+		edit.setUpdating(true);
 		this.setCategory(t.videodata.snippet.categoryId);
 		txtTitle.setText(t.videodata.snippet.title);
 		txtDescription.setText(t.videodata.snippet.description);
@@ -1156,6 +1158,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 			resetMetadata(t.getMetadata());
 		}
 		calcNotifies();
+		edit.setUpdating(false);
 	}
 
 	private void calcNotifies() {
@@ -1244,7 +1247,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		EditPanel edit = (EditPanel) ss1.contentPane;
 		edit.getCmbGameTitle().setEnabled(false);
 		if (cmbCategory.getSelectedItem() == Categories.GAMES) {
-			edit.getCmbGameTitle().setEnabled(false); //Disabled until further Test
+			edit.getCmbGameTitle().setEnabled(true); //Disabled until further Test
 		}
 	}
 	
@@ -1288,6 +1291,13 @@ public class FrmMain extends JFrame implements IMainMenu {
 		if(edit.getCmbVisibility().getSelectedItem() == VisibilityType.PUBLIC || edit.getCmbVisibility().getSelectedItem() == VisibilityType.SCHEDULED){
 			meta.setMessage(edit.getTxtMessage().getText());
 		}
+		if(edit.getCmbGameTitle().getSelectedItem()!=null && !edit.getCmbGameTitle().getSelectedItem().equals("")){
+			GameDataItem gd = (GameDataItem) edit.getCmbGameTitle().getSelectedItem();
+			meta.setGametitle(gd.name);
+			if(gd.id!=null){
+				meta.setGameid(gd.id);
+			}
+		}
 		meta.setShare_fb(edit.getChckbxFacebook().isSelected());
 		meta.setShare_gplus(edit.getChckbxGoogle().isSelected());
 		meta.setShare_twitter(edit.getChckbxTwitter().isSelected());
@@ -1304,6 +1314,15 @@ public class FrmMain extends JFrame implements IMainMenu {
 		for (int i = 0; i < monet.getCmbContentSyndication().getItemCount(); i++) {
 			if (monet.getCmbContentSyndication().getItemAt(i).getData().equals(metadata.getSyndication())) {
 				monet.getCmbContentSyndication().setSelectedIndex(i);
+			}
+		}
+		edit.getCmbGameTitle().getEditor().setItem("");
+		edit.getCmbGameTitle().removeAllItems();
+		if(metadata.getGametitle()!=null){
+			if(metadata.getGameid()!=null){
+				edit.getCmbGameTitle().addItem(new GameDataItem(metadata.getGametitle(),metadata.getGameid()));
+			}else{
+				edit.getCmbGameTitle().addItem(new GameDataItem(metadata.getGametitle(),null));
 			}
 		}
 		edit.getTxtThumbnail().setText(metadata.getThumbnail());

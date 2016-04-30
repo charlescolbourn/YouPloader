@@ -24,7 +24,7 @@ public class AutocompleteComboBox extends JComboBox<Object>{
 	 * 
 	 */
 	private static final long serialVersionUID = 4568236679352605417L;
-
+	private boolean updating = false;
 	public AutocompleteComboBox(){
 		super();
 		setEditable(true);
@@ -52,40 +52,42 @@ public class AutocompleteComboBox extends JComboBox<Object>{
 				}
 
 				public void update(){
-					SwingUtilities.invokeLater(new Runnable(){
-						@Override
-						public void run() {
-							GameData gd = new GameData(1);
-							List<GameDataItem> founds;
-							try {
-								founds = new ArrayList<GameDataItem>(gd.getGames(tc.getText()));
-								Set<String> foundSet = new HashSet<String>();
-								for ( GameDataItem s : founds ){
-									foundSet.add(s.toString().toLowerCase());
+					if(!updating){
+						SwingUtilities.invokeLater(new Runnable(){
+							@Override
+							public void run() {
+								GameData gd = new GameData(1);
+								List<GameDataItem> founds;
+								try {
+									founds = new ArrayList<GameDataItem>(gd.getGames(tc.getText()));
+									Set<String> foundSet = new HashSet<String>();
+									for ( GameDataItem s : founds ){
+										foundSet.add(s.toString().toLowerCase());
+									}
+									setEditable(false);
+									removeAllItems();
+									//if founds contains the search text, then only add once.
+									if ( !foundSet.contains( tc.getText().toLowerCase()) ){
+										addItem( tc.getText() );
+									}							
+	
+									for (GameDataItem s : founds) {
+										addItem(s);
+									}
+									setEditable(true);
+									setPopupVisible(true);
+									tc.requestFocus();
+									tc.setCaretPosition(tc.getText().length());
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
 								}
-								setEditable(false);
-								removeAllItems();
-								//if founds contains the search text, then only add once.
-								if ( !foundSet.contains( tc.getText().toLowerCase()) ){
-									addItem( tc.getText() );
-								}							
-
-								for (GameDataItem s : founds) {
-									addItem(s);
-								}
-								setEditable(true);
-								setPopupVisible(true);
-								tc.requestFocus();
-								tc.setCaretPosition(tc.getText().length());
-							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
 							}
-						}
-					});
+						});
+					}
 				}
 			});
-
+			
 			//When the text component changes, focus is gained 
 			//and the menu disappears. To account for this, whenever the focus
 			//is gained by the JTextComponent and it has searchable values, we show the popup.
@@ -105,5 +107,9 @@ public class AutocompleteComboBox extends JComboBox<Object>{
 		}else{
 			throw new IllegalStateException("Editing component is not a JTextComponent!");
 		}
+	}
+	
+	public void setUpdating(boolean updating){
+		this.updating = updating;
 	}
 }
