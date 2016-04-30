@@ -240,7 +240,7 @@ public class EditPanel extends javax.swing.JPanel {
 		JLabel lblVisibility = new JLabel(LANG.getString("EditPanel.Visibility")+":");
 		add(lblVisibility, "2, 8, right, default");
 
-		dateTimePicker = new DateTimePicker();
+		dateTimePicker = new DateTimePicker(new Date());
 		dateTimePicker.setEnabled(false);
 		dateTimePicker.getEditor().setEnabled(false);
 		Calendar calendar = dateTimePicker.getMonthView().getCalendar();

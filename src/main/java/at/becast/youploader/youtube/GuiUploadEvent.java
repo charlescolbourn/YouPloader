@@ -22,6 +22,8 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import at.becast.youploader.database.SQLite;
 import at.becast.youploader.gui.UploadItem;
@@ -30,6 +32,7 @@ import at.becast.youploader.youtube.io.UploadEvent;
 import at.becast.youploader.youtube.io.UploadManager.Status;
 
 public class GuiUploadEvent implements UploadEvent {
+  private static final Logger LOG = LoggerFactory.getLogger(GuiUploadEvent.class);
   private long step;
   public UploadItem frame;
   private long timeDelta;
@@ -96,6 +99,9 @@ public class GuiUploadEvent implements UploadEvent {
 					.toSeconds(duration) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration)));
     	frame.getLblKbs().setText(FileUtils.byteCountToDisplaySize(speed)+"/s");
     	frame.getLblETA().setText(time);
+    	if(FrmMain.debug){
+    		LOG.debug("Took {} ms to refresh, Uploaded {} bytes, Speed {} ",System.currentTimeMillis()-now,this.dataDelta,FileUtils.byteCountToDisplaySize(speed));
+    	}
     }
   }
 
