@@ -17,6 +17,8 @@ package at.becast.youploader.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -58,6 +60,8 @@ import javax.swing.JTextPane;
 import javax.swing.JScrollPane;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
+
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
@@ -94,6 +98,7 @@ public class EditPanel extends javax.swing.JPanel {
 	private JCheckBox chckbxFacebook;
 	private JCheckBox chckbxAllowComments;
 	private JCheckBox chckbxAgeRestriction;
+	private JLabel lblSociallenght;
 	private AutocompleteComboBox cmbGameTitle;
 	
 
@@ -370,6 +375,16 @@ public class EditPanel extends javax.swing.JPanel {
 		txtMessage.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		txtMessage.setEnabled(false);
 		scrollPane.setViewportView(txtMessage);
+		txtMessage.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				calcNotifies();
+			}
+		});
+
+		
+		lblSociallenght = new JLabel("(0/110)");
+		add(lblSociallenght, "10, 24, 3, 1");
 		
 		chckbxGoogle = new JCheckBox("Google+");
 		chckbxGoogle.setSelected(true);
@@ -400,6 +415,17 @@ public class EditPanel extends javax.swing.JPanel {
 				}
 			}
 		});
+	}
+
+	protected void calcNotifies() {
+		if (txtMessage.getText().length() > 110) {
+			lblSociallenght.setForeground(Color.RED);
+			lblSociallenght.setToolTipText(LANG.getString("EditPanel.MessageLenght"));
+		} else {
+			lblSociallenght.setForeground(Color.BLACK);
+			lblSociallenght.setToolTipText("");
+		}
+		lblSociallenght.setText("(" + txtMessage.getText().length() + "/110)");
 	}
 
 	protected void templateCmbChanged(ActionEvent e) {
