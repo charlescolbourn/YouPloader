@@ -37,6 +37,7 @@ public class GuiUploadEvent implements UploadEvent {
   private long dataDelta;
   private long lasttime;
   private long lastdata;
+  private long lastdb;
   
   public GuiUploadEvent(UploadItem frame) {
 	  this.frame=frame;
@@ -48,6 +49,7 @@ public class GuiUploadEvent implements UploadEvent {
 	this.starttime = System.currentTimeMillis();
 	this.lastdata = 0;
 	this.lasttime = this.starttime;
+	this.lastdb = this.starttime;
 	Date in = new Date(this.starttime);
 	LocalDateTime ldt = LocalDateTime.ofInstant(in.toInstant(), ZoneId.systemDefault());
 	Date out = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
@@ -70,14 +72,18 @@ public class GuiUploadEvent implements UploadEvent {
 
   @Override
   public void onRead(long length, long position, long size) {
-    if (this.step < System.currentTimeMillis() - 900) {
+	long now = System.currentTimeMillis();
+    if (this.step < now - 2000) {
     	frame.getProgressBar().setString(String.format("%6.2f%%",(float) position / size * 100));
     	frame.getProgressBar().setValue((int)((float) position / size * 100));
     	frame.getProgressBar().revalidate();
         frame.revalidate();
         frame.repaint();
-        SQLite.updateUploadProgress(frame.upload_id, position);
-    	this.step = System.currentTimeMillis();
+        if(lastdb < now - 10000){
+        	SQLite.updateUploadProgress(frame.upload_id, position);
+        	this.lastdb = now;
+        }
+    	this.step = now;
     	this.dataDelta = position - this.lastdata;
     	this.timeDelta = this.step - this.lasttime;
     	this.lasttime  = this.step;
