@@ -1,5 +1,8 @@
 package at.becast.youploader.gui;
 import org.jdesktop.swingx.calendar.SingleDaySelectionModel;
+
+import at.becast.youploader.util.UTF8ResourceBundle;
+
 import org.apache.commons.lang3.time.DateUtils;
 import org.jdesktop.swingx.JXDatePicker;
 
@@ -18,6 +21,7 @@ public class DateTimePicker extends JXDatePicker {
 	 * 
 	 */
 	private static final long serialVersionUID = -2873827187894531697L;
+	private static final ResourceBundle LANG = UTF8ResourceBundle.getBundle("lang", Locale.getDefault());
 	private JSlider minuteSlider;
 	private JSlider hourSlider;
     private JPanel timePanel;
@@ -85,6 +89,7 @@ public class DateTimePicker extends JXDatePicker {
         updateTextFieldFormat();
         hourSlider = new JSlider(SwingConstants.HORIZONTAL,0,23,0);
         hourSlider.setSnapToTicks(true);
+        hourSlider.setPaintTicks(true);
         hourSlider.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
@@ -105,6 +110,7 @@ public class DateTimePicker extends JXDatePicker {
 		gbc_minuteSlider.gridwidth = GridBagConstraints.REMAINDER;
         minuteSlider = new JSlider(SwingConstants.HORIZONTAL,0,59,0);
         minuteSlider.setSnapToTicks(true);
+        minuteSlider.setPaintTicks(true);
         minuteSlider.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
@@ -122,7 +128,7 @@ public class DateTimePicker extends JXDatePicker {
 		gbc_label.insets = new Insets(0, 0, 5, 5);
 		gbc_label.gridx = 0;
 		gbc_label.gridy = 0;
-        newPanel.add(new JLabel( "Time:" ),gbc_label );
+        newPanel.add(new JLabel(LANG.getString("DateTimePicker.Time")),gbc_label );
         newPanel.add(timeField,gbc_timeField);
         newPanel.add(hourSlider,gbc_hourSlider);
         newPanel.add(minuteSlider,gbc_minuteSlider);

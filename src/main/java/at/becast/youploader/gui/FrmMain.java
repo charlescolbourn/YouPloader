@@ -566,6 +566,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		buttonPanel.add(lblUploads, "18, 4, right, fill");
 
 		JSlider slider = new JSlider();
+		slider.setPaintTicks(true);
 		slider.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				JSlider s = (JSlider) evt.getSource();
@@ -574,11 +575,11 @@ public class FrmMain extends JFrame implements IMainMenu {
 		});
 		slider.setMajorTickSpacing(1);
 		slider.setMinorTickSpacing(1);
+
 		slider.setMinimum(1);
 		slider.setMaximum(5);
 		slider.setValue(1);
 		slider.setSnapToTicks(true);
-		slider.setPaintTicks(true);
 		slider.setPaintLabels(true);
 		buttonPanel.add(slider, "20, 4, fill, fill");
 
@@ -1162,31 +1163,35 @@ public class FrmMain extends JFrame implements IMainMenu {
 		int taglength = TagUtil.calculateTagLenght(txtTags.getText());
 
 		if (taglength > 450) {
-			lblTagslenght.setForeground(Color.RED);
+			lblTagslenght.setForeground(Color.ORANGE);
 		} else {
 			lblTagslenght.setForeground(Color.BLACK);
 		}
-		if (taglength >= 501) {
-			//txtTags.setText(txtTags.getText().substring(0, 500));
-			
+		if (taglength >= 500) {
+			lblTagslenght.setForeground(Color.RED);
 		}
 		lblTagslenght.setText("(" + taglength + "/500)");
 
 		if (txtDescription.getText().length() > 4900) {
-			lblDesclenght.setForeground(Color.RED);
+			lblDesclenght.setForeground(Color.ORANGE);
 		} else {
 			lblDesclenght.setForeground(Color.BLACK);
 		}
+		if (txtDescription.getText().length() >= 5000) {
+			lblDesclenght.setForeground(Color.RED);
+		}
 		if (txtDescription.getText().length() >= 5001) {
 			txtDescription.setText(txtDescription.getText().substring(0, 5000));
-
 		}
 		lblDesclenght.setText("(" + txtDescription.getText().length() + "/5000)");
 
 		if (txtTitle.getText().length() > 90) {
-			lbltitlelenght.setForeground(Color.RED);
+			lbltitlelenght.setForeground(Color.ORANGE);
 		} else {
 			lbltitlelenght.setForeground(Color.BLACK);
+		}
+		if (txtTitle.getText().length() >= 100) {
+			lbltitlelenght.setForeground(Color.RED);
 		}
 		if (txtTitle.getText().length() >= 101) {
 			txtTitle.setText(txtTitle.getText().substring(0, 100));
