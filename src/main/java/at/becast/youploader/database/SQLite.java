@@ -326,7 +326,7 @@ public class SQLite {
 	    	prest.close();
 	    	return res;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			LOG.error("Error deleting Template ", e);
 			return false;
 		}			
 	}
@@ -391,6 +391,19 @@ public class SQLite {
     	prest.setInt(2, id);
     	prest.execute();
         prest.close();	
+	}	
+	
+	public static void deletePlaylist(int id) {
+		PreparedStatement prest = null;
+    	String sql	= "DELETE FROM `playlists` WHERE `id`=?";
+    	try {
+			prest = c.prepareStatement(sql);
+	    	prest.setInt(1, id);
+	    	prest.close();
+		} catch (SQLException e) {
+			LOG.error("Error deleting Playlist ", e);
+		}			
+		
 	}
 	
 	public static void update() {
@@ -450,6 +463,7 @@ public class SQLite {
 			LOG.error("Could not create Database Backup ",e);
 		}
 	}
+
 
 
 

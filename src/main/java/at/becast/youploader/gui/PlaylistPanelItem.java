@@ -16,6 +16,8 @@ import java.sql.SQLException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class PlaylistPanelItem extends JPanel {
 
@@ -25,11 +27,13 @@ public class PlaylistPanelItem extends JPanel {
 	private static final long serialVersionUID = 7026650769642399964L;
 	private int id;
 	private boolean shown;
+	private FrmMain parent;
 	/**
 	 * Create the panel.
 	 */
-	public PlaylistPanelItem(String name, int id, boolean shown) {
+	public PlaylistPanelItem(String name, int id, boolean shown, FrmMain parent) {
 		this.id = id;
+		this.parent = parent;
 		this.setShown(shown);
 		setLayout(new FormLayout(new ColumnSpec[] {
 				FormSpecs.RELATED_GAP_COLSPEC,
@@ -59,11 +63,21 @@ public class PlaylistPanelItem extends JPanel {
 		add(chkboxHidden, "2, 2, fill, fill");
 		chkboxHidden.setSelected(this.isShown());
 		JButton btnNewButton = new JButton("");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				delete();
+			}
+		});
 		btnNewButton.setIcon(new ImageIcon(getClass().getResource("/delete.png")));
 		add(btnNewButton, "4, 2, fill, default");
 
 	}
 
+	private void delete(){
+		SQLite.deletePlaylist(this.id);
+		parent.removePlaylist(this);
+	}
+	
 	public int getId() {
 		return id;
 	}

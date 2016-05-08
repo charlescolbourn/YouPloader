@@ -156,7 +156,6 @@ public class PlaylistPanel extends JPanel {
 		
 	}
 
-
 	public JPanel getPlaylistPanel() {
 		return playlistPanel;
 	}

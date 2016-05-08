@@ -1458,10 +1458,16 @@ public class FrmMain extends JFrame implements IMainMenu {
 		}
 		if(pl.getPlaylists().get(acc.getValue())!=null && !pl.getPlaylists().get(acc.getValue()).isEmpty()){
 			for(Playlist p : pl.getPlaylists().get(acc.getValue())){
-				PlaylistPanelItem i = new PlaylistPanelItem(p.name, p.id, p.shown);
+				PlaylistPanelItem i = new PlaylistPanelItem(p.name, p.id, p.shown, this);
 				PlayPanel.add(i);
 			}
 		}
+		PlayPanel.revalidate();
+		PlayPanel.repaint();
+	}
+	
+	public void removePlaylist(PlaylistPanelItem playlistPanelItem) {
+		PlayPanel.remove(playlistPanelItem);	
 		PlayPanel.revalidate();
 		PlayPanel.repaint();
 	}
@@ -1471,7 +1477,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		TemplateMgr.delete(id);
 		edit.refreshTemplates();
 	}
-	
+
 	public PlaylistPanel getPlaylistPanel() {
 		return (PlaylistPanel) ss2.contentPane;
 	}
@@ -1505,4 +1511,5 @@ public class FrmMain extends JFrame implements IMainMenu {
 	public JList<AccountType> getAccList() {
 		return AccList;
 	}
+
 }
