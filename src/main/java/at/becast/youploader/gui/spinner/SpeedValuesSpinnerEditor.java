@@ -5,6 +5,10 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.LayoutManager;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Locale;
@@ -18,27 +22,27 @@ import javax.swing.event.ChangeListener;
 
 import at.becast.youploader.util.UTF8ResourceBundle;
 
-public class SpeedValuesSpinnerEditor extends JPanel implements PropertyChangeListener, LayoutManager, ChangeListener{
+public class SpeedValuesSpinnerEditor extends JPanel implements PropertyChangeListener, LayoutManager, ChangeListener, ActionListener, FocusListener{
 
 	/**
 	 * Spinner.Unlimited
 	 */
 	private static final ResourceBundle LANG = UTF8ResourceBundle.getBundle("lang", Locale.getDefault());
 	private static final long serialVersionUID = -5739544907889014244L;
-	private JSpinner spinner;
 	public SpeedValuesSpinnerEditor(JSpinner spinner) {
 		super();
-		this.spinner = spinner;
 		JTextField ftf = new JTextField();
         ftf.setName("Spinner.TextField");
-		int numb = (int) this.spinner.getValue();
+		int numb = (int) spinner.getValue();
 		if(numb==0){
 			ftf.setText(LANG.getString("Spinner.Unlimited"));
 		}else{
 			ftf.setText(String.valueOf(numb));
 		}
         ftf.addPropertyChangeListener(this);
-        ftf.setEditable(false);
+        ftf.setEditable(true);
+        ftf.addActionListener(this);
+        ftf.addFocusListener(this);
         ftf.setInheritsPopupMenu(true);
 
         String toolTipText = spinner.getToolTipText();
@@ -168,6 +172,74 @@ public class SpeedValuesSpinnerEditor extends JPanel implements PropertyChangeLi
                 }
             }
         }
+		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		JSpinner spinner = getSpinner();
+		Object source = e.getSource();
+		 int lastValue = (int) spinner.getValue();
+
+         // Try to set the new value
+         try {
+         	String value = getTextField().getText();
+         	if(value.equals(LANG.getString("Spinner.Unlimited"))){
+         		spinner.setValue(0);
+         	}else{
+         		spinner.setValue(Integer.parseInt(value));
+         	}
+         } catch (IllegalArgumentException iae) {
+             // SpinnerModel didn't like new value, reset
+             try {
+             	if(lastValue==0){
+             		((JTextField)source).setText(LANG.getString("Spinner.Unlimited"));
+             	}else{
+             		((JTextField)source).setText(String.valueOf(lastValue));
+             	}
+             } catch (IllegalArgumentException iae2) {
+                 // Still bogus, nothing else we can do, the
+                 // SpinnerModel and JFormattedTextField are now out
+                 // of sync.
+             }
+         }
+		
+	}
+
+	@Override
+	public void focusGained(FocusEvent e) {
+		// Do Nothing
+		
+	}
+
+	@Override
+	public void focusLost(FocusEvent e) {
+		JSpinner spinner = getSpinner();
+		Object source = e.getSource();
+		 int lastValue = (int) spinner.getValue();
+
+         // Try to set the new value
+         try {
+         	String value = getTextField().getText();
+         	if(value.equals(LANG.getString("Spinner.Unlimited"))){
+         		spinner.setValue(0);
+         	}else{
+         		spinner.setValue(Integer.parseInt(value));
+         	}
+         } catch (IllegalArgumentException iae) {
+             // SpinnerModel didn't like new value, reset
+             try {
+             	if(lastValue==0){
+             		((JTextField)source).setText(LANG.getString("Spinner.Unlimited"));
+             	}else{
+             		((JTextField)source).setText(String.valueOf(lastValue));
+             	}
+             } catch (IllegalArgumentException iae2) {
+                 // Still bogus, nothing else we can do, the
+                 // SpinnerModel and JFormattedTextField are now out
+                 // of sync.
+             }
+         }
 		
 	}
 }
