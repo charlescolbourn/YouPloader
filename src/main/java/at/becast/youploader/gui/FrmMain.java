@@ -1437,8 +1437,9 @@ public class FrmMain extends JFrame implements IMainMenu {
     	for(Component c : PlayPanel.getComponents()){
     		PlayPanel.remove(c);	
     	}
+    	PlayPanel.repaint();
 		AccountType acc = AccList.getSelectedValue();
-		PlaylistManager pl = new PlaylistManager(acc.getValue());
+		PlaylistManager pl = PlaylistManager.getInstance();
 		if(pl.getPlaylists().isEmpty()){
 			pl.load();
 		}
@@ -1448,6 +1449,8 @@ public class FrmMain extends JFrame implements IMainMenu {
 				PlayPanel.add(i);
 			}
 		}
+		PlayPanel.revalidate();
+		PlayPanel.repaint();
 	}
 
 	public void deleteTemplate(int id) {

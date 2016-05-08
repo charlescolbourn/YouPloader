@@ -12,7 +12,7 @@ Writeup of compilation process & Pull requests
 
 #Help
 You can help translate YouPloader into your language. Simply check out /src/main/resources/lang/lang.properties
-Translate the strings into your language and save them as lang_(Two char iso code).properties (e.g. lang_fr.properties for France)
+Translate the strings into your language and save them as lang_(Two char iso code).properties (e.g. lang_fr.properties for French)
 Send a pull request and I will happily credit you!
 
 # Used Third Party Libraries, Code & Resources

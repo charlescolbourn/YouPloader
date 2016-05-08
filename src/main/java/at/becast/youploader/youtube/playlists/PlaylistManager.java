@@ -38,29 +38,36 @@ import at.becast.youploader.youtube.io.SimpleHTTP;
 import at.becast.youploader.youtube.playlists.Playlists.Item;
 
 public class PlaylistManager {
-
+	
+	public static PlaylistManager playlistMng;
 	private SimpleHTTP http;
-	private OAuth2 oAuth2;
-	private int account;
 	private ObjectMapper mapper = new ObjectMapper();
 	private AccountManager AccMgr = AccountManager.getInstance();
 	private static final Logger LOG = LoggerFactory.getLogger(EditPanel.class);
 	private HashMap<Integer,List<Playlist>> playlists = new HashMap<Integer,List<Playlist>>();
 
-	public PlaylistManager(int account){
-		this.account = account;
-		this.oAuth2 = this.AccMgr.getAuth(account);
+	public static PlaylistManager getInstance(){
+		if(playlistMng == null){
+			playlistMng = new PlaylistManager();
+		}
+		return playlistMng;
+		
 	}
 	
-	public Playlists get(){
+	private PlaylistManager(){
+
+	}
+	
+	public Playlists get(int account){
 		Playlists lists = null;
+		OAuth2 acc = AccMgr.getAuth(account);
 		try {
-			lists = mapper.readValue(get(null),Playlists.class);
+			lists = mapper.readValue(get(null,acc),Playlists.class);
 			if(lists.nextPageToken!=null){
 				Playlists next;
 				String token = lists.nextPageToken;
 				do{
-					next = mapper.readValue(get(token),Playlists.class);
+					next = mapper.readValue(get(token,acc),Playlists.class);
 					lists.items.addAll(next.items);
 					token = next.nextPageToken;
 				}while(next.nextPageToken!=null);
@@ -78,13 +85,13 @@ public class PlaylistManager {
 		return lists;
 	}
 	
-	public void save(){
+	public void save(int account){
 		this.playlists.clear();
 		this.load();
-		Playlists lists = this.get();
-		if(this.playlists.get(this.account)==null || this.playlists.get(this.account).isEmpty()){
+		Playlists lists = this.get(account);
+		if(this.playlists.get(account)==null || this.playlists.get(account).isEmpty()){
 			try {
-				SQLite.savePlaylists(lists,this.account);
+				SQLite.savePlaylists(lists,account);
 			} catch (SQLException | IOException e) {
 				LOG.error("Error saving Playlists: ",e);
 			}
@@ -92,8 +99,8 @@ public class PlaylistManager {
 			for(Item s : lists.items){
 				String id = s.id;
 				boolean found = false;
-				for(int i=0; i<this.playlists.get(this.account).size();i++){
-					if(this.playlists.get(this.account).get(i).ytId.equals(id)){
+				for(int i=0; i<this.playlists.get(account).size();i++){
+					if(this.playlists.get(account).get(i).ytId.equals(id)){
 						found = true;
 						try {
 							SQLite.updatePlaylist(s);
@@ -104,7 +111,7 @@ public class PlaylistManager {
 				}
 				if(!found){
 					try {
-						SQLite.insertPlaylist(s,this.account);
+						SQLite.insertPlaylist(s,account);
 					} catch (SQLException | IOException e) {
 						LOG.error("Error adding Playlists: ",e);
 					}
@@ -114,11 +121,12 @@ public class PlaylistManager {
 		
 	}
 
-	public void add(String name){
+	public void add(String name, int account){
 		this.http = new SimpleHTTP();
+		OAuth2 acc = AccMgr.getAuth(account);
 		Map<String, String> headers = new HashMap<>();
 		try {
-			headers.put("Authorization", this.oAuth2.getHeader());
+			headers.put("Authorization", acc.getHeader());
 			headers.put("Content-Type", "application/json; charset=UTF-8");
 			PlaylistAdd add = new PlaylistAdd(name);
 			http.postPL(
@@ -132,42 +140,44 @@ public class PlaylistManager {
 
 	
 	public void load() {
-		Connection c = SQLite.getInstance();
-		Statement stmt;
-		try {
-			stmt = c.createStatement();
-			String sql = "SELECT * FROM `playlists`"; 
-			ResultSet rs = stmt.executeQuery(sql);
-			if(rs.isBeforeFirst()){
-				while(rs.next()){
-					String shown;
-					if(rs.getString("shown")==null){
-						shown = "1";
-						SQLite.setPlaylistHidden(rs.getInt("id"), shown);
-					}else{
-						shown = rs.getString("shown");
+		if(playlists.isEmpty()){
+			Connection c = SQLite.getInstance();
+			Statement stmt;
+			try {
+				stmt = c.createStatement();
+				String sql = "SELECT * FROM `playlists`"; 
+				ResultSet rs = stmt.executeQuery(sql);
+				if(rs.isBeforeFirst()){
+					while(rs.next()){
+						String shown;
+						if(rs.getString("shown")==null){
+							shown = "1";
+							SQLite.setPlaylistHidden(rs.getInt("id"), shown);
+						}else{
+							shown = rs.getString("shown");
+						}
+						Playlist l = new Playlist(rs.getInt("id"), rs.getString("playlistid"), rs.getString("name"), rs.getBytes("image"), shown);
+						if(playlists.get(rs.getInt("account"))==null){
+							List<Playlist> list = new ArrayList<Playlist>();
+							list.add(l);
+							playlists.put(rs.getInt("account"),list);
+						}else{
+							playlists.get(rs.getInt("account")).add(l);
+						}
 					}
-					Playlist l = new Playlist(rs.getInt("id"), rs.getString("playlistid"), rs.getString("name"), rs.getBytes("image"), shown);
-					if(playlists.get(rs.getInt("account"))==null){
-						List<Playlist> list = new ArrayList<Playlist>();
-						list.add(l);
-						playlists.put(rs.getInt("account"),list);
-					}else{
-						playlists.get(rs.getInt("account")).add(l);
-					}
+					rs.close();
+					stmt.close();
+				}else{
+					rs.close();
+					stmt.close();
 				}
-				rs.close();
-				stmt.close();
-			}else{
-				rs.close();
-				stmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
 		}
 	}
 	
-	public String get(String page){
+	public String get(String page, OAuth2 account){
 		this.http = new SimpleHTTP();
 		String getpage="";
 		if(page!=null && !page.equals("")){
@@ -175,7 +185,7 @@ public class PlaylistManager {
 		}
 		Map<String, String> headers = new HashMap<>();
 		try {
-			headers.put("Authorization", this.oAuth2.getHeader());
+			headers.put("Authorization", account.getHeader());
 			headers.put("Content-Type", "application/json; charset=UTF-8");
 			String result = http.get(
 					"https://www.googleapis.com/youtube/v3/playlists?part=snippet&maxResults=50&fields=items(id%2Csnippet)&mine=true"+getpage,

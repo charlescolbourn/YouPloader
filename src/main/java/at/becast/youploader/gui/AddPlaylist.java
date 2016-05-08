@@ -46,7 +46,6 @@ public class AddPlaylist extends javax.swing.JDialog {
 	 */
 	private static final long serialVersionUID = 4804877236112916847L;
 	private FrmMain parent;
-	private PlaylistManager pl;
 	private JTextField AccPlaylist;
 	private static final Logger LOG = LoggerFactory.getLogger(AddPlaylist.class);
 	private static final ResourceBundle LANG = UTF8ResourceBundle.getBundle("lang", Locale.getDefault());
@@ -117,8 +116,8 @@ public class AddPlaylist extends javax.swing.JDialog {
 			this.setVisible(false);
 			LOG.info("Adding Playlist {}", AccPlaylist.getText());
 			AccountType acc = (AccountType) parent.getCmbAccount().getSelectedItem();
-			this.pl = new PlaylistManager(acc.getValue());
-			this.pl.add(AccPlaylist.getText());
+			PlaylistManager pl = PlaylistManager.getInstance();
+			pl.add(AccPlaylist.getText(), acc.getValue());
 			PlaylistUpdater pu = new PlaylistUpdater(parent);
 			Thread updater = new Thread(pu);
 			updater.start();

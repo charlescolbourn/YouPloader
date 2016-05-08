@@ -50,16 +50,16 @@ public class PlaylistPanel extends JPanel {
 	 */
 	public PlaylistPanel(FrmMain parent) {
 		this.parent = parent;
+		this.pl = PlaylistManager.getInstance();
 		initComponents();
 	}
 	
 	
 	public void refreshPlaylists() {
     	AccountType acc = (AccountType) parent.getCmbAccount().getSelectedItem();
-		this.pl = new PlaylistManager(acc.getValue());
 		SwingUtilities.invokeLater(new Runnable() {
 		    public void run() {
-				pl.save();
+				pl.save(acc.getValue());
 		      }
 	    });
 		loadPlaylists();
@@ -67,8 +67,7 @@ public class PlaylistPanel extends JPanel {
 	
 	public void loadPlaylists() {
     	AccountType acc = (AccountType) parent.getCmbAccount().getSelectedItem();
-		this.pl = new PlaylistManager(acc.getValue());
-		pl.load();
+		this.pl.load();
 		if(!pl.getPlaylists().isEmpty()){
 			if(pl.getPlaylists().get(acc.getValue())!=null && !pl.getPlaylists().get(acc.getValue()).isEmpty()){
 				for(Playlist p : pl.getPlaylists().get(acc.getValue())){
