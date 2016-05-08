@@ -139,6 +139,24 @@ public class AccountManager {
 		} catch (SQLException e) {
 			LOG.error("Error in delete during DB Delete", e);
 		}		
+		String sqlpl = "DELETE FROM `playlists` WHERE `account`=?";
+		try {
+			stmt = c.prepareStatement(sqlpl);
+			stmt.setInt(1, id);
+			stmt.executeUpdate();
+			stmt.close();
+		} catch (SQLException e) {
+			LOG.error("Error in delete during DB Delete", e);
+		}		
+		String sqlup = "DELETE FROM `uploads` WHERE `account`=?";
+		try {
+			stmt = c.prepareStatement(sqlup);
+			stmt.setInt(1, id);
+			stmt.executeUpdate();
+			stmt.close();
+		} catch (SQLException e) {
+			LOG.error("Error in delete during DB Delete", e);
+		}	
 		
 	}
 
