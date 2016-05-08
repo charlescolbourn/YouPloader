@@ -101,7 +101,7 @@ public class AutocompleteComboBox extends JComboBox<Object>{
 
 				@Override
 				public void focusLost(FocusEvent arg0) {						
-
+					//Unneeded
 				}
 			});
 		}else{

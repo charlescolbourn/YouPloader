@@ -24,7 +24,8 @@ public class ArrowPanel2 extends JPanel implements SwingConstants{
 		Graphics2D g2 = (Graphics2D)g;
 		
 		Color origColor;
-		int w, h;
+		int w;
+		int h;
 
 		w = getSize().width;
 		h = getSize().height;

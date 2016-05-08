@@ -21,7 +21,7 @@ public class StatusBar extends JPanel {
 	 */
 	private static final long serialVersionUID = -5923823447707168982L;
 	private static final ResourceBundle LANG = UTF8ResourceBundle.getBundle("lang", Locale.getDefault());
-	JLabel lblMessage;
+	private JLabel lblMessage;
 	private JProgressBar progressBar;
 
    public StatusBar() {

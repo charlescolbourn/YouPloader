@@ -332,7 +332,9 @@ public class FrmMain extends JFrame implements IMainMenu {
 		int height = Integer.parseInt(s.get("height", DEFAULT_HEIGHT));
 		setBounds(left, top, width, height);
 		TabbedPane = new JTabbedPane();
-		
+		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+		setTitle(APP_NAME + " " + VERSION);
+		setName("frmMain");
 		//Main Tab Creation
 		initMainTab();
 		
@@ -378,9 +380,6 @@ public class FrmMain extends JFrame implements IMainMenu {
 		sideBar.addSection(ss1, false);
 		sideBar.addSection(ss2);
 		sideBar.addSection(ss3);
-		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-		setTitle(APP_NAME + " " + VERSION);
-		setName("frmMain");
 		JPanel mainTab = new JPanel();
 		JPanel panel = new JPanel();
 		GroupLayout mainTabLayout = new GroupLayout(mainTab);

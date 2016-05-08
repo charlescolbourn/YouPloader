@@ -37,7 +37,7 @@ public class GameData {
 	private Account acc;
 	private static final Logger LOG = LoggerFactory.getLogger(GameData.class);
 	private CookieJar persistentCookieStore = new CookieJar();
-	List<GameDataItem> gd = new ArrayList<GameDataItem>();
+	private List<GameDataItem> gd = new ArrayList<GameDataItem>();
 	public GameData(int acc_id) {
 		try {
 			this.acc = Account.read(acc_id);

@@ -75,7 +75,9 @@ public class ArrowPanel extends JPanel implements SwingConstants{
 	@Override
 	public void paint(Graphics g) {
 		Color origColor;
-		int w, h, size;
+		int w;
+		int h;
+		int size;
 
 		w = getSize().width;
 		h = getSize().height;
@@ -103,7 +105,9 @@ public class ArrowPanel extends JPanel implements SwingConstants{
 	 */
 	public void paintTriangle(Graphics g, int x, int y, int size, int direction, boolean isEnabled) {
 		Color oldColor = g.getColor();
-		int mid, i, j;
+		int mid;
+		int i;
+		int j;
 
 		j = 0;
 		size = Math.max(size, 2);
