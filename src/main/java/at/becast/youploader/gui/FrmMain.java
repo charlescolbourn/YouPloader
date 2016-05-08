@@ -33,6 +33,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -174,6 +175,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 	private StatusBar statusBar;
 	private JList<AccountType> AccList;
 	private JPanel PlayPanel;
+	private TrayManager tray;
 	private DefaultListModel<AccountType> AccListModel = new DefaultListModel<AccountType>();
 	/**
 	 * @param args
@@ -278,6 +280,28 @@ public class FrmMain extends JFrame implements IMainMenu {
 		if(s.setting.get("notify_updates").equals("1")){
 			checkUpdates();
 		}
+		tray = new TrayManager(this);
+		tray.CreateTrayIcon();
+		addWindowStateListener(new WindowStateListener() {
+            public void windowStateChanged(WindowEvent e) {
+                if(e.getNewState()==ICONIFIED){
+                    tray.add();
+					setVisible(false);
+                }
+        if(e.getNewState()==7){
+            tray.add();
+			setVisible(false);
+        }
+        if(e.getNewState()==MAXIMIZED_BOTH){
+                    tray.remove();
+                    setVisible(true);
+                }
+                if(e.getNewState()==NORMAL){
+                    tray.remove();
+                    setVisible(true);
+                }
+            }
+        });
 	}
 
 	private void checkUpdates() {
