@@ -281,7 +281,6 @@ public class FrmMain extends JFrame implements IMainMenu {
 			checkUpdates();
 		}
 		tray = new TrayManager(this);
-		tray.CreateTrayIcon();
 		addWindowStateListener(new WindowStateListener() {
             public void windowStateChanged(WindowEvent e) {
                 if(e.getNewState()==ICONIFIED){

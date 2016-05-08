@@ -73,11 +73,6 @@ public class TrayManager {
 		}
     }
     
-    
-    public void CreateTrayIcon(){
-	  
-    }
-    
     private void normalize(){
 		this.parent.setVisible(true);
 		this.parent.setExtendedState(JFrame.NORMAL);
