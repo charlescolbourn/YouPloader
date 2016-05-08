@@ -11,19 +11,22 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import javax.swing.JFrame;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import at.becast.youploader.oauth.OAuth2;
+import at.becast.youploader.util.UTF8ResourceBundle;
 
 public class TrayManager {
     private TrayIcon trayIcon;
     private SystemTray tray;
     private FrmMain parent;
-    private static final Logger LOG = LoggerFactory.getLogger(OAuth2.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TrayManager.class);
+    private static final ResourceBundle LANG = UTF8ResourceBundle.getBundle("lang", Locale.getDefault());
     
     public TrayManager(FrmMain parent){
     	this.parent = parent;
@@ -40,10 +43,10 @@ public class TrayManager {
 				}
 			};
 			PopupMenu popup=new PopupMenu();
-			MenuItem defaultItem=new MenuItem("Exit");
+			MenuItem defaultItem=new MenuItem(LANG.getString("tray.exit"));
 			defaultItem.addActionListener(exitListener);
 			popup.add(defaultItem);
-			defaultItem=new MenuItem("Open");
+			defaultItem=new MenuItem(LANG.getString("tray.open"));
 			defaultItem.addActionListener(new ActionListener() {
 				@Override
 			    public void actionPerformed(ActionEvent e) {
