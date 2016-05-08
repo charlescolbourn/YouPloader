@@ -51,3 +51,4 @@ NativeJFileChooser by veluria (https://gist.githubusercontent.com/veluria/61ba57
 Silk Icons (http://www.famfamfam.com/lab/icons/silk/) - Creative Commons Attribution 2.5 License.
 ```
 [![Build Status](http://build.becast.at/job/YouPloader/badge/icon)](https://build.becast.at/job/YouPloader/)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/62ce211d130f42aca8dbc6e97d56488a)](https://www.codacy.com/app/bernhard/YouPloader?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=becast/YouPloader&amp;utm_campaign=Badge_Grade)
