@@ -148,6 +148,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 	private static final ResourceBundle LANG = UTF8ResourceBundle.getBundle("lang", Locale.getDefault());
 	private static Settings s;
 	private static Boolean firstlaunch = false;
+	private Boolean loading = false;
 	private AccountManager accMng = AccountManager.getInstance();
 	private Boolean tos;
 	private JButton btnAddToQueue;
@@ -854,6 +855,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 	}
 
 	public void refreshAccounts() {
+		this.loading = true;
 		int s = _accounts.size();
 		for (int i = 0; i < s; i++) {
 			mnuAcc.remove(_accounts.get(i));
@@ -863,14 +865,17 @@ public class FrmMain extends JFrame implements IMainMenu {
 		AccListModel.clear();
 		btnAddToQueue.setEnabled(false);
 		loadAccounts();
+		this.loading = false;
 	}
 	
 	public void changeUser() {
-		PlaylistPanel pl = (PlaylistPanel) ss2.contentPane;
-		pl.clearPlaylists();
-		pl.loadPlaylists();
-		TabbedPane.repaint();
-		TabbedPane.revalidate();
+		if(!this.loading){
+			PlaylistPanel pl = (PlaylistPanel) ss2.contentPane;
+			pl.clearPlaylists();
+			pl.loadPlaylists();
+			TabbedPane.repaint();
+			TabbedPane.revalidate();
+		}
 	}
 
 	public void loadAccounts() {

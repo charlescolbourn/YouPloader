@@ -68,9 +68,11 @@ public class PlaylistManager {
 		} catch (IOException e) {
 			LOG.error("Exception while getting Playlists: ", e);
 		}
-		for(int i=0;i<lists.items.size();i++){
-			if(lists.items.get(i).id.startsWith("FL")){
-				lists.items.remove(i);
+		if(lists.items!=null){
+			for(int i=0;i<lists.items.size();i++){
+				if(lists.items.get(i).id.startsWith("FL")){
+					lists.items.remove(i);
+				}
 			}
 		}
 		return lists;
