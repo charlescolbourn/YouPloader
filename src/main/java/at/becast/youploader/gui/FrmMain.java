@@ -60,6 +60,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -932,6 +933,12 @@ public class FrmMain extends JFrame implements IMainMenu {
 				f.upload_id = rs.getInt("id");
 				String url = rs.getString("url");
 				String yt_id = rs.getString("yt_id");
+				Date startAt;
+				if(rs.getString("starttime") == null || rs.getString("starttime").equals("")){
+					startAt = null;
+				}else{
+					startAt = rs.getDate("starttime");
+				}
 				f.getlblUrl().setText("https://www.youtube.com/watch?v=" + yt_id);
 				f.getlblName().setText(v.snippet.title);
 				metadata.setFrame(f);
@@ -947,7 +954,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 					f.revalidate();
 					f.repaint();
 				} else if ("NOT_STARTED".equals(status)) {
-					UploadMgr.addUpload(data, v, metadata);
+					UploadMgr.addUpload(data, v, metadata,startAt);
 				} else if ("FAILED".equals(status)) {
 					f.getBtnEdit().setEnabled(false);
 					f.getProgressBar().setValue(0);
@@ -1020,7 +1027,13 @@ public class FrmMain extends JFrame implements IMainMenu {
 		File data = new File(File);
 		metadata.setFrame(f);
 		metadata.setAccount(acc_id);
-		UploadMgr.addUpload(data, v, metadata);
+		JFormattedTextField tf = edit.getDateTimePickerStart().getEditor();
+		System.out.println(tf.getValue());
+		if (tf.getValue() == null || tf.getValue().toString().equals("")) {
+			UploadMgr.addUpload(data, v, metadata,null);
+		}else{
+			UploadMgr.addUpload(data, v, metadata, edit.getDateTimePickerStart().getDate());
+		}
 		return f;
 	}
 

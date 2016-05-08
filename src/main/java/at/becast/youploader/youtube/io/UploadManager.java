@@ -40,7 +40,7 @@ import at.becast.youploader.youtube.data.VideoMetadata;
 import at.becast.youploader.youtube.data.VideoUpdate;
 import at.becast.youploader.youtube.exceptions.UploadException;
 
-public class UploadManager {
+public class UploadManager implements Runnable{
 	private static UploadManager self;
 	private int upload_limit = 1;
 	private static final Logger LOG = LoggerFactory.getLogger(UploadManager.class);
@@ -50,6 +50,7 @@ public class UploadManager {
 	private LinkedList<UploadWorker> _ToUpload = new LinkedList<UploadWorker>();
 	private LinkedList<UploadWorker> _Uploading = new LinkedList<UploadWorker>();
 	private int speed_limit = 0;
+	private Thread t;
 	private static final ResourceBundle LANG = UTF8ResourceBundle.getBundle("lang", Locale.getDefault());
 	
 	private UploadManager(){
@@ -67,45 +68,45 @@ public class UploadManager {
 		this.parent = parent;
 	}
 	
-	public void addUpload(File data, Video videodata, VideoMetadata metadata){
+	public void addUpload(File data, Video videodata, VideoMetadata metadata, Date startAt){
 		LOG.info("Adding upload");
 		this.speed_limit = Integer.parseInt(parent.getSpinner().getValue().toString());
 		if(metadata.getFrame().upload_id == -1){
 			int id = -1;
 			LOG.info("Upload is not a preexisting upload: Inserting to Database");
 			try {
-				id = SQLite.addUpload(data, videodata, metadata);
+				id = SQLite.addUpload(data, videodata, metadata, startAt);
 			} catch (SQLException | IOException e) {
 				LOG.error("Upload cound not be added", e);
 			}
 			if(id != -1){
 				LOG.info("Upload is not a preexisting upload: Adding Upload");
 				metadata.getFrame().setId(id);
-				UploadWorker worker = new UploadWorker(id, data, videodata, speed_limit, metadata);
+				UploadWorker worker = new UploadWorker(id, data, videodata, speed_limit, metadata,startAt);
 				_ToUpload.addLast(worker);
 			}else{
 				LOG.info("Upload could not be added to database.");
 			}
 		}else{
 			LOG.info("Upload is a preexisting upload: Adding Upload");
-			UploadWorker worker = new UploadWorker(metadata.getFrame().upload_id, data, videodata, speed_limit, metadata);
+			UploadWorker worker = new UploadWorker(metadata.getFrame().upload_id, data, videodata, speed_limit, metadata,startAt);
 			_ToUpload.addLast(worker);
 		}
 	}
 	
+	
 	public void addResumeableUpload(File data, Video videodata, VideoMetadata metadata, String url, String yt_id){
 		this.speed_limit = Integer.parseInt(parent.getSpinner().getValue().toString());
 		LOG.info("Adding resumed Upload");
-		UploadWorker worker = new UploadWorker(metadata.getFrame().upload_id, data, videodata, speed_limit, metadata, url, yt_id);
+		UploadWorker worker = new UploadWorker(metadata.getFrame().upload_id, data, videodata, speed_limit, metadata, url, yt_id, null);
 		_ToUpload.addFirst(worker);
 	}
 	
 	public void start(){
 		LOG.info("Starting uploads");
-		if(!_ToUpload.isEmpty() && !uploading){
-			uploading = true;
-			startNextUpload();
-		}
+		t = new Thread(this);
+		t.setName("UploadManager");
+		t.start();
 	}
 	
 	public void stop(){
@@ -119,6 +120,7 @@ public class UploadManager {
 				_Uploading.remove(i);
 			}
 		}
+		t.interrupt();
 	}
 	
 	public void setLimit(int limit){
@@ -214,11 +216,21 @@ public class UploadManager {
 	
 	public void startNextUpload(){
 		if(!_ToUpload.isEmpty()){
-			for(int i=0;i<=upload_limit-_Uploading.size();i++){
-				UploadWorker w = _ToUpload.removeFirst();
-				w.start();
-				LOG.info("Upload {} started",w.videodata.snippet.title);
-				_Uploading.add(w);
+			for(int i=0;i<upload_limit-_Uploading.size();i++){
+				for(int s=0;s<_ToUpload.size();s++){
+					Date start = _ToUpload.get(i).startAt;
+					if((start!=null && start.compareTo(new Date())<=0) || start==null){
+						UploadWorker w = _ToUpload.get(i);
+						w.start();
+						LOG.info("Upload {} started",w.videodata.snippet.title);
+						_Uploading.add(w);
+						_ToUpload.remove(i);
+						uploading = true;
+						break;
+					}else{
+						continue;
+					}
+				}
 			}
 		}else{
 			uploading = false;
@@ -318,7 +330,7 @@ public class UploadManager {
 					}
 	
 					LOG.info("Restarting Upload {}",o.videodata.snippet.title);
-					UploadWorker worker = new UploadWorker(upload_id, o.file, o.videodata, speed_limit, o.metadata, o.upload.url, o.upload.id);
+					UploadWorker worker = new UploadWorker(upload_id, o.file, o.videodata, speed_limit, o.metadata, o.upload.url, o.upload.id, o.startAt);
 					worker.setRetrys(o.getRetrys());
 					_Uploading.set(i, worker);
 					worker.start();
@@ -327,7 +339,7 @@ public class UploadManager {
 					o.frame.getProgressBar().setValue(0);
 					LOG.info("Retried 5 times. Failing Upload {}",o.videodata.snippet.title);
 					_Uploading.remove(i);
-					UploadWorker worker = new UploadWorker(upload_id, o.file, o.videodata, speed_limit, o.metadata, o.upload.url, o.upload.id);
+					UploadWorker worker = new UploadWorker(upload_id, o.file, o.videodata, speed_limit, o.metadata, o.upload.url, o.upload.id, o.startAt);
 					_ToUpload.add(worker);
 					SQLite.setUploadFinished(upload_id,Status.STOPPED);
 				}
@@ -344,6 +356,20 @@ public class UploadManager {
 				startNextUpload();
 			}
 		}		
+	}
+
+	@Override
+	public void run() {
+		while(!Thread.currentThread().isInterrupted()) {
+			if(!_ToUpload.isEmpty() && !uploading) {
+				startNextUpload();
+			}
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				//Not interesting
+			}
+	      }
 	}
 	
 }

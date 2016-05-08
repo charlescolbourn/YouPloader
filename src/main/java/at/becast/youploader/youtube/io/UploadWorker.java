@@ -16,6 +16,7 @@ package at.becast.youploader.youtube.io;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,7 @@ public class UploadWorker extends Thread {
 	public int retrys = 0;
 	private int speed_limit;
 	public File file;
+	public Date startAt;
 	public UploadItem frame;
 	public Upload upload;
 	private UploadEvent event;
@@ -46,7 +48,7 @@ public class UploadWorker extends Thread {
 	private AccountManager AccMgr;
 	private static final Logger LOG = LoggerFactory.getLogger(UploadWorker.class);
 	
-	public UploadWorker(int id, File file, Video videodata, int speed_limit, VideoMetadata metadata){
+	public UploadWorker(int id, File file, Video videodata, int speed_limit, VideoMetadata metadata, Date startAt){
 		this.id = id;
 		this.speed_limit = speed_limit;
 		this.frame = metadata.getFrame();
@@ -55,13 +57,14 @@ public class UploadWorker extends Thread {
 		this.file = file;
 		this.videodata = videodata;
 		this.metadata = metadata;
+		this.startAt = startAt;
 		this.enddir = metadata.getEndDirectory();
 		this.AccMgr = AccountManager.getInstance();
 		this.uploader = new Uploader(this.AccMgr.getAuth(this.acc_id));
 		this.event = new GuiUploadEvent(this.frame);
 	}
 	
-	public UploadWorker(int id, File file, Video videodata, int speed_limit, VideoMetadata metadata, String url, String yt_id){
+	public UploadWorker(int id, File file, Video videodata, int speed_limit, VideoMetadata metadata, String url, String yt_id, Date startAt){
 		this.id = id;
 		this.speed_limit = speed_limit;
 		this.frame = metadata.getFrame();
@@ -70,6 +73,7 @@ public class UploadWorker extends Thread {
 		this.upload = new Upload(url,file,yt_id,videodata,metadata);
 		this.videodata = videodata;
 		this.metadata = metadata;
+		this.startAt = startAt;
 		this.enddir = metadata.getEndDirectory();
 		this.AccMgr = AccountManager.getInstance();
 		this.uploader = new Uploader(this.AccMgr.getAuth(this.acc_id));
