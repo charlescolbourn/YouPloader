@@ -94,7 +94,7 @@ public class SQLite {
 			prest.executeUpdate();
 			prest = c.prepareStatement("CREATE TABLE `uploads` (`id` INTEGER PRIMARY KEY  NOT NULL ,`file` VARCHAR,`account` INTEGER DEFAULT (null),`yt_id` VARCHAR, `enddir` VARCHAR ,`url` VARCHAR,`uploaded` INTEGER DEFAULT (null) ,`lenght` INTEGER DEFAULT (null) ,`data` VARCHAR,`metadata` VARCHAR, `status` VARCHAR)");
 			prest.executeUpdate();
-			prest = c.prepareStatement("CREATE TABLE `playlists` (`id` INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL , `name` VARCHAR, `playlistid` VARCHAR, `image` BLOB, `account` INTEGER DEFAULT (null))");
+			prest = c.prepareStatement("CREATE TABLE `playlists` (`id` INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL , `name` VARCHAR, `playlistid` VARCHAR, `image` BLOB, `account` INTEGER DEFAULT (null),`shown` VARCHAR)");
 			prest.executeUpdate();
 			setVersion(FrmMain.getDBVersion());
 		} catch (SQLException e) {
@@ -363,8 +363,8 @@ public class SQLite {
 
 	public static void insertPlaylist(Item item, int account) throws SQLException, IOException {
 		PreparedStatement prest = null;
-    	String sql	= "INSERT INTO `playlists` (`name`, `playlistid`,`image`,`account`) " +
-    			"VALUES (?,?,?,?)";
+    	String sql	= "INSERT INTO `playlists` (`name`, `playlistid`,`image`,`account`,`shown`) " +
+    			"VALUES (?,?,?,?,1)";
     	prest = c.prepareStatement(sql);
     	prest.setString(1, item.snippet.title);
     	prest.setString(2, item.id);
@@ -378,17 +378,27 @@ public class SQLite {
         prest.close();	
 	}
 	
+	public static void setPlaylistHidden(int id, String hidden) throws SQLException {
+		PreparedStatement prest = null;
+    	String sql	= "UPDATE `playlists` SET `shown`=? WHERE `id`=?";
+    	prest = c.prepareStatement(sql);
+    	prest.setString(1, hidden);
+    	prest.setInt(2, id);
+    	prest.execute();
+        prest.close();	
+	}
+	
 	public static void update() {
 		PreparedStatement prest = null;
 		try {
 			switch(getVersion()){
 				//This falls through intentionally since ALL updates since the version have to be applied.
-				case 3:
+				case 2:
 					prest = c.prepareStatement("INSERT INTO `settings` VALUES('notify_updates','1')");
 					prest.executeUpdate();
 					prest = c.prepareStatement("ALTER TABLE `uploads` ADD COLUMN 'metadata' VARCHAR");
 					prest.executeUpdate();
-				case 4:
+				case 3:
 					prest = c.prepareStatement("INSERT INTO `settings` VALUES('width','900')");
 					prest.executeUpdate();
 					prest = c.prepareStatement("INSERT INTO `settings` VALUES('height','580')");
@@ -397,8 +407,11 @@ public class SQLite {
 					prest.executeUpdate();
 					prest = c.prepareStatement("INSERT INTO `settings` VALUES('top','0')");
 					prest.executeUpdate();
-				case 5:
+				case 4:
 					prest = c.prepareStatement("CREATE TABLE `playlists` (`id` INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL , `name` VARCHAR, `playlistid` VARCHAR, `image` BLOB, `account` INTEGER DEFAULT (null))");
+					prest.executeUpdate();
+				case 5:
+					prest = c.prepareStatement("ALTER TABLE `playlists` ADD COLUMN 'shown' VARCHAR");
 					prest.executeUpdate();
 				default:
 					setVersion(FrmMain.getDBVersion());

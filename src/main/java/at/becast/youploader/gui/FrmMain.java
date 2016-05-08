@@ -82,6 +82,8 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -113,6 +115,8 @@ import at.becast.youploader.youtube.data.GameDataItem;
 import at.becast.youploader.youtube.data.Video;
 import at.becast.youploader.youtube.data.VideoMetadata;
 import at.becast.youploader.youtube.io.UploadManager;
+import at.becast.youploader.youtube.playlists.Playlist;
+import at.becast.youploader.youtube.playlists.PlaylistManager;
 import at.becast.youploader.youtube.playlists.PlaylistUpdater;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.util.StatusPrinter;
@@ -122,6 +126,7 @@ import javax.swing.JCheckBoxMenuItem;
 import at.becast.youploader.gui.statusbar.StatusBar;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
+import java.awt.GridLayout;
 
 /**
  *
@@ -134,7 +139,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 	public static final String DB_FILE = System.getProperty("user.home") + "/YouPloader/data/data.db";
 	public static final String APP_NAME = "YouPloader";
 	public static final String VERSION = "0.6";
-	public static final int DB_VERSION = 5;
+	public static final int DB_VERSION = 6;
 	private static final String DEFAULT_WIDTH = "900";
 	private static final String DEFAULT_HEIGHT = "580";
 	private static final Logger LOG = LoggerFactory.getLogger(FrmMain.class);
@@ -166,6 +171,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 	public static boolean debug = false;
 	private StatusBar statusBar;
 	private JList<AccountType> AccList;
+	private JPanel PlayPanel;
 	private DefaultListModel<AccountType> AccListModel = new DefaultListModel<AccountType>();
 	/**
 	 * @param args
@@ -646,23 +652,30 @@ public class FrmMain extends JFrame implements IMainMenu {
 		
 		JPanel panel_1 = new JPanel();
 		
-		JPanel panel_2 = new JPanel();
+		JScrollPane scrollPane = new JScrollPane();
 		GroupLayout gl_TabPlaylistSettings = new GroupLayout(TabPlaylistSettings);
 		gl_TabPlaylistSettings.setHorizontalGroup(
 			gl_TabPlaylistSettings.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_TabPlaylistSettings.createSequentialGroup()
-					.addComponent(panel_1, GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(panel_2, GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE))
-		);
-		gl_TabPlaylistSettings.setVerticalGroup(
-			gl_TabPlaylistSettings.createParallelGroup(Alignment.LEADING)
-				.addGroup(Alignment.TRAILING, gl_TabPlaylistSettings.createSequentialGroup()
-					.addGroup(gl_TabPlaylistSettings.createParallelGroup(Alignment.TRAILING)
-						.addComponent(panel_2, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 459, Short.MAX_VALUE)
-						.addComponent(panel_1, GroupLayout.DEFAULT_SIZE, 459, Short.MAX_VALUE))
+					.addComponent(panel_1, GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE)
+					.addGap(8)
+					.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 675, Short.MAX_VALUE)
 					.addContainerGap())
 		);
+		gl_TabPlaylistSettings.setVerticalGroup(
+			gl_TabPlaylistSettings.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_TabPlaylistSettings.createSequentialGroup()
+					.addGroup(gl_TabPlaylistSettings.createParallelGroup(Alignment.LEADING)
+						.addComponent(panel_1, GroupLayout.DEFAULT_SIZE, 459, Short.MAX_VALUE)
+						.addGroup(gl_TabPlaylistSettings.createSequentialGroup()
+							.addGap(11)
+							.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)))
+					.addContainerGap())
+		);
+		
+		PlayPanel = new JPanel();
+		scrollPane.setViewportView(PlayPanel);
+		PlayPanel.setLayout(new GridLayout(0, 2, 0, 0));
 		
 		AccList = new JList<AccountType>(AccListModel);
 		AccList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -683,6 +696,12 @@ public class FrmMain extends JFrame implements IMainMenu {
 		);
 		panel_1.setLayout(gl_panel_1);
 		TabPlaylistSettings.setLayout(gl_TabPlaylistSettings);
+		AccList.addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				selectPlaylistAccount();
+			}
+		});
 	}
 	
 	public void initMenuBar(){
@@ -775,7 +794,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 	protected void donateButton() {
 		DesktopUtil.openBrowser("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=AZ42BHSUTGPT6");
 	}
-
+	
 	protected void startUploads() {
 		if ("0".equals(s.setting.get("tos_agreed")) && !this.tos) {
 			//Dummy JFrame to keep Dialog on top
@@ -1406,6 +1425,23 @@ public class FrmMain extends JFrame implements IMainMenu {
 		edit.getChckbxAgeRestriction().setSelected(metadata.isRestricted());
 		if (metadata.getEndDirectory() != null) {
 			edit.getTxtEndDir().setText(metadata.getEndDirectory());
+		}
+	}
+	
+	protected void selectPlaylistAccount() {
+    	for(Component c : PlayPanel.getComponents()){
+    		PlayPanel.remove(c);	
+    	}
+		AccountType acc = AccList.getSelectedValue();
+		PlaylistManager pl = new PlaylistManager(acc.getValue());
+		if(pl.getPlaylists().isEmpty()){
+			pl.load();
+		}
+		if(pl.getPlaylists().get(acc.getValue())!=null && !pl.getPlaylists().get(acc.getValue()).isEmpty()){
+			for(Playlist p : pl.getPlaylists().get(acc.getValue())){
+				PlaylistPanelItem i = new PlaylistPanelItem(p.name, p.id, p.shown);
+				PlayPanel.add(i);
+			}
 		}
 	}
 

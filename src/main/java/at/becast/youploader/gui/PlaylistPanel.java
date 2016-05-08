@@ -70,9 +70,13 @@ public class PlaylistPanel extends JPanel {
 		this.pl = new PlaylistManager(acc.getValue());
 		pl.load();
 		if(!pl.getPlaylists().isEmpty()){
-			for(Playlist p : pl.getPlaylists().get(acc.getValue())){
-				PlaylistItem i = new PlaylistItem(p.id, p.ytId, p.name, p.image);
-				playlistPanel.add(i);
+			if(pl.getPlaylists().get(acc.getValue())!=null && !pl.getPlaylists().get(acc.getValue()).isEmpty()){
+				for(Playlist p : pl.getPlaylists().get(acc.getValue())){
+					if(p.shown){
+						PlaylistItem i = new PlaylistItem(p.id, p.ytId, p.name, p.image);
+						playlistPanel.add(i);
+					}
+				}
 			}
 		}
 	}

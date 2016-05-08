@@ -138,7 +138,14 @@ public class PlaylistManager {
 			ResultSet rs = stmt.executeQuery(sql);
 			if(rs.isBeforeFirst()){
 				while(rs.next()){
-					Playlist l = new Playlist(rs.getInt("id"), rs.getString("playlistid"), rs.getString("name"), rs.getBytes("image"));
+					String shown;
+					if(rs.getString("shown")==null){
+						shown = "1";
+						SQLite.setPlaylistHidden(rs.getInt("id"), shown);
+					}else{
+						shown = rs.getString("shown");
+					}
+					Playlist l = new Playlist(rs.getInt("id"), rs.getString("playlistid"), rs.getString("name"), rs.getBytes("image"), shown);
 					if(playlists.get(rs.getInt("account"))==null){
 						List<Playlist> list = new ArrayList<Playlist>();
 						list.add(l);
