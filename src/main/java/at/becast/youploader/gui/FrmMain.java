@@ -301,6 +301,43 @@ public class FrmMain extends JFrame implements IMainMenu {
 		int height = Integer.parseInt(s.get("height", DEFAULT_HEIGHT));
 		setBounds(left, top, width, height);
 		TabbedPane = new JTabbedPane();
+		
+		//Main Tab Creation
+		initMainTab();
+		
+		//Queue Tab creation
+		initQueuetab();
+		
+		//Playlist Settings Tab creation
+		initPlaylistSettingsTab();
+		
+		statusBar = new StatusBar();
+
+		GroupLayout layout = new GroupLayout(getContentPane());
+		layout.setHorizontalGroup(
+			layout.createParallelGroup(Alignment.LEADING)
+				.addComponent(statusBar, GroupLayout.DEFAULT_SIZE, 884, Short.MAX_VALUE)
+				.addComponent(TabbedPane, GroupLayout.DEFAULT_SIZE, 884, Short.MAX_VALUE)
+		);
+		layout.setVerticalGroup(
+			layout.createParallelGroup(Alignment.LEADING)
+				.addGroup(Alignment.TRAILING, layout.createSequentialGroup()
+					.addComponent(TabbedPane, GroupLayout.PREFERRED_SIZE, 498, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(statusBar, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+		);
+		getContentPane().setLayout(layout);
+		
+		cmbCategory.addPropertyChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent arg0) {
+				changeCategory();
+			}
+		});
+		QueuePanel.revalidate();
+		ss1.expand();
+	}
+	
+	public void initMainTab(){
 		cmbCategory = new JComboBox<Categories>();
 		cmbCategory.setModel(new DefaultComboBoxModel<Categories>(Categories.values()));
 		SideBar sideBar = new SideBar(SideBar.SideBarMode.TOP_LEVEL, true, 300, true);
@@ -507,27 +544,13 @@ public class FrmMain extends JFrame implements IMainMenu {
 		});
 		mainTab.setLayout(mainTabLayout);
 		TabbedPane.addTab(LANG.getString("frmMain.Tabs.VideoSettings"), mainTab);
-		
-		statusBar = new StatusBar();
-
-		GroupLayout layout = new GroupLayout(getContentPane());
-		layout.setHorizontalGroup(
-			layout.createParallelGroup(Alignment.LEADING)
-				.addComponent(statusBar, GroupLayout.DEFAULT_SIZE, 884, Short.MAX_VALUE)
-				.addComponent(TabbedPane, GroupLayout.DEFAULT_SIZE, 884, Short.MAX_VALUE)
-		);
-		layout.setVerticalGroup(
-			layout.createParallelGroup(Alignment.LEADING)
-				.addGroup(Alignment.TRAILING, layout.createSequentialGroup()
-					.addComponent(TabbedPane, GroupLayout.PREFERRED_SIZE, 498, Short.MAX_VALUE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(statusBar, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-		);
-
+	}
+	
+	public void initQueuetab(){
 		JScrollPane TabQueues = new JScrollPane();
 		QueuePanel = new JPanel();
 		TabQueues.setViewportView(QueuePanel);
-		getContentPane().setLayout(layout);
+		
 		QueuePanel.setLayout(new MigLayout("", "[875px,grow,fill]", "[][][][]"));
 		JPanel buttonPanel = new JPanel();
 		GridBagConstraints gbc_panel_2 = new GridBagConstraints();
@@ -615,7 +638,9 @@ public class FrmMain extends JFrame implements IMainMenu {
 		TabQueue.add(buttonPanel, BorderLayout.SOUTH);
 
 		TabQueue.add(TabQueues, BorderLayout.CENTER);
-		
+	}
+	
+	public void initPlaylistSettingsTab(){
 		JPanel TabPlaylistSettings = new JPanel();
 		TabbedPane.addTab(LANG.getString("frmMain.Tabs.PlaylistSettings"), null, TabPlaylistSettings, null);
 		
@@ -658,14 +683,6 @@ public class FrmMain extends JFrame implements IMainMenu {
 		);
 		panel_1.setLayout(gl_panel_1);
 		TabPlaylistSettings.setLayout(gl_TabPlaylistSettings);
-		
-		cmbCategory.addPropertyChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent arg0) {
-				changeCategory();
-			}
-		});
-		QueuePanel.revalidate();
-		ss1.expand();
 	}
 	
 	public void initMenuBar(){
