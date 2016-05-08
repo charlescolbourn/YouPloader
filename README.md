@@ -39,9 +39,6 @@ Logback (http://logback.qos.ch)- Eclipse Public License 1.0
 Guava (https://github.com/google/guava)- Apache License 2
 ```
 ```
-Unirest (http://mashape.com)- MIT Licence
-```
-```
 Java Swing Library (https://github.com/oliverwatkins/swing_library)
 ```
 ```
