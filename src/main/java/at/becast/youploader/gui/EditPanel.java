@@ -321,11 +321,11 @@ public class EditPanel extends javax.swing.JPanel {
 		add(btnThumbnail, "10, 14, fill, fill");
 		
 		JLabel lblStartUploadAt = new JLabel(LANG.getString("EditPanel.StartUpload")+":");
-		lblStartUploadAt.setEnabled(false);
 		add(lblStartUploadAt, "2, 16, right, default");
 		
-		dateTimePickerStart = new DateTimePicker();
-		dateTimePickerStart.setEnabled(false);
+		dateTimePickerStart = new DateTimePicker(new Date());
+		dateTimePickerStart.getMonthView().setLowerBound(calendar.getTime());
+
 		add(dateTimePickerStart, "4, 16, 5, 1, fill, fill");
 		
 		JLabel lblGameTitle = new JLabel(LANG.getString("EditPanel.Gametitle")+":");

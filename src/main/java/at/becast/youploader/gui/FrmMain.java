@@ -52,6 +52,7 @@ import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
@@ -119,6 +120,8 @@ import net.miginfocom.layout.CC;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JCheckBoxMenuItem;
 import at.becast.youploader.gui.statusbar.StatusBar;
+import javax.swing.JList;
+import javax.swing.ListSelectionModel;
 
 /**
  *
@@ -162,7 +165,8 @@ public class FrmMain extends JFrame implements IMainMenu {
 	private int editItem = -1;
 	public static boolean debug = false;
 	private StatusBar statusBar;
-
+	private JList<AccountType> AccList;
+	private DefaultListModel<AccountType> AccListModel = new DefaultListModel<AccountType>();
 	/**
 	 * @param args
 	 *            the command line arguments
@@ -612,6 +616,49 @@ public class FrmMain extends JFrame implements IMainMenu {
 
 		TabQueue.add(TabQueues, BorderLayout.CENTER);
 		
+		JPanel TabPlaylistSettings = new JPanel();
+		TabbedPane.addTab(LANG.getString("frmMain.Tabs.PlaylistSettings"), null, TabPlaylistSettings, null);
+		
+		JPanel panel_1 = new JPanel();
+		
+		JPanel panel_2 = new JPanel();
+		GroupLayout gl_TabPlaylistSettings = new GroupLayout(TabPlaylistSettings);
+		gl_TabPlaylistSettings.setHorizontalGroup(
+			gl_TabPlaylistSettings.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_TabPlaylistSettings.createSequentialGroup()
+					.addComponent(panel_1, GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(panel_2, GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE))
+		);
+		gl_TabPlaylistSettings.setVerticalGroup(
+			gl_TabPlaylistSettings.createParallelGroup(Alignment.LEADING)
+				.addGroup(Alignment.TRAILING, gl_TabPlaylistSettings.createSequentialGroup()
+					.addGroup(gl_TabPlaylistSettings.createParallelGroup(Alignment.TRAILING)
+						.addComponent(panel_2, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 459, Short.MAX_VALUE)
+						.addComponent(panel_1, GroupLayout.DEFAULT_SIZE, 459, Short.MAX_VALUE))
+					.addContainerGap())
+		);
+		
+		AccList = new JList<AccountType>(AccListModel);
+		AccList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
+		gl_panel_1.setHorizontalGroup(
+			gl_panel_1.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_1.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(AccList, GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
+					.addContainerGap())
+		);
+		gl_panel_1.setVerticalGroup(
+			gl_panel_1.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_1.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(AccList, GroupLayout.DEFAULT_SIZE, 437, Short.MAX_VALUE)
+					.addContainerGap())
+		);
+		panel_1.setLayout(gl_panel_1);
+		TabPlaylistSettings.setLayout(gl_TabPlaylistSettings);
+		
 		cmbCategory.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent arg0) {
 				changeCategory();
@@ -777,6 +824,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 			_accounts.remove(i);
 		}
 		getCmbAccount().removeAllItems();
+		AccListModel.clear();
 		btnAddToQueue.setEnabled(false);
 		loadAccounts();
 	}
@@ -794,6 +842,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		HashMap<AccountType, Integer> accounts = accMng.load();
 		for (Entry<AccountType, Integer> entry : accounts.entrySet()) {
 			getCmbAccount().addItem(entry.getKey());
+			AccListModel.addElement(entry.getKey());
 			JMenuItem rdoBtn = new JMenuItem(entry.getKey().toString());
 			if (entry.getValue() == 1) {
 				rdoBtn.setSelected(true);
@@ -1378,5 +1427,8 @@ public class FrmMain extends JFrame implements IMainMenu {
 	}
 	public StatusBar getStatusBar() {
 		return statusBar;
+	}
+	public JList<AccountType> getAccList() {
+		return AccList;
 	}
 }
