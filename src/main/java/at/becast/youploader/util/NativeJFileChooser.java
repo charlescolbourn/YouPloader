@@ -60,7 +60,6 @@ import javax.swing.filechooser.FileSystemView;
  * @author Veluria
  * @version 1.6.2
  */
-@SuppressWarnings("restriction")
 public class NativeJFileChooser extends JFileChooser {
 
     /**
