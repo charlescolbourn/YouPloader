@@ -196,7 +196,7 @@
                             <jdkPreference>preferJre</jdkPreference>
                         </jre>
                         <versionInfo>
-                            <fileVersion>${project.version}</fileVersion>
+                            <fileVersion>0.${project.version}</fileVersion>
                             <txtFileVersion>${project.version}</txtFileVersion>
                             <fileDescription>${project.name}</fileDescription>
                             <copyright>2016 BeCast.at</copyright>
