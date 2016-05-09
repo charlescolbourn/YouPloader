@@ -92,7 +92,7 @@ public class SQLite {
 			prest.executeUpdate();
 			prest = c.prepareStatement("CREATE TABLE `templates` (`id` INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , `name` VARCHAR, `data` VARCHAR)");
 			prest.executeUpdate();
-			prest = c.prepareStatement("CREATE TABLE `uploads` (`id` INTEGER PRIMARY KEY  NOT NULL ,`file` VARCHAR,`account` INTEGER DEFAULT (null),`yt_id` VARCHAR, `enddir` VARCHAR ,`url` VARCHAR,`uploaded` INTEGER DEFAULT (null) ,`lenght` INTEGER DEFAULT (null) ,`data` VARCHAR,`metadata` VARCHAR, `status` VARCHAR)");
+			prest = c.prepareStatement("CREATE TABLE `uploads` (`id` INTEGER PRIMARY KEY  NOT NULL ,`file` VARCHAR,`account` INTEGER DEFAULT (null),`yt_id` VARCHAR, `enddir` VARCHAR ,`url` VARCHAR,`uploaded` INTEGER DEFAULT (null) ,`lenght` INTEGER DEFAULT (null) ,`data` VARCHAR,`metadata` VARCHAR, `status` VARCHAR, `starttime` DATETIME)");
 			prest.executeUpdate();
 			prest = c.prepareStatement("CREATE TABLE `playlists` (`id` INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL , `name` VARCHAR, `playlistid` VARCHAR, `image` BLOB, `account` INTEGER DEFAULT (null),`shown` VARCHAR)");
 			prest.executeUpdate();

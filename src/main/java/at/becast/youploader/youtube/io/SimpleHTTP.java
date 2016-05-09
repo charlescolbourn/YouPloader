@@ -26,7 +26,6 @@ import java.util.Map;
 public class SimpleHTTP {
   private CloseableHttpClient chc;
   private HttpPut put;
-  private InputStream stream;
   private CloseableHttpResponse response;
   private boolean aborted = false;
   private static final Logger LOG = LoggerFactory.getLogger(SimpleHTTP.class);
@@ -81,8 +80,7 @@ public class SimpleHTTP {
     for (String key : headers.keySet()) {
     	this.put.setHeader(key, headers.get(key));
     }
-    this.stream=stream;
-    this.put.setEntity(new InputStreamEntity(this.stream));
+    this.put.setEntity(new InputStreamEntity(stream));
     try {
     	response = this.chc.execute(this.put);
     }catch(Exception e){

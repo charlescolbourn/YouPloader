@@ -75,7 +75,7 @@ public class PlaylistManager {
 		} catch (IOException e) {
 			LOG.error("Exception while getting Playlists: ", e);
 		}
-		if(lists.items!=null){
+		if(lists!=null && lists.items!=null){
 			for(int i=0;i<lists.items.size();i++){
 				if(lists.items.get(i).id.startsWith("FL")){
 					lists.items.remove(i);
@@ -89,31 +89,33 @@ public class PlaylistManager {
 		this.playlists.clear();
 		this.load();
 		Playlists lists = this.get(account);
-		if(this.playlists.get(account)==null || this.playlists.get(account).isEmpty()){
-			try {
-				SQLite.savePlaylists(lists,account);
-			} catch (SQLException | IOException e) {
-				LOG.error("Error saving Playlists: ",e);
-			}
-		}else{
-			for(Item s : lists.items){
-				String id = s.id;
-				boolean found = false;
-				for(int i=0; i<this.playlists.get(account).size();i++){
-					if(this.playlists.get(account).get(i).ytId.equals(id)){
-						found = true;
-						try {
-							SQLite.updatePlaylist(s);
-						} catch (SQLException | IOException e) {
-							LOG.error("Error updating Playlists: ",e);
+		if(lists!=null){
+			if(this.playlists.get(account)==null || this.playlists.get(account).isEmpty()){
+				try {
+					SQLite.savePlaylists(lists,account);
+				} catch (SQLException | IOException e) {
+					LOG.error("Error saving Playlists: ",e);
+				}
+			}else{
+				for(Item s : lists.items){
+					String id = s.id;
+					boolean found = false;
+					for(int i=0; i<this.playlists.get(account).size();i++){
+						if(this.playlists.get(account).get(i).ytId.equals(id)){
+							found = true;
+							try {
+								SQLite.updatePlaylist(s);
+							} catch (SQLException | IOException e) {
+								LOG.error("Error updating Playlists: ",e);
+							}
 						}
 					}
-				}
-				if(!found){
-					try {
-						SQLite.insertPlaylist(s,account);
-					} catch (SQLException | IOException e) {
-						LOG.error("Error adding Playlists: ",e);
+					if(!found){
+						try {
+							SQLite.insertPlaylist(s,account);
+						} catch (SQLException | IOException e) {
+							LOG.error("Error adding Playlists: ",e);
+						}
 					}
 				}
 			}
