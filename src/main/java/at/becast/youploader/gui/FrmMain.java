@@ -951,6 +951,8 @@ public class FrmMain extends JFrame implements IMainMenu {
 					metadata = mapper.readValue(rs.getString("metadata"), new TypeReference<VideoMetadata>() {});
 				}catch(NullPointerException e){
 					metadata = new VideoMetadata();
+					AccountType acc = (AccountType) getCmbAccount().getSelectedItem();
+					metadata.setAccount(acc.getValue());
 				}
 				f.upload_id = rs.getInt("id");
 				String url = rs.getString("url");
@@ -990,9 +992,9 @@ public class FrmMain extends JFrame implements IMainMenu {
 				this.getQueuePanel().revalidate();
 
 			}
-			rs.close();
-			prest.close();
 		}
+		rs.close();
+		prest.close();
 	}
 
 	/**

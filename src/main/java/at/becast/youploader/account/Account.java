@@ -74,6 +74,7 @@ public class Account {
 			int id = rs.getInt("id");
 			String token = rs.getString("refresh_token");
 			stmt.close();
+			rs.close();
 			return new Account(id,name,token,c);
 		} catch (SQLException e) {
 			LOG.error("Account read error!",e);
@@ -92,6 +93,7 @@ public class Account {
 			String name = rs.getString("name");
 			String token = rs.getString("refresh_token");
 			stmt.close();
+			rs.close();
 			return new Account(id,name,token,c);
 		} catch (SQLException e) {
 			LOG.error("Account read error!",e);
