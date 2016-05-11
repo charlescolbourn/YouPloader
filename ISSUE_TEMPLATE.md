@@ -1,5 +1,5 @@
-*YouPloader Version:*  
+**YouPloader Version:**  
   
-*Issue description:*  
+**Issue description:**  
   
-Please attach your %userprofile%\YouPloader\logfile.html and, if necessary, any Screenshots showing the issue to this post
+*Please attach your %userprofile%\YouPloader\logfile.html and, if necessary, any Screenshots showing the issue to this post*
