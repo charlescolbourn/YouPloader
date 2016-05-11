@@ -185,7 +185,7 @@
                         <jar>${project.artifactId}.jar</jar>
                         <dontWrapJar>true</dontWrapJar>
                         <outfile>${project.build.directory}/${project.artifactId}.exe</outfile>
-                        <downloadUrl>http://java.com/download</downloadUrl>
+                        <downloadUrl>http://java.com/download</downloadUrl> 
                         <classPath>
                             <mainClass>at.becast.youploader.gui.FrmMain</mainClass>
                             <preCp>anything</preCp>
