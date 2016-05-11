@@ -195,18 +195,6 @@
                             <minVersion>1.8.0</minVersion>
                             <jdkPreference>preferJre</jdkPreference>
                         </jre>
-                        <versionInfo>
-                            <fileVersion>0.${project.version}</fileVersion>
-                            <txtFileVersion>${project.version}</txtFileVersion>
-                            <fileDescription>${project.name}</fileDescription>
-                            <copyright>2016 BeCast.at</copyright>
-                            <productVersion>0.${project.version}</productVersion>
-                            <txtProductVersion>0.${project.version}</txtProductVersion>
-                            <productName>${project.name}</productName>
-                            <companyName>becast.at</companyName>
-                            <internalName>YouPloader</internalName>
-                            <originalFilename>${project.artifactId}.exe</originalFilename>
-                        </versionInfo>
                     </configuration>
                 </execution>
             </executions>
