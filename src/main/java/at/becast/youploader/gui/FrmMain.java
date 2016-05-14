@@ -177,12 +177,13 @@ public class FrmMain extends JFrame implements IMainMenu {
 	private JPanel PlayPanel;
 	private TrayManager tray;
 	private DefaultListModel<AccountType> AccListModel = new DefaultListModel<AccountType>();
+	//private static native boolean setAppUserModelID();
 	/**
 	 * @param args
 	 *            the command line arguments
 	 */
 	public static void main(String args[]) {
-		if (args.length > 0 && args[0].equalsIgnoreCase("debug")) {
+		if (args.length > 0 && args[0].equalsIgnoreCase("-debug")) {
 			LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 			// print logback's internal status
 			StatusPrinter.print(lc);
