@@ -26,9 +26,10 @@ public class UploadStream extends BufferedInputStream {
 	private long size;
 	private long position;
 	private Boolean finished = false;
+	private final static int BUFFER_SIZE = 5242880;
 
 	public UploadStream(File file, UploadEvent event) throws FileNotFoundException {
-		super(new FileInputStream(file));
+		super(new FileInputStream(file),BUFFER_SIZE);
 		this.event = event;
 		this.limit = 0;
 		this.size = file.length();
