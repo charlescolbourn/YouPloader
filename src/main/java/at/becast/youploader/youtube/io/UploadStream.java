@@ -14,12 +14,13 @@
  */
 package at.becast.youploader.youtube.io;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-public class UploadStream extends FileInputStream {
+public class UploadStream extends BufferedInputStream {
 	private UploadEvent event;
 	private long limit;
 	private long size;
@@ -27,7 +28,7 @@ public class UploadStream extends FileInputStream {
 	private Boolean finished = false;
 
 	public UploadStream(File file, UploadEvent event) throws FileNotFoundException {
-		super(file);
+		super(new FileInputStream(file));
 		this.event = event;
 		this.limit = 0;
 		this.size = file.length();
