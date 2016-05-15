@@ -19,6 +19,7 @@ import javax.swing.JFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import at.becast.youploader.Main;
 import at.becast.youploader.util.UTF8ResourceBundle;
 
 public class TrayManager {
@@ -31,7 +32,7 @@ public class TrayManager {
     public TrayManager(FrmMain parent){
     	this.parent = parent;
 		if(SystemTray.isSupported()){
-			if(FrmMain.debug){
+			if(Main.debug){
 				LOG.debug("Tray supported");
 			}
 			tray = SystemTray.getSystemTray();
@@ -67,7 +68,7 @@ public class TrayManager {
 			});
 			trayIcon.setImageAutoSize(true);
 		}else{
-			if(FrmMain.debug){
+			if(Main.debug){
 				LOG.debug("Tray not supported");
 			}
 		}

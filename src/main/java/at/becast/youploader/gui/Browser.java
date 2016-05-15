@@ -11,6 +11,7 @@ import javafx.scene.web.WebEvent;
 import javafx.scene.web.WebView;
 import javax.swing.*;
 
+import at.becast.youploader.Main;
 import at.becast.youploader.account.Account;
 import at.becast.youploader.youtube.data.CookieJar;
 
@@ -95,7 +96,7 @@ public class Browser extends JFrame {
  
             	WebView view = new WebView();
                 engine = view.getEngine();
-                engine.setUserAgent(FrmMain.APP_NAME+" "+FrmMain.VERSION);
+                engine.setUserAgent(Main.APP_NAME+" "+Main.VERSION);
                 engine.titleProperty().addListener(new ChangeListener<String>() {
                     @Override
                     public void changed(ObservableValue<? extends String> observable, String oldValue, final String newValue) {

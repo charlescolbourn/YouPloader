@@ -29,8 +29,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Joiner;
+
+import at.becast.youploader.Main;
 import at.becast.youploader.account.Account;
-import at.becast.youploader.gui.FrmMain;
 import at.becast.youploader.youtube.VisibilityType;
 import at.becast.youploader.youtube.data.CookieJar;
 import at.becast.youploader.youtube.data.Upload;
@@ -59,7 +60,7 @@ public class MetadataUpdater {
 		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
 		con.setRequestMethod("GET");
-		con.setRequestProperty("User-Agent", FrmMain.APP_NAME+" "+FrmMain.VERSION);
+		con.setRequestProperty("User-Agent", Main.APP_NAME+" "+Main.VERSION);
 		int responseCode = con.getResponseCode();
 		System.out.println("\nSending 'GET' request to URL : " + url);
 		System.out.println("Response Code : " + responseCode);
@@ -119,7 +120,7 @@ public class MetadataUpdater {
 		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 		con.setRequestMethod("POST");
 		con.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
-		con.setRequestProperty("User-Agent", FrmMain.APP_NAME+" "+FrmMain.VERSION);
+		con.setRequestProperty("User-Agent", Main.APP_NAME+" "+Main.VERSION);
 		con.setDoOutput(true);
 		DataOutputStream wr = new DataOutputStream(con.getOutputStream());
 		String data = Joiner.on("&").withKeyValueSeparator("=").join(params);

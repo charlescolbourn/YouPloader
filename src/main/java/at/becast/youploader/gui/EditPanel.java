@@ -45,6 +45,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
+import at.becast.youploader.Main;
 import at.becast.youploader.templates.Item;
 import at.becast.youploader.templates.Template;
 import at.becast.youploader.templates.TemplateManager;
@@ -431,14 +432,14 @@ public class EditPanel extends javax.swing.JPanel {
 		if(cmbTemplate.getSelectedItem() != null){
 			String temp = cmbTemplate.getSelectedItem().toString();
 			if ("comboBoxEdited".equals(e.getActionCommand())) {
-				if(FrmMain.debug)
+				if(Main.debug)
 					LOG.debug("AddTemplate " + temp);
 				
 				cmbTemplate.setEditable(false);
 				parent.createTemplate(temp);
 				this.adding = false;
 			}else if("comboBoxChanged".equals(e.getActionCommand()) && !this.adding){
-				if(FrmMain.debug)
+				if(Main.debug)
 					LOG.debug("Load Template " + temp);
 				
 				Item t = (Item) cmbTemplate.getSelectedItem();
@@ -460,7 +461,7 @@ public class EditPanel extends javax.swing.JPanel {
 	}
 	
 	protected void saveTemplate() {
-		if(FrmMain.debug)
+		if(Main.debug)
 			LOG.debug("Saving Template " + cmbTemplate.getSelectedItem());
 		
 		Item t = (Item) cmbTemplate.getSelectedItem();
@@ -468,7 +469,7 @@ public class EditPanel extends javax.swing.JPanel {
 	}
 	
 	protected void deleteTemplate() {
-		if(FrmMain.debug)
+		if(Main.debug)
 			LOG.debug("Deleting Template" + cmbTemplate.getSelectedItem());
 		
 		Item t = (Item) cmbTemplate.getSelectedItem();

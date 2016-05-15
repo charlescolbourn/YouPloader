@@ -80,8 +80,6 @@ import javax.swing.KeyStroke;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
@@ -97,6 +95,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
+import at.becast.youploader.Main;
 import at.becast.youploader.account.Account;
 import at.becast.youploader.account.AccountManager;
 import at.becast.youploader.account.AccountType;
@@ -104,7 +103,6 @@ import at.becast.youploader.database.SQLite;
 import at.becast.youploader.gui.slider.SideBar;
 import at.becast.youploader.gui.slider.SidebarSection;
 import at.becast.youploader.gui.spinner.SpeedValuesSpinnerEditor;
-import at.becast.youploader.settings.Settings;
 import at.becast.youploader.templates.Item;
 import at.becast.youploader.templates.Template;
 import at.becast.youploader.templates.TemplateManager;
@@ -121,7 +119,6 @@ import at.becast.youploader.youtube.playlists.Playlist;
 import at.becast.youploader.youtube.playlists.PlaylistManager;
 import at.becast.youploader.youtube.playlists.PlaylistUpdater;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.core.util.StatusPrinter;
 import net.miginfocom.layout.CC;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JCheckBoxMenuItem;
@@ -138,18 +135,12 @@ import java.awt.GridLayout;
 public class FrmMain extends JFrame implements IMainMenu {
 
 	private static final long serialVersionUID = 6965358827253585528L;
-	public static final String DB_FILE = System.getProperty("user.home") + "/YouPloader/data/data.db";
-	public static final String APP_NAME = "YouPloader";
-	public static final String VERSION = "0.6";
-	public static final int DB_VERSION = 6;
-	private static final String DEFAULT_WIDTH = "900";
-	private static final String DEFAULT_HEIGHT = "580";
 	private static final Logger LOG = LoggerFactory.getLogger(FrmMain.class);
 	public static UploadManager UploadMgr;
 	public static TemplateManager TemplateMgr;
+	private static final String DEFAULT_WIDTH = "900";
+	private static final String DEFAULT_HEIGHT = "580";
 	private static final ResourceBundle LANG = UTF8ResourceBundle.getBundle("lang", Locale.getDefault());
-	private static Settings s;
-	private static Boolean firstlaunch = false;
 	private Boolean loading = false;
 	private AccountManager accMng = AccountManager.getInstance();
 	private Boolean tos;
@@ -171,86 +162,35 @@ public class FrmMain extends JFrame implements IMainMenu {
 	private SidebarSection ss1, ss2, ss3;
 	public transient static HashMap<Integer, JMenuItem> _accounts = new HashMap<Integer, JMenuItem>();
 	private int editItem = -1;
-	public static boolean debug = false;
 	private StatusBar statusBar;
 	private JList<AccountType> AccList;
 	private JPanel PlayPanel;
 	private TrayManager tray;
 	private DefaultListModel<AccountType> AccListModel = new DefaultListModel<AccountType>();
 	//private static native boolean setAppUserModelID();
-	/**
-	 * @param args
-	 *            the command line arguments
-	 */
-	public static void main(String args[]) {
-		if (args.length > 0 && args[0].equalsIgnoreCase("-debug")) {
-			LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-			// print logback's internal status
-			StatusPrinter.print(lc);
-			debug = true;
-		}
-
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-				| UnsupportedLookAndFeelException e) {
-			LOG.error("Look and Feel exception", e);
-		}
-		File dataDir = new File(System.getProperty("user.home") + "/YouPloader/data/");
-		if (!dataDir.exists()) {
-			LOG.info(APP_NAME + " " + VERSION + " first launch. Database folder not found.", FrmMain.class);
-			dataDir.mkdirs();
-			if (!SQLite.setup()) {
-				JOptionPane.showMessageDialog(null,
-						String.format(LANG.getString("frmMain.errordatabase.Message"),
-								System.getProperty("user.home") + "/YouPloader/data/"),
-						LANG.getString("frmMain.errordatabase.title"), JOptionPane.ERROR_MESSAGE);
-			}
-			firstlaunch = true;
-		} else {
-			SQLite.getInstance();
-			try {
-				if(SQLite.getVersion()<DB_VERSION){
-					SQLite.close();
-					SQLite.makeBackup();
-					SQLite.getInstance();
-					SQLite.update();
-				}
-			} catch (SQLException e) {
-				LOG.info("Failed to get DB Version ", e);
-			}
-		}
-		UploadMgr = UploadManager.getInstance();
-		TemplateMgr = TemplateManager.getInstance();
-		s = Settings.getInstance();
-		java.awt.EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				new FrmMain().setVisible(true);
-			}
-		});
-	}
 
 	/**
 	 * Creates new form frmMain
 	 */
 	public FrmMain() {
-		LOG.info(APP_NAME + " " + VERSION + " starting.", FrmMain.class);
 		self = this;
 		this.tos = false;
 		this.setMinimumSize(new Dimension(900, 580));
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				LOG.info(APP_NAME + " " + VERSION + " closing.", FrmMain.class);
-				s.put("left", String.valueOf(getX()));
-				s.put("top", String.valueOf(getY()));
-				s.put("width", String.valueOf(getWidth()));
-				s.put("height", String.valueOf(getHeight()));
+				LOG.info(Main.APP_NAME + " " + Main.VERSION + " closing.", FrmMain.class);
+				Main.s.put("left", String.valueOf(getX()));
+				Main.s.put("top", String.valueOf(getY()));
+				Main.s.put("width", String.valueOf(getWidth()));
+				Main.s.put("height", String.valueOf(getHeight()));
 				LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
 				loggerContext.stop();
 				e.getWindow().dispose();
 			}
 		});
+		UploadMgr = UploadManager.getInstance();
+		TemplateMgr = TemplateManager.getInstance();
 		UploadMgr.setParent(this);
 		initComponents();
 		initMenuBar();
@@ -262,7 +202,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 			LOG.error("Error: ", e);
 		}
 		this.setVisible(true);
-		if (firstlaunch) {
+		if (Main.firstlaunch) {
 			int n = JOptionPane.showConfirmDialog(null, LANG.getString("frmMain.initialAccount.Message"),
 					LANG.getString("frmMain.initialAccount.title"), JOptionPane.YES_NO_OPTION,
 					JOptionPane.QUESTION_MESSAGE);
@@ -277,9 +217,6 @@ public class FrmMain extends JFrame implements IMainMenu {
 		EditPanel edit = (EditPanel) ss1.contentPane;
 		if (edit.getCmbTemplate().getModel().getSize() > 0) {
 			edit.getCmbTemplate().setSelectedIndex(0);
-		}
-		if(s.setting.get("notify_updates").equals("1")){
-			checkUpdates();
 		}
 		tray = new TrayManager(this);
 		addWindowStateListener(new WindowStateListener() {
@@ -304,37 +241,21 @@ public class FrmMain extends JFrame implements IMainMenu {
         });
 	}
 
-	private void checkUpdates() {
-		String gitVersion = GetVersion.get();
-		VersionComparator v = new VersionComparator();
-		int updateAvaiable = v.compare(gitVersion, VERSION);
-		if(updateAvaiable > 0){
-			LOG.info("Update {} avaiable!", gitVersion);
-			int n = JOptionPane.showConfirmDialog(null, String.format(LANG.getString("frmMain.newVersion.Message"),gitVersion),
-					LANG.getString("frmMain.newVersion.title"), JOptionPane.YES_NO_OPTION,
-					JOptionPane.QUESTION_MESSAGE);
-			if (n == JOptionPane.YES_OPTION) {
-				DesktopUtil.openBrowser("https://github.com/becast/youploader/releases");
-			}
-		}
-		
-	}
-
 	/**
 	 * 
 	 */
 	public void initComponents() {
-		if(debug)
+		if(Main.debug)
 			LOG.debug("init Components", FrmMain.class);
 
-		int left = Integer.parseInt(s.get("left","0"));
-		int top = Integer.parseInt(s.get("top","0"));
-		int width = Integer.parseInt(s.get("width",DEFAULT_WIDTH));
-		int height = Integer.parseInt(s.get("height", DEFAULT_HEIGHT));
+		int left = Integer.parseInt(Main.s.get("left","0"));
+		int top = Integer.parseInt(Main.s.get("top","0"));
+		int width = Integer.parseInt(Main.s.get("width",DEFAULT_WIDTH));
+		int height = Integer.parseInt(Main.s.get("height", DEFAULT_HEIGHT));
 		setBounds(left, top, width, height);
 		TabbedPane = new JTabbedPane();
 		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-		setTitle(APP_NAME + " " + VERSION);
+		setTitle(Main.APP_NAME + " " + Main.VERSION);
 		setName("frmMain");
 		//Main Tab Creation
 		initMainTab();
@@ -368,7 +289,6 @@ public class FrmMain extends JFrame implements IMainMenu {
 			}
 		});
 		QueuePanel.revalidate();
-		ss1.expand();
 	}
 	
 	public void initMainTab(){
@@ -574,6 +494,8 @@ public class FrmMain extends JFrame implements IMainMenu {
 			}
 		});
 		mainTab.setLayout(mainTabLayout);
+		mainTab.revalidate();
+		mainTab.repaint();
 		TabbedPane.addTab(LANG.getString("frmMain.Tabs.VideoSettings"), mainTab);
 	}
 	
@@ -796,7 +718,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		
 		chckbxmntmCheckForUpdates = new JCheckBoxMenuItem(LANG.getString("frmMain.menu.CheckforUpdates"));
 		menu.add(chckbxmntmCheckForUpdates);
-		if(s.setting.get("notify_updates").equals("1")){
+		if(Main.s.setting.get("notify_updates").equals("1")){
 			chckbxmntmCheckForUpdates.setSelected(true);
 		}
 		chckbxmntmCheckForUpdates.addActionListener(new ActionListener() {
@@ -809,11 +731,11 @@ public class FrmMain extends JFrame implements IMainMenu {
 
 	protected void toggleUpdateNotifier() {
 		if(chckbxmntmCheckForUpdates.isSelected()){
-			s.setting.put("notify_updates", "1");
+			Main.s.setting.put("notify_updates", "1");
 		}else{
-			s.setting.put("notify_updates", "0");
+			Main.s.setting.put("notify_updates", "0");
 		}
-		s.save("notify_updates");
+		Main.s.save("notify_updates");
 	}
 
 	protected void donateButton() {
@@ -821,9 +743,9 @@ public class FrmMain extends JFrame implements IMainMenu {
 	}
 	
 	protected void startUploads() {
-		if ("0".equals(s.setting.get("tos_agreed")) && !this.tos) {
+		if ("0".equals(Main.s.setting.get("tos_agreed")) && !this.tos) {
 			//Dummy JFrame to keep Dialog on top
-			if(debug)
+			if(Main.debug)
 				LOG.debug("Asking about ToS Agreement");
 			
 			JFrame frmOpt = new JFrame();
@@ -837,19 +759,19 @@ public class FrmMain extends JFrame implements IMainMenu {
 						JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
 			} while (n == JOptionPane.CLOSED_OPTION);
 			if (n == JOptionPane.OK_OPTION) {
-				if(debug)
+				if(Main.debug)
 					LOG.debug("Agreed to ToS");
 				
 				if (checkbox.isSelected()) {
-					s.setting.put("tos_agreed", "1");
-					s.save("tos_agreed");
+					Main.s.setting.put("tos_agreed", "1");
+					Main.s.save("tos_agreed");
 				}
 				this.tos = true;
 				UploadMgr.start();
 			}
 			frmOpt.dispose();
 		} else {
-			if(debug)
+			if(Main.debug)
 				LOG.debug("Previously agreed to ToS");
 			
 			UploadMgr.start();
@@ -1521,10 +1443,6 @@ public class FrmMain extends JFrame implements IMainMenu {
 
 	public JSpinner getSpinner() {
 		return spinner;
-	}
-
-	public static int getDBVersion() {
-		return DB_VERSION;
 	}
 
 	public JComboBox<AccountType> getCmbAccount() {

@@ -27,8 +27,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import at.becast.youploader.Main;
 import at.becast.youploader.account.Account;
-import at.becast.youploader.gui.FrmMain;
 import at.becast.youploader.util.JSONSplitter;
 import at.becast.youploader.youtube.data.CookieJar;
 import at.becast.youploader.youtube.data.GameDataItem;
@@ -56,7 +56,7 @@ public class GameData {
 		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 		con.setRequestMethod("GET");
 		con.setRequestProperty("Accept","text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-		con.setRequestProperty("User-Agent", FrmMain.APP_NAME+" "+FrmMain.VERSION);
+		con.setRequestProperty("User-Agent", Main.APP_NAME+" "+Main.VERSION);
 		BufferedReader in = new BufferedReader(
 		        new InputStreamReader(con.getInputStream()));
 		String inputLine;

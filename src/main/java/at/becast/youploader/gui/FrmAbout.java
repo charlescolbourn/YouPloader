@@ -34,6 +34,7 @@ import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
+import at.becast.youploader.Main;
 import at.becast.youploader.util.DesktopUtil;
 import at.becast.youploader.util.UTF8ResourceBundle;
 
@@ -60,7 +61,7 @@ public class FrmAbout extends JDialog {
 	public FrmAbout() {
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setResizable(false);
-		setTitle(String.format(LANG.getString("About.title"),FrmMain.APP_NAME));
+		setTitle(String.format(LANG.getString("About.title"),Main.APP_NAME));
         ResourceBundle bundle = ResourceBundle.getBundle( "build" );
         String rev = bundle.getString( "git-sha-1" );
         String build = bundle.getString( "jenkins-build" );
@@ -98,7 +99,7 @@ public class FrmAbout extends JDialog {
 		label.setIcon(new ImageIcon(getClass().getResource("/yp.png")));
 		contentPanel.add(label, "1, 2, 1, 9, left, fill");
 		
-		JLabel lblYouploader = new JLabel("YouPloader "+FrmMain.VERSION);
+		JLabel lblYouploader = new JLabel("YouPloader "+Main.VERSION);
 		lblYouploader.setFont(new Font("Arial Black", Font.PLAIN, 11));
 		contentPanel.add(lblYouploader, "3, 2, left, default");
 		

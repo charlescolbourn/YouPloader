@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import at.becast.youploader.gui.FrmMain;
+import at.becast.youploader.Main;
 import at.becast.youploader.templates.Template;
 import at.becast.youploader.youtube.data.Video;
 import at.becast.youploader.youtube.data.VideoMetadata;
@@ -59,14 +59,14 @@ public class SQLite {
 	
     public static Connection getInstance(){
         if(c == null)
-            new SQLite(FrmMain.DB_FILE);
+            new SQLite(Main.DB_FILE);
         return c;
     }
     
 
     public static Boolean setup(){
         if(c == null)
-            new SQLite(FrmMain.DB_FILE);
+            new SQLite(Main.DB_FILE);
         
         PreparedStatement prest = null;
         try {
@@ -96,7 +96,7 @@ public class SQLite {
 			prest.executeUpdate();
 			prest = c.prepareStatement("CREATE TABLE `playlists` (`id` INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL , `name` VARCHAR, `playlistid` VARCHAR, `image` BLOB, `account` INTEGER DEFAULT (null),`shown` VARCHAR)");
 			prest.executeUpdate();
-			setVersion(FrmMain.getDBVersion());
+			setVersion(Main.getDBVersion());
 		} catch (SQLException e) {
 			LOG.error("Error creating Database",e);
 			return false;
@@ -434,7 +434,7 @@ public class SQLite {
 					prest = c.prepareStatement("ALTER TABLE `uploads` ADD COLUMN 'starttime' DATETIME");
 					prest.executeUpdate();
 				default:
-					setVersion(FrmMain.getDBVersion());
+					setVersion(Main.getDBVersion());
 				break;
 			}
 			
@@ -458,7 +458,7 @@ public class SQLite {
 		SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyhhmm");
 		Date today = new Date();
 		try {
-			FileUtils.copyFile(new File(FrmMain.DB_FILE), new File(System.getProperty("user.home") + "/YouPloader/data/bak-" + formatter.format(today) +".db"));
+			FileUtils.copyFile(new File(Main.DB_FILE), new File(System.getProperty("user.home") + "/YouPloader/data/bak-" + formatter.format(today) +".db"));
 		} catch (IOException e) {
 			LOG.error("Could not create Database Backup ",e);
 		}
