@@ -21,6 +21,7 @@ import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import at.becast.youploader.Main;
 import at.becast.youploader.account.AccountManager;
 import at.becast.youploader.database.SQLite;
 import at.becast.youploader.gui.UploadItem;
@@ -118,9 +119,15 @@ public class UploadWorker extends Thread {
 				this.prepare();
 				SQLite.startUpload(this.id,0);
 				this.uploader.upload(this.upload, this.event, this.speed_limit);
+				if(Main.debug){
+					LOG.debug("Upload started. Limit {}", this.speed_limit);
+				}
 			}else{
 				try{
 					this.uploader.resumeUpload(this.upload, this.event, this.speed_limit);
+					if(Main.debug){
+						LOG.debug("Upload resumed. Limit {}", this.speed_limit);
+					}
 				}catch( IOException e){
 					this.event.onError(true);
 				}
@@ -133,6 +140,10 @@ public class UploadWorker extends Thread {
 	
 	public void setSpeed(int Speed){
 		this.uploader.setSpeedlimit(Speed);
+	}
+	
+	public long getSpeed(){
+		return this.uploader.getSpeedlimit();
 	}
 	
 	public void resetUploader(){

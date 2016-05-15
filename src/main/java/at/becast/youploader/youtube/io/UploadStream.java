@@ -58,6 +58,10 @@ public class UploadStream extends FileInputStream {
 
 		this.limit = limit;
 	}
+	
+	public long getSpeedLimit() {
+		return this.limit;
+	}
 
 	@Override
 	public long skip(long skip) throws IOException {

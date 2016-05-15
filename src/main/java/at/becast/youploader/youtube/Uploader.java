@@ -82,6 +82,10 @@ public class Uploader {
 		this.stream.setSpeedLimit(limit);
 	}
 	
+	public long getSpeedlimit() {
+		return this.stream.getSpeedLimit();
+	}
+	
 	public void uploadThumbnail(File thumbnail, Upload upload) throws IOException, UploadException {
 		this.http = new SimpleHTTP();
 		Map<String, String> headers = new HashMap<>();

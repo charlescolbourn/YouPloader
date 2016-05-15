@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,20 +51,24 @@ public class Main {
 			debug = true;
 			LOG.debug("Debug MODE");
 		}
-		
+		Runtime runtime = Runtime.getRuntime();
 		//Info about System, useful for Issue resolving
 		LOG.info("############################# VM INFO #############################");
-		LOG.info("# OS Name:   " + System.getProperty("os.name"));
-		LOG.info("# OS Arch:   " + System.getProperty("os.arch"));
-		LOG.info("# OS Vers:   " + System.getProperty("os.version"));
-		LOG.info("# Java Vers: " + System.getProperty("java.version"));
-		LOG.info("# Java Home: " + System.getProperty("java.home"));
-		LOG.info("# User Name: " + System.getProperty("user.name"));
-		LOG.info("# User Home: " + System.getProperty("user.home"));
-		LOG.info("# Cur dir:   " + System.getProperty("user.dir"));
-		LOG.info("# Date:      " + new Date().toString());
-		LOG.info("# Data dir:  " + DB_FILE);
-		LOG.info("# Version:   " + VERSION);
+		LOG.info("# OS Name:      " + System.getProperty("os.name"));
+		LOG.info("# OS Arch:      " + System.getProperty("os.arch"));
+		LOG.info("# OS Vers:      " + System.getProperty("os.version"));
+		LOG.info("# Java Vers:    " + System.getProperty("java.version"));
+		LOG.info("# Java Home:    " + System.getProperty("java.home"));
+		LOG.info("# User Name:    " + System.getProperty("user.name"));
+		LOG.info("# User Home:    " + System.getProperty("user.home"));
+		LOG.info("# Cur dir:      " + System.getProperty("user.dir"));
+		LOG.info("#	Used Memory:  " + FileUtils.byteCountToDisplaySize(runtime.totalMemory() - runtime.freeMemory()));
+		LOG.info("#	Free Memory:  " + FileUtils.byteCountToDisplaySize(runtime.freeMemory()));
+		LOG.info("#	Total Memory: " + FileUtils.byteCountToDisplaySize(runtime.totalMemory()));
+		LOG.info("#	Max Memory:   " + FileUtils.byteCountToDisplaySize(runtime.maxMemory()));
+		LOG.info("# Date:         " + new Date().toString());
+		LOG.info("# Data dir:     " + DB_FILE);
+		LOG.info("# Version:      " + VERSION);
 		LOG.info("####################################################################");
 		
 		try {
