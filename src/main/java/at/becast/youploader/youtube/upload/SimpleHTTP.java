@@ -1,4 +1,4 @@
-package at.becast.youploader.youtube.io;
+package at.becast.youploader.youtube.upload;
 
 import org.apache.http.Header;
 import org.apache.http.StatusLine;

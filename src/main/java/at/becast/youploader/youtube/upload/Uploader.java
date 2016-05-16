@@ -12,15 +12,12 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * 
  */
-package at.becast.youploader.youtube;
+package at.becast.youploader.youtube.upload;
 
 import at.becast.youploader.oauth.OAuth2;
 import at.becast.youploader.youtube.data.Upload;
 import at.becast.youploader.youtube.data.Video;
 import at.becast.youploader.youtube.exceptions.UploadException;
-import at.becast.youploader.youtube.io.SimpleHTTP;
-import at.becast.youploader.youtube.io.UploadEvent;
-import at.becast.youploader.youtube.io.UploadStream;
 import at.becast.youploader.youtube.playlists.PlaylistItem;
 
 import java.io.File;

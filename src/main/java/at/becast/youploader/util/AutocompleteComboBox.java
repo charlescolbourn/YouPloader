@@ -16,7 +16,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
 
 import at.becast.youploader.youtube.data.GameDataItem;
-import at.becast.youploader.youtube.io.GameData;
+import at.becast.youploader.youtube.upload.GameData;
 
 public class AutocompleteComboBox extends JComboBox<Object>{
 

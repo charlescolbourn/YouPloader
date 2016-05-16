@@ -39,10 +39,10 @@ import at.becast.youploader.Main;
 import at.becast.youploader.templates.Template;
 import at.becast.youploader.youtube.data.Video;
 import at.becast.youploader.youtube.data.VideoMetadata;
-import at.becast.youploader.youtube.io.UploadManager;
-import at.becast.youploader.youtube.io.UploadManager.Status;
 import at.becast.youploader.youtube.playlists.Playlists;
 import at.becast.youploader.youtube.playlists.Playlists.Item;
+import at.becast.youploader.youtube.upload.UploadManager;
+import at.becast.youploader.youtube.upload.UploadManager.Status;
 
 public class SQLite {
 	

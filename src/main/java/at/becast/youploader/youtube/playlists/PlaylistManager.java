@@ -34,8 +34,8 @@ import at.becast.youploader.database.SQLite;
 import at.becast.youploader.gui.EditPanel;
 import at.becast.youploader.oauth.OAuth2;
 import at.becast.youploader.youtube.exceptions.UploadException;
-import at.becast.youploader.youtube.io.SimpleHTTP;
 import at.becast.youploader.youtube.playlists.Playlists.Item;
+import at.becast.youploader.youtube.upload.SimpleHTTP;
 
 public class PlaylistManager {
 	

@@ -1,4 +1,4 @@
-package at.becast.youploader.youtube.io;
+package at.becast.youploader.youtube.upload;
 
 import java.io.IOException;
 import java.util.HashMap;

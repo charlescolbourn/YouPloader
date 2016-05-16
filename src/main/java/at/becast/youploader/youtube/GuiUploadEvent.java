@@ -28,9 +28,9 @@ import org.slf4j.LoggerFactory;
 import at.becast.youploader.Main;
 import at.becast.youploader.database.SQLite;
 import at.becast.youploader.gui.UploadItem;
+import at.becast.youploader.youtube.upload.UploadEvent;
+import at.becast.youploader.youtube.upload.UploadManager.Status;
 import at.becast.youploader.gui.FrmMain;
-import at.becast.youploader.youtube.io.UploadEvent;
-import at.becast.youploader.youtube.io.UploadManager.Status;
 
 public class GuiUploadEvent implements UploadEvent {
   private static final Logger LOG = LoggerFactory.getLogger(GuiUploadEvent.class);

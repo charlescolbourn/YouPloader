@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import at.becast.youploader.youtube.io.SimpleHTTP;
+import at.becast.youploader.youtube.upload.SimpleHTTP;
 
 
 public class GetVersion {
