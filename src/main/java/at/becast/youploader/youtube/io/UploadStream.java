@@ -23,10 +23,11 @@ import java.io.IOException;
 public class UploadStream extends BufferedInputStream {
 	private UploadEvent event;
 	private long limit;
-	private long size;
+	public long size;
 	private long position;
 	private Boolean finished = false;
-	private final static int BUFFER_SIZE = 5242880;
+	//Buffer of 10 MB to prevent speed being limited by the file read, might limit extreme fast connections still.
+	private final static int BUFFER_SIZE = 10485760;
 
 	public UploadStream(File file, UploadEvent event) throws FileNotFoundException {
 		super(new FileInputStream(file),BUFFER_SIZE);
@@ -34,7 +35,6 @@ public class UploadStream extends BufferedInputStream {
 		this.limit = 0;
 		this.size = file.length();
 		this.position = 0;
-
 		if (event != null) {
 			event.onInit();
 		}
@@ -78,7 +78,6 @@ public class UploadStream extends BufferedInputStream {
 	@Override
 	public int read(byte[] bytes) throws IOException {
 		this.position += bytes.length;
-
 		if (this.event != null) {
 			this.event.onRead(bytes.length, this.position, this.size);
 		}

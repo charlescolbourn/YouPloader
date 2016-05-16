@@ -17,10 +17,10 @@ import org.slf4j.LoggerFactory;
 
 import at.becast.youploader.youtube.exceptions.UploadException;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Map;
 
 public class SimpleHTTP {
@@ -40,7 +40,6 @@ public class SimpleHTTP {
     for (String key : headers.keySet()) {
       post.setHeader(key, headers.get(key));
     }
-
     post.setEntity(new ByteArrayEntity(body.getBytes("UTF-8")));
     response = this.chc.execute(post);
 
@@ -75,7 +74,7 @@ public class SimpleHTTP {
 	    response.close();
 	  }
 
-  public void put(String url, Map<String, String> headers, InputStream stream, UploadEvent callback) throws IOException {
+  public void put(String url, Map<String, String> headers, BufferedInputStream stream, UploadEvent callback) throws IOException {
     this.put = new HttpPut(url);
     for (String key : headers.keySet()) {
     	this.put.setHeader(key, headers.get(key));
