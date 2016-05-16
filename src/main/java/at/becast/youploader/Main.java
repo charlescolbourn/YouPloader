@@ -25,20 +25,31 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.util.StatusPrinter;
 
 
+/**
+ * The YouPloader main class.
+ * 
+ *  All the Magic and Bugs start here.
+ * 
+ * @author genuineparts
+ * @version 0.7
+ *
+ */
 public class Main {
 	private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 	public static boolean debug = false;
 	public static final String DB_FILE = System.getProperty("user.home") + "/YouPloader/data/data.db";
 	public static final String APP_NAME = "YouPloader";
-	public static final String VERSION = "0.6";
+	public static final String VERSION = "0.7a";
 	public static final int DB_VERSION = 6;
 	private static final ResourceBundle LANG = UTF8ResourceBundle.getBundle("lang", Locale.getDefault());
 	public static Settings s;
 	public static Boolean firstlaunch = false;
 	
 	/**
-	 * @param args
-	 *            the command line arguments
+	 * The YouPloader main Method
+	 * 
+	 * @param args  the command line arguments
+	 * 
 	 */
 	public static void main(String[] args) {
 		LOG.info(APP_NAME + " " + VERSION + " starting.", Main.class);

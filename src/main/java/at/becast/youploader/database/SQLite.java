@@ -44,6 +44,13 @@ import at.becast.youploader.youtube.playlists.Playlists.Item;
 import at.becast.youploader.youtube.upload.UploadManager;
 import at.becast.youploader.youtube.upload.UploadManager.Status;
 
+/**
+ * A SQL abstraction class for SQLite
+ * 
+ * @author genuineparts
+ * @version 1.0
+ * 
+ */
 public class SQLite {
 	
 	private static Connection c;
@@ -62,49 +69,27 @@ public class SQLite {
             new SQLite(Main.DB_FILE);
         return c;
     }
-    
-
-    public static Boolean setup(){
-        if(c == null)
-            new SQLite(Main.DB_FILE);
         
-        PreparedStatement prest = null;
-        try {
-			prest = c.prepareStatement("CREATE TABLE `settings` (`name` VARCHAR, `value` VARCHAR)");
-			prest.executeUpdate();
-			prest = c.prepareStatement("INSERT INTO `settings` VALUES('client_id','581650568827-44vbqcoujflbo87hbirjdi6jcj3hlnbu.apps.googleusercontent.com')");
-			prest.executeUpdate();
-			prest = c.prepareStatement("INSERT INTO `settings` VALUES('clientSecret','l2M4y-lu9uCkSgBdCKp1YAxX')");
-			prest.executeUpdate();
-			prest = c.prepareStatement("INSERT INTO `settings` VALUES('tos_agreed','0')");
-			prest.executeUpdate();
-			prest = c.prepareStatement("INSERT INTO `settings` VALUES('notify_updates','1')");
-			prest.executeUpdate();
-			prest = c.prepareStatement("INSERT INTO `settings` VALUES('width','900')");
-			prest.executeUpdate();
-			prest = c.prepareStatement("INSERT INTO `settings` VALUES('height','580')");
-			prest.executeUpdate();
-			prest = c.prepareStatement("INSERT INTO `settings` VALUES('left','0')");
-			prest.executeUpdate();
-			prest = c.prepareStatement("INSERT INTO `settings` VALUES('top','0')");
-			prest.executeUpdate();
-			prest = c.prepareStatement("CREATE TABLE `accounts` (`id` INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , `name` VARCHAR NOT NULL , `refresh_token` VARCHAR, `cookie` VARCHAR, `active` INTEGER DEFAULT 0)");
-			prest.executeUpdate();
-			prest = c.prepareStatement("CREATE TABLE `templates` (`id` INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , `name` VARCHAR, `data` VARCHAR)");
-			prest.executeUpdate();
-			prest = c.prepareStatement("CREATE TABLE `uploads` (`id` INTEGER PRIMARY KEY  NOT NULL ,`file` VARCHAR,`account` INTEGER DEFAULT (null),`yt_id` VARCHAR, `enddir` VARCHAR ,`url` VARCHAR,`uploaded` INTEGER DEFAULT (null) ,`lenght` INTEGER DEFAULT (null) ,`data` VARCHAR,`metadata` VARCHAR, `status` VARCHAR, `starttime` DATETIME)");
-			prest.executeUpdate();
-			prest = c.prepareStatement("CREATE TABLE `playlists` (`id` INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL , `name` VARCHAR, `playlistid` VARCHAR, `image` BLOB, `account` INTEGER DEFAULT (null),`shown` VARCHAR)");
-			prest.executeUpdate();
-			setVersion(Main.getDBVersion());
-		} catch (SQLException e) {
-			LOG.error("Error creating Database",e);
-			return false;
-		}
-                
-        return true;
+    /**
+     * A simple SQL query without any return.
+     * 
+     * @param sql The SQL query
+     * @throws SQLException
+     */
+    public static void query(String sql) throws SQLException{
+    	PreparedStatement prest = null;
+    	prest = c.prepareStatement(sql);
+    	prest.executeUpdate();
+    	prest.close();
     }
     
+    
+    /**
+     * Returns the DB Version for App Update purposes
+     * 
+     * @return An Integer with the current DB Version or 0 if there was a Error getting the Version
+     * @throws SQLException
+     */
     public static int getVersion() throws SQLException{
     	PreparedStatement prest = null;
     	String sql	= "PRAGMA `user_version`";
@@ -119,12 +104,17 @@ public class SQLite {
     	}
     }
     
+    /**
+     * Sets the DB Version for App Update purposes
+     * 
+     * @param version The desired Version to set the DB to
+     * @throws SQLException
+     */
     public static void setVersion(int version) throws SQLException{
-    	PreparedStatement prest = null;
     	String sql	= "PRAGMA `user_version`="+version;
-    	prest = c.prepareStatement(sql);
-    	prest.executeUpdate();
+    	query(sql);
     }
+    
     
     public static int addUpload(File file, Video data, VideoMetadata metadata, Date startAt) throws SQLException, IOException{
     	PreparedStatement prest = null;
@@ -406,38 +396,73 @@ public class SQLite {
 		
 	}
 	
+	 /**
+     * Sets the Database up.
+     * 
+     * @return True if the database was created successfully. False if there was an error.
+     */
+    public static Boolean setup(){
+        if(c == null)
+            new SQLite(Main.DB_FILE);
+        
+        try {
+        	//Settings Table and Data
+			query("CREATE TABLE `settings` (`name` VARCHAR, `value` VARCHAR)");
+			query("INSERT INTO `settings` VALUES('client_id','581650568827-44vbqcoujflbo87hbirjdi6jcj3hlnbu.apps.googleusercontent.com')");
+			query("INSERT INTO `settings` VALUES('clientSecret','l2M4y-lu9uCkSgBdCKp1YAxX')");
+			query("INSERT INTO `settings` VALUES('tos_agreed','0')");
+			query("INSERT INTO `settings` VALUES('notify_updates','1')");
+			query("INSERT INTO `settings` VALUES('width','900')");
+			query("INSERT INTO `settings` VALUES('height','580')");
+			query("INSERT INTO `settings` VALUES('left','0')");
+			query("INSERT INTO `settings` VALUES('top','0')");
+			//Accounts
+			query("CREATE TABLE `accounts` (`id` INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , `name` VARCHAR NOT NULL , `refresh_token` VARCHAR, `cookie` VARCHAR, `active` INTEGER DEFAULT 0)");
+			//Templates
+			query("CREATE TABLE `templates` (`id` INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , `name` VARCHAR, `data` VARCHAR)");
+			//Uploads
+			query("CREATE TABLE `uploads` (`id` INTEGER PRIMARY KEY  NOT NULL ,`file` VARCHAR,`account` INTEGER DEFAULT (null),`yt_id` VARCHAR, `enddir` VARCHAR ,`url` VARCHAR,`uploaded` INTEGER DEFAULT (null) ,`lenght` INTEGER DEFAULT (null) ,`data` VARCHAR,`metadata` VARCHAR, `status` VARCHAR, `starttime` DATETIME)");
+			//Playlists
+			query("CREATE TABLE `playlists` (`id` INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL , `name` VARCHAR, `playlistid` VARCHAR, `image` BLOB, `account` INTEGER DEFAULT (null),`shown` VARCHAR)");
+			//Set the DB Version
+			setVersion(Main.getDBVersion());
+		} catch (SQLException e) {
+			LOG.error("Error creating Database",e);
+			return false;
+		}
+                
+        return true;
+    }
+	
+	/**
+	 * This method applies all required updates to the Database if necessary 
+	 * 
+	 */
 	public static void update() {
-		PreparedStatement prest = null;
 		try {
 			switch(getVersion()){
 				//This falls through intentionally since ALL updates since the version have to be applied.
 				case 2:
-					prest = c.prepareStatement("INSERT INTO `settings` VALUES('notify_updates','1')");
-					prest.executeUpdate();
-					prest = c.prepareStatement("ALTER TABLE `uploads` ADD COLUMN 'metadata' VARCHAR");
-					prest.executeUpdate();
+					//Version 0.2 -> 0.3
+					query("INSERT INTO `settings` VALUES('notify_updates','1')");
+					query("ALTER TABLE `uploads` ADD COLUMN 'metadata' VARCHAR");
 				case 3:
-					prest = c.prepareStatement("INSERT INTO `settings` VALUES('width','900')");
-					prest.executeUpdate();
-					prest = c.prepareStatement("INSERT INTO `settings` VALUES('height','580')");
-					prest.executeUpdate();
-					prest = c.prepareStatement("INSERT INTO `settings` VALUES('left','0')");
-					prest.executeUpdate();
-					prest = c.prepareStatement("INSERT INTO `settings` VALUES('top','0')");
-					prest.executeUpdate();
+					//Version 0.3 -> 0.4
+					query("INSERT INTO `settings` VALUES('width','900')");
+					query("INSERT INTO `settings` VALUES('height','580')");
+					query("INSERT INTO `settings` VALUES('left','0')");
+					query("INSERT INTO `settings` VALUES('top','0')");
 				case 4:
-					prest = c.prepareStatement("CREATE TABLE `playlists` (`id` INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL , `name` VARCHAR, `playlistid` VARCHAR, `image` BLOB, `account` INTEGER DEFAULT (null))");
-					prest.executeUpdate();
+					//Version 0.4 -> 0.5
+					query("CREATE TABLE `playlists` (`id` INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL , `name` VARCHAR, `playlistid` VARCHAR, `image` BLOB, `account` INTEGER DEFAULT (null))");
 				case 5:
-					prest = c.prepareStatement("ALTER TABLE `playlists` ADD COLUMN 'shown' VARCHAR");
-					prest.executeUpdate();
-					prest = c.prepareStatement("ALTER TABLE `uploads` ADD COLUMN 'starttime' DATETIME");
-					prest.executeUpdate();
+					//Version 0.5 -> 0.6
+					query("ALTER TABLE `playlists` ADD COLUMN 'shown' VARCHAR");
+					query("ALTER TABLE `uploads` ADD COLUMN 'starttime' DATETIME");
 				default:
 					setVersion(Main.getDBVersion());
 				break;
 			}
-			
 		} catch (SQLException e) {
 			LOG.info("Could not update Database ", e);
 		}
@@ -463,11 +488,6 @@ public class SQLite {
 			LOG.error("Could not create Database Backup ",e);
 		}
 	}
-
-
-
-
-	
 
     
 }
