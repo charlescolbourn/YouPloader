@@ -1058,23 +1058,28 @@ public class FrmMain extends JFrame implements IMainMenu {
 	
 	private void queueButton() {
 		AccountType acc = (AccountType) getCmbAccount().getSelectedItem();
-		if (this.editItem != -1) {
-			try {
-				update(cmbFile.getSelectedItem().toString(), acc.getValue(), this.editItem);
-			} catch (SQLException | IOException e) {
-				LOG.error("Error updating upload",e);
-			}
-			cmbFile.removeAllItems();
-			btnAddToQueue.setText(LANG.getString("frmMain.addtoQueue"));
-			getCmbAccount().setEnabled(true);
-			this.editItem = -1;
-		} else {
-			if (cmbFile.getSelectedItem() != null && !cmbFile.getSelectedItem().toString().equals("")) {
-				createUpload(cmbFile.getSelectedItem().toString(), txtTitle.getText(), acc.getValue());
+		if(txtTitle.getText()==null || txtTitle.getText().equals("")){
+			JOptionPane.showMessageDialog(null, LANG.getString("frmMain.titleerror.text"), LANG.getString("frmMain.titleerror.title"),
+					JOptionPane.ERROR_MESSAGE);
+		}else{
+			if (this.editItem != -1) {
+				try {
+					update(cmbFile.getSelectedItem().toString(), acc.getValue(), this.editItem);
+				} catch (SQLException | IOException e) {
+					LOG.error("Error updating upload",e);
+				}
 				cmbFile.removeAllItems();
+				btnAddToQueue.setText(LANG.getString("frmMain.addtoQueue"));
+				getCmbAccount().setEnabled(true);
+				this.editItem = -1;
 			} else {
-				JOptionPane.showMessageDialog(null, "You have to select a file.", "Give me something to work with!",
-						JOptionPane.ERROR_MESSAGE);
+				if (cmbFile.getSelectedItem() != null && !cmbFile.getSelectedItem().toString().equals("")) {
+					createUpload(cmbFile.getSelectedItem().toString(), txtTitle.getText(), acc.getValue());
+					cmbFile.removeAllItems();
+				} else {
+					JOptionPane.showMessageDialog(null, LANG.getString("frmMain.fileerror.text"), LANG.getString("frmMain.fileerror.title"),
+							JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		}
 	}
