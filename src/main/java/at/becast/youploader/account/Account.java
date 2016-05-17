@@ -14,15 +14,28 @@
  */
 package at.becast.youploader.account;
 
+import at.becast.youploader.Main;
 import at.becast.youploader.database.SQLite;
+import at.becast.youploader.oauth.OAuth2;
+import at.becast.youploader.settings.Settings;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,12 +44,15 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import at.becast.youploader.youtube.data.Cookie;
+import at.becast.youploader.youtube.data.CookieJar;
+import at.becast.youploader.youtube.upload.SimpleHTTP;
 
 public class Account {
 	public int id;
 	public String refreshToken;
 	public String name;
 	public List<Cookie> cdata;
+	private Settings s = Settings.getInstance();
 	private static Connection c = SQLite.getInstance();
 	private static final Logger LOG = LoggerFactory.getLogger(Account.class);
 
@@ -138,6 +154,51 @@ public class Account {
 		    stmt.close();
 		} catch (SQLException e) {
 			LOG.error("Could not update account Ex:",e);
+		}
+	}
+	
+	public void loadCookie() throws IOException {
+		CookieJar persistentCookieStore = new CookieJar();
+		CookieManager cmrCookieMan = new CookieManager(persistentCookieStore, null);
+		persistentCookieStore.setSerializeableCookies(this.getCookie());
+		CookieHandler.setDefault(cmrCookieMan);
+		LOG.info("Updating cookies");
+		OAuth2 auth = new OAuth2(s.setting.get("client_id"),s.setting.get("clientSecret"), this.refreshToken);
+		Map<String, String> headers = new HashMap<>();
+		try {
+			headers.put("Authorization", auth.getHeader());
+		} catch (NullPointerException e) {
+		}
+		SimpleHTTP Videoget = new SimpleHTTP();
+		String resp = Videoget.get("https://www.googleapis.com/youtube/v3/search?part=id&forMine=true&maxResults=1&type=video", headers);
+		Pattern MY_PATTERN = Pattern.compile("\"videoId\": \"(.*?)\"");
+		Matcher m = MY_PATTERN.matcher(resp);
+		String vidID = null;
+		while (m.find()) {
+		    vidID = m.group(1);
+		}
+		String url = String.format("https://www.youtube.com/edit?o=U&ns=1&video_id=%s", vidID);
+		URL obj = new URL(url);
+		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+
+		con.setRequestMethod("GET");
+		con.setRequestProperty("User-Agent", Main.APP_NAME+" "+Main.VERSION);
+		int responseCode = con.getResponseCode();
+
+		BufferedReader in = new BufferedReader(
+		        new InputStreamReader(con.getInputStream()));
+		String inputLine;
+		StringBuffer response = new StringBuffer();
+
+		while ((inputLine = in.readLine()) != null) {
+			response.append(inputLine);
+		}
+		in.close();
+		if(responseCode < 400){
+			this.setCookie(persistentCookieStore.getSerializeableCookies());
+			LOG.info("Got cookie");
+		}else{
+			LOG.info("Could not fetch Cookie {}", response.toString());
 		}
 	}
   

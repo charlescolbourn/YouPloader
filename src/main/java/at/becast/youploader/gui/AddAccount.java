@@ -146,6 +146,7 @@ public class AddAccount extends javax.swing.JDialog {
 							} while (!o2.check());
 							account.setRefreshToken(o2.getRefreshToken());
 							LOG.info("Got refresh token {}", account.refreshToken);
+							account.loadCookie();
 							account.save();
 							browser.dispose();
 							parent.refreshAccounts();

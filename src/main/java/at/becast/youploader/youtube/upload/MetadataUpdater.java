@@ -74,11 +74,6 @@ public class MetadataUpdater {
 			response.append(inputLine);
 		}
 		in.close();
-		LOG.debug(response.toString());
-		if(responseCode < 400){
-			acc.setCookie(persistentCookieStore.getSerializeableCookies());
-			acc.updateCookie(this.acc.id);
-		}
 		updateAsBrowser(response.toString());
 		
 	}
