@@ -126,6 +126,7 @@ import at.becast.youploader.gui.statusbar.StatusBar;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
 import java.awt.GridLayout;
+import javax.swing.border.BevelBorder;
 
 /**
  *
@@ -625,6 +626,8 @@ public class FrmMain extends JFrame implements IMainMenu {
 		PlayPanel.setLayout(new GridLayout(0, 2, 0, 0));
 		
 		AccList = new JList<AccountType>(AccListModel);
+		AccList.setOpaque(false);
+		AccList.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		AccList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
 		gl_panel_1.setHorizontalGroup(
