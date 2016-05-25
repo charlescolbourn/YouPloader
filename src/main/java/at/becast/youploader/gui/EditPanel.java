@@ -299,7 +299,7 @@ public class EditPanel extends javax.swing.JPanel {
 	                	}
 	                }
 	            } catch (Exception ex) {
-	                ex.printStackTrace();
+					LOG.error("Error dropping thumbnail", ex);
 	            }
 	        }
 	    });

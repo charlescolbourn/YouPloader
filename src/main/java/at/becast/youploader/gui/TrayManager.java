@@ -88,8 +88,7 @@ public class TrayManager {
 		try {
 			tray.add(trayIcon);
 		} catch (AWTException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.error("Error adding tray icon", e);
 		}
 		
 	}

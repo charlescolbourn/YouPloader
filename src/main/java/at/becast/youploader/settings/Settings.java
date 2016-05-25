@@ -92,7 +92,7 @@ public class Settings {
 			prest.close();
 			return res;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			LOG.error("Error saving setting", e);
 			return false;
 		}
 
@@ -109,7 +109,7 @@ public class Settings {
 			prest.close();
 			return res;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			LOG.error("Error inserting settings value", e);
 			return false;
 		}
 

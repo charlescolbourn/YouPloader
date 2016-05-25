@@ -159,7 +159,7 @@ public class SQLite {
 	    	prest.close();
 	    	return res;     
 		} catch (SQLException e) {
-			e.printStackTrace();
+			LOG.error("Error preparing upload", e);
 			return false;
 		}
     }
@@ -176,7 +176,7 @@ public class SQLite {
 	    	prest.close();
 	    	return res;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			LOG.error("Error starting upload", e);
 			return false;
 		}
     }
@@ -192,7 +192,7 @@ public class SQLite {
 	    	prest.close();
 	    	return res;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			LOG.error("Error updating upload progress", e);
 			return false;
 		}
     }
@@ -209,7 +209,7 @@ public class SQLite {
 	    	prest.close();
 	    	return res;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			LOG.error("Error marking upload as finished", e);
 			return false;
 		}		
 	}
@@ -224,7 +224,7 @@ public class SQLite {
 	    	prest.close();
 	    	return res;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			LOG.error("Error deleting upload", e);
 			return false;
 		}				
 	}
@@ -240,7 +240,7 @@ public class SQLite {
 	    	prest.close();
 	    	return res;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			LOG.error("Error marking upload as failed", e);
 			return false;
 		}
 		
