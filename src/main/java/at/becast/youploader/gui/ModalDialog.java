@@ -41,9 +41,12 @@ import com.jgoodies.forms.layout.RowSpec;
 
 import at.becast.youploader.account.Account;
 import at.becast.youploader.util.UTF8ResourceBundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ModalDialog extends JDialog {
 	private static final long serialVersionUID = -49240475185934236L;
+	private static final Logger LOG = LoggerFactory.getLogger(ModalDialog.class);
 	private static final ResourceBundle LANG = UTF8ResourceBundle.getBundle("lang", Locale.getDefault());
 	private final JPanel contentPanel = new JPanel();
 	private JTextField labelcode;
@@ -146,8 +149,7 @@ public class ModalDialog extends JDialog {
 		try {
 			Thread.sleep(3000);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.error("Modal dialog thread timeout was interrupted", e);
 		}
 		this.close();
 	}

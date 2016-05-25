@@ -11,8 +11,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import at.becast.youploader.database.SQLite;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TemplateManager {
+	private static final Logger LOG = LoggerFactory.getLogger(TemplateManager.class);
+
 	private static TemplateManager manager = null;
 	public HashMap<Integer, Template> templates = new HashMap<Integer, Template>();
 	
@@ -33,7 +37,7 @@ public class TemplateManager {
 					try {
 						templates.put(rs.getInt("id"), mapper.readValue(rs.getString("data"), new TypeReference<Template>() {}));
 					} catch (IOException e) {
-						e.printStackTrace();
+						LOG.error("Error loading template data", e);
 					}
 				}
 				rs.close();
@@ -43,7 +47,7 @@ public class TemplateManager {
 				stmt.close();
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			LOG.error("Error loading templates", e);
 		}
 	}
 
@@ -63,8 +67,7 @@ public class TemplateManager {
 			SQLite.updateTemplate(id, t);
 			templates.put(id, t);
 		} catch (SQLException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.error("Error updating template", e);
 		}
 	}
 	
@@ -78,8 +81,7 @@ public class TemplateManager {
 			int id = SQLite.saveTemplate(t);
 			templates.put(id, t);
 		} catch (SQLException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.error("Error saving template", e);
 		}
 	}
 }

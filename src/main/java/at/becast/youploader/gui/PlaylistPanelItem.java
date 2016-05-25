@@ -11,6 +11,8 @@ import com.jgoodies.forms.layout.RowSpec;
 import at.becast.youploader.database.SQLite;
 
 import com.jgoodies.forms.layout.FormSpecs;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 
@@ -25,6 +27,7 @@ public class PlaylistPanelItem extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 7026650769642399964L;
+	private static final Logger LOG = LoggerFactory.getLogger(PlaylistPanelItem.class);
 	private int id;
 	private boolean shown;
 	private FrmMain parent;
@@ -55,8 +58,7 @@ public class PlaylistPanelItem extends JPanel {
     			try {
 					SQLite.setPlaylistHidden(id, shown);
 				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					LOG.error("Error setting playlist visibility", e1);
 				}
     		}
 		});

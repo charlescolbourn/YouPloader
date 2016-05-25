@@ -17,6 +17,8 @@ import javax.swing.text.JTextComponent;
 
 import at.becast.youploader.youtube.data.GameDataItem;
 import at.becast.youploader.youtube.upload.GameData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AutocompleteComboBox extends JComboBox<Object>{
 
@@ -24,6 +26,7 @@ public class AutocompleteComboBox extends JComboBox<Object>{
 	 * 
 	 */
 	private static final long serialVersionUID = 4568236679352605417L;
+	private static final Logger LOG = LoggerFactory.getLogger(AutocompleteComboBox.class);
 	private boolean updating = false;
 	public AutocompleteComboBox(){
 		super();
@@ -79,8 +82,7 @@ public class AutocompleteComboBox extends JComboBox<Object>{
 									tc.requestFocus();
 									tc.setCaretPosition(tc.getText().length());
 								} catch (IOException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
+									LOG.error("Error updating game combo box entries", e);
 								}
 							}
 						});

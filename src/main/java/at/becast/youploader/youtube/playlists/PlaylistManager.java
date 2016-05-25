@@ -174,7 +174,7 @@ public class PlaylistManager {
 					stmt.close();
 				}
 			} catch (SQLException e) {
-				e.printStackTrace();
+				LOG.error("Error loading playlists", e);
 			}
 		}
 	}

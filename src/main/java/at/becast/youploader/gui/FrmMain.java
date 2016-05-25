@@ -458,7 +458,7 @@ public class FrmMain extends JFrame implements IMainMenu {
     					cmbFile.addItem(file.getAbsolutePath());
 	                }
 	            } catch (Exception ex) {
-	                ex.printStackTrace();
+					LOG.error("Error dropping video file", ex);
 	            }
 	        }
 	    });
