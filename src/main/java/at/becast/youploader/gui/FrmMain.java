@@ -747,10 +747,10 @@ public class FrmMain extends JFrame implements IMainMenu {
 	
 	protected void startUploads() {
 		if ("0".equals(Main.s.setting.get("tos_agreed")) && !this.tos) {
-			//Dummy JFrame to keep Dialog on top
 			if(Main.debug)
 				LOG.debug("Asking about ToS Agreement");
 			
+			//Dummy JFrame to keep Dialog on top
 			JFrame frmOpt = new JFrame();
 		    frmOpt.setAlwaysOnTop(true);
 			JCheckBox checkbox = new JCheckBox(LANG.getString("frmMain.tos.Remember"));

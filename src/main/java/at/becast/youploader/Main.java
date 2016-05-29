@@ -16,8 +16,8 @@ import org.slf4j.LoggerFactory;
 
 import at.becast.youploader.database.SQLite;
 import at.becast.youploader.gui.FrmMain;
+import at.becast.youploader.gui.UpdateNotice;
 import at.becast.youploader.settings.Settings;
-import at.becast.youploader.util.DesktopUtil;
 import at.becast.youploader.util.GetVersion;
 import at.becast.youploader.util.UTF8ResourceBundle;
 import at.becast.youploader.util.VersionComparator;
@@ -125,16 +125,14 @@ public class Main {
 	}
 	
 	private static void checkUpdates() {
-		String gitVersion = GetVersion.get();
-		VersionComparator v = new VersionComparator();
-		int updateAvaiable = v.compare(gitVersion, VERSION);
-		if(updateAvaiable > 0){
-			LOG.info("Update {} avaiable!", gitVersion);
-			int n = JOptionPane.showConfirmDialog(null, String.format(LANG.getString("frmMain.newVersion.Message"),gitVersion),
-					LANG.getString("frmMain.newVersion.title"), JOptionPane.YES_NO_OPTION,
-					JOptionPane.QUESTION_MESSAGE);
-			if (n == JOptionPane.YES_OPTION) {
-				DesktopUtil.openBrowser("https://github.com/becast/youploader/releases");
+		String[] gitVersion = GetVersion.get();
+		if(gitVersion!=null){
+			VersionComparator v = new VersionComparator();
+			int updateAvaiable = v.compare(gitVersion[0], VERSION);
+			if(updateAvaiable > 0){
+				LOG.info("Update {} avaiable!", gitVersion[0]);
+				UpdateNotice un = new UpdateNotice(gitVersion[0],gitVersion[2]);
+				un.setVisible(true);
 			}
 		}
 		

@@ -15,13 +15,14 @@ public class GetVersion {
 		
 	}
 	
-	public static String get(){
+	public static String[] get(){
 		try {
 			SimpleHTTP http = new SimpleHTTP();
-			return http.get("https://raw.githubusercontent.com/becast/YouPloader/master/version?"+System.currentTimeMillis());
+			String data = http.get("http://version.youploader.com/latest_version?"+System.currentTimeMillis()); //Placeholder until Java Update/Beta 0.8
+			return data.split(";");
 		} catch (IOException e) {
 			LOG.error("Could not get version! ",e);
-			return "0.0";
+			return null;
 		}
 	}
 }
