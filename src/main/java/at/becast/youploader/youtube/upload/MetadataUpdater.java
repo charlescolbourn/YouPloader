@@ -25,6 +25,9 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,8 +83,15 @@ public class MetadataUpdater {
 
 	private void updateAsBrowser(String body) throws IOException {
 		LOG.info("Updating Metadata for Video {}",upload.id);
-		String token = String.format("%s", body.substring(body.indexOf("var session_token = \"") + "var session_token = \"".length(), body.indexOf("\"", body.indexOf("var session_token = \"") + "var session_token = \"".length())));
-		
+		//String token = String.format("%s", body.substring(body.indexOf("var session_token = \"") + "var session_token = \"".length(), body.indexOf("\"", body.indexOf("var session_token = \"") + "var session_token = \"".length())));
+		 //var session_token = "(.*)";
+		String token = null;
+		Pattern r = Pattern.compile("var session_token = \"(.*?)\";");
+		Matcher m = r.matcher(body);
+		if (m.find( )) {
+			token =  m.group().replace("var session_token = \"", "").replace("\";", "");;
+			LOG.debug("Got Token {}",token);
+		}
 		Map<String, Object> mdata = new HashMap<String, Object>();
 		mdata.put("creator_share_feeds", "yes");
 		mdata.put("video_monetization_style", this.upload.metadata.getMonetization());
