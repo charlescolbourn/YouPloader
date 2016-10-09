@@ -159,7 +159,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 	private JPanel QueuePanel;
 	private JComboBox<Categories> cmbCategory;
 	private JTextArea txtTags;
-	private JComboBox<AccountType> cmbAccount;
+	private static JComboBox<AccountType> cmbAccount;
 	private SidebarSection ss1, ss2, ss3;
 	public transient static HashMap<Integer, JMenuItem> _accounts = new HashMap<Integer, JMenuItem>();
 	private int editItem = -1;
@@ -1453,7 +1453,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		return spinner;
 	}
 
-	public JComboBox<AccountType> getCmbAccount() {
+	public static JComboBox<AccountType> getCmbAccount() {
 		return cmbAccount;
 	}
 	public StatusBar getStatusBar() {

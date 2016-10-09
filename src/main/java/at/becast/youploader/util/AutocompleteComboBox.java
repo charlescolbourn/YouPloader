@@ -15,6 +15,8 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
 
+import at.becast.youploader.account.AccountType;
+import at.becast.youploader.gui.FrmMain;
 import at.becast.youploader.youtube.data.GameDataItem;
 import at.becast.youploader.youtube.upload.GameData;
 import org.slf4j.Logger;
@@ -59,7 +61,8 @@ public class AutocompleteComboBox extends JComboBox<Object>{
 						SwingUtilities.invokeLater(new Runnable(){
 							@Override
 							public void run() {
-								GameData gd = new GameData(1);
+								AccountType acc = (AccountType) FrmMain.getCmbAccount().getSelectedItem();
+								GameData gd = new GameData(acc.getValue());
 								List<GameDataItem> founds;
 								try {
 									founds = new ArrayList<GameDataItem>(gd.getGames(tc.getText()));
