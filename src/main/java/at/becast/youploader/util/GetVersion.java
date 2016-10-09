@@ -18,7 +18,7 @@ public class GetVersion {
 	public static String[] get(){
 		try {
 			SimpleHTTP http = new SimpleHTTP();
-			String data = http.get("http://version.youploader.com/latest_version?"+System.currentTimeMillis()); //Placeholder until Java Update/Beta 0.8
+			String data = http.get("https://version.youploader.com/latest_version?"+System.currentTimeMillis()); //Placeholder until Java Update/Beta 0.8
 			return data.split(";");
 		} catch (IOException e) {
 			LOG.error("Could not get version! ",e);

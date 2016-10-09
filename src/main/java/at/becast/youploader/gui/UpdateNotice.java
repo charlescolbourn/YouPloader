@@ -1,7 +1,6 @@
 package at.becast.youploader.gui;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.Toolkit;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -20,6 +19,11 @@ import com.jgoodies.forms.layout.FormSpecs;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.UIManager;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JProgressBar;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
 
 public class UpdateNotice extends JDialog {
 
@@ -30,6 +34,9 @@ public class UpdateNotice extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 	//private static final Logger LOG = LoggerFactory.getLogger(UpdateNotice.class);
 	private static final ResourceBundle LANG = UTF8ResourceBundle.getBundle("lang", Locale.getDefault());
+	private JProgressBar progressBar;
+	private JButton dlButton;
+	private JButton cancelButton;
 
 	/**
 	 * Create the dialog.
@@ -72,19 +79,47 @@ public class UpdateNotice extends JDialog {
 		}
 		{
 			JPanel buttonPane = new JPanel();
-			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton dlButton = new JButton(LANG.getString("UpdateNotice.download"));
+				dlButton = new JButton(LANG.getString("UpdateNotice.download"));
+				dlButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+					}
+				});
+				{
+					progressBar = new JProgressBar();
+					progressBar.setStringPainted(true);
+				}
 				dlButton.setActionCommand("OK");
-				buttonPane.add(dlButton);
 				getRootPane().setDefaultButton(dlButton);
 			}
 			{
-				JButton cancelButton = new JButton(LANG.getString("Button.cancel"));
+				cancelButton = new JButton(LANG.getString("Button.cancel"));
 				cancelButton.setActionCommand("Cancel");
-				buttonPane.add(cancelButton);
 			}
+			GroupLayout gl_buttonPane = new GroupLayout(buttonPane);
+			gl_buttonPane.setHorizontalGroup(
+				gl_buttonPane.createParallelGroup(Alignment.LEADING)
+					.addGroup(gl_buttonPane.createSequentialGroup()
+						.addContainerGap()
+						.addComponent(progressBar, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addGap(205)
+						.addComponent(dlButton)
+						.addGap(5)
+						.addComponent(cancelButton))
+			);
+			gl_buttonPane.setVerticalGroup(
+				gl_buttonPane.createParallelGroup(Alignment.LEADING)
+					.addGroup(gl_buttonPane.createSequentialGroup()
+						.addGap(5)
+						.addGroup(gl_buttonPane.createParallelGroup(Alignment.BASELINE)
+							.addComponent(dlButton)
+							.addComponent(progressBar, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+					.addGroup(gl_buttonPane.createSequentialGroup()
+						.addGap(5)
+						.addComponent(cancelButton))
+			);
+			buttonPane.setLayout(gl_buttonPane);
 		}
 	}
 }

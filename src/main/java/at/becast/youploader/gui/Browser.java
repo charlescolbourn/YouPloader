@@ -23,14 +23,15 @@ import java.net.URL;
  
 import static javafx.concurrent.Worker.State.FAILED;
   
+@SuppressWarnings("restriction")
 public class Browser extends JFrame {
- 
+
     /**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	private final JFXPanel jfxPanel = new JFXPanel();
-    private WebEngine engine;
+	private WebEngine engine;
     private Account acc;
     private Browser self;
     private boolean listener;
