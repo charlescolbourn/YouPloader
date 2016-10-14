@@ -10,6 +10,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import at.becast.youploader.util.DesktopUtil;
 import at.becast.youploader.util.UTF8ResourceBundle;
 import javax.swing.JLabel;
 import com.jgoodies.forms.layout.FormLayout;
@@ -21,7 +22,6 @@ import javax.swing.JTextPane;
 import javax.swing.UIManager;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.JProgressBar;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 
@@ -34,7 +34,6 @@ public class UpdateNotice extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 	//private static final Logger LOG = LoggerFactory.getLogger(UpdateNotice.class);
 	private static final ResourceBundle LANG = UTF8ResourceBundle.getBundle("lang", Locale.getDefault());
-	private JProgressBar progressBar;
 	private JButton dlButton;
 	private JButton cancelButton;
 
@@ -84,12 +83,9 @@ public class UpdateNotice extends JDialog {
 				dlButton = new JButton(LANG.getString("UpdateNotice.download"));
 				dlButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
+						DesktopUtil.openBrowser("https://github.com/becast/youploader/releases");
 					}
 				});
-				{
-					progressBar = new JProgressBar();
-					progressBar.setStringPainted(true);
-				}
 				dlButton.setActionCommand("OK");
 				getRootPane().setDefaultButton(dlButton);
 			}
@@ -101,9 +97,7 @@ public class UpdateNotice extends JDialog {
 			gl_buttonPane.setHorizontalGroup(
 				gl_buttonPane.createParallelGroup(Alignment.LEADING)
 					.addGroup(gl_buttonPane.createSequentialGroup()
-						.addContainerGap()
-						.addComponent(progressBar, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addGap(205)
+						.addGap(361)
 						.addComponent(dlButton)
 						.addGap(5)
 						.addComponent(cancelButton))
@@ -112,12 +106,9 @@ public class UpdateNotice extends JDialog {
 				gl_buttonPane.createParallelGroup(Alignment.LEADING)
 					.addGroup(gl_buttonPane.createSequentialGroup()
 						.addGap(5)
-						.addGroup(gl_buttonPane.createParallelGroup(Alignment.BASELINE)
+						.addGroup(gl_buttonPane.createParallelGroup(Alignment.LEADING)
 							.addComponent(dlButton)
-							.addComponent(progressBar, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-					.addGroup(gl_buttonPane.createSequentialGroup()
-						.addGap(5)
-						.addComponent(cancelButton))
+							.addComponent(cancelButton)))
 			);
 			buttonPane.setLayout(gl_buttonPane);
 		}
