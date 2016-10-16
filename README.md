@@ -5,7 +5,7 @@
 YouPloader is an Java based, multi platform YouTube uploader aiming to make uploads convenient and manageable.
 Inspired by the “Simple Java YouTube Uploader” by Dennis Fischer, which is no longer maintained and relies on Java 7 to work, I set out to create a spiritual successor to this nifty program.
 YouPloader is released under the MIT Licence.
-Currently YouPloader is in alpha and the first releases have been published!
+Currently YouPloader is in beta and the first releases have been published!
 
 #ToDos
 Writeup of compilation process & Pull requests
