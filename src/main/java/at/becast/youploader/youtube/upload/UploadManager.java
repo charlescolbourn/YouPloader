@@ -70,7 +70,7 @@ public class UploadManager implements Runnable{
 	
 	public void addUpload(File data, Video videodata, VideoMetadata metadata, Date startAt){
 		LOG.info("Adding upload");
-		this.speed_limit = Integer.parseInt(parent.getSpinner().getValue().toString());
+		this.setSpeed_limit(Integer.parseInt(parent.getSpinner().getValue().toString()));
 		if(metadata.getFrame().upload_id == -1){
 			int id = -1;
 			LOG.info("Upload is not a preexisting upload: Inserting to Database");
@@ -82,23 +82,23 @@ public class UploadManager implements Runnable{
 			if(id != -1){
 				LOG.info("Upload is not a preexisting upload: Adding Upload");
 				metadata.getFrame().setId(id);
-				UploadWorker worker = new UploadWorker(id, data, videodata, speed_limit, metadata,startAt);
+				UploadWorker worker = new UploadWorker(id, data, videodata, this.getSpeed_limit(), metadata,startAt);
 				_ToUpload.addLast(worker);
 			}else{
 				LOG.info("Upload could not be added to database.");
 			}
 		}else{
 			LOG.info("Upload is a preexisting upload: Adding Upload");
-			UploadWorker worker = new UploadWorker(metadata.getFrame().upload_id, data, videodata, speed_limit, metadata,startAt);
+			UploadWorker worker = new UploadWorker(metadata.getFrame().upload_id, data, videodata, this.getSpeed_limit(), metadata,startAt);
 			_ToUpload.addLast(worker);
 		}
 	}
 	
 	
 	public void addResumeableUpload(File data, Video videodata, VideoMetadata metadata, String url, String yt_id){
-		this.speed_limit = Integer.parseInt(parent.getSpinner().getValue().toString());
+		this.setSpeed_limit(Integer.parseInt(parent.getSpinner().getValue().toString()));
 		LOG.info("Adding resumed Upload");
-		UploadWorker worker = new UploadWorker(metadata.getFrame().upload_id, data, videodata, speed_limit, metadata, url, yt_id, null);
+		UploadWorker worker = new UploadWorker(metadata.getFrame().upload_id, data, videodata, this.getSpeed_limit(), metadata, url, yt_id, null);
 		_ToUpload.addFirst(worker);
 	}
 	
@@ -124,6 +124,7 @@ public class UploadManager implements Runnable{
 	}
 	
 	public void setLimit(int limit){
+		this.setSpeed_limit(limit);
 		for(int i=0;i<_Uploading.size();i++){
 			_Uploading.get(i).setSpeed(limit);
 		}
@@ -330,7 +331,7 @@ public class UploadManager implements Runnable{
 					}
 	
 					LOG.info("Restarting Upload {}",o.videodata.snippet.title);
-					UploadWorker worker = new UploadWorker(upload_id, o.file, o.videodata, speed_limit, o.metadata, o.upload.url, o.upload.id, o.startAt);
+					UploadWorker worker = new UploadWorker(upload_id, o.file, o.videodata, this.getSpeed_limit(), o.metadata, o.upload.url, o.upload.id, o.startAt);
 					worker.setRetrys(o.getRetrys());
 					_Uploading.set(i, worker);
 					worker.start();
@@ -339,7 +340,7 @@ public class UploadManager implements Runnable{
 					o.frame.getProgressBar().setValue(0);
 					LOG.info("Retried 5 times. Failing Upload {}",o.videodata.snippet.title);
 					_Uploading.remove(i);
-					UploadWorker worker = new UploadWorker(upload_id, o.file, o.videodata, speed_limit, o.metadata, o.upload.url, o.upload.id, o.startAt);
+					UploadWorker worker = new UploadWorker(upload_id, o.file, o.videodata, this.getSpeed_limit(), o.metadata, o.upload.url, o.upload.id, o.startAt);
 					_ToUpload.add(worker);
 					SQLite.setUploadFinished(upload_id,Status.STOPPED);
 				}
@@ -370,6 +371,14 @@ public class UploadManager implements Runnable{
 				//Not interesting
 			}
 	      }
+	}
+
+	public int getSpeed_limit() {
+		return speed_limit;
+	}
+
+	public void setSpeed_limit(int speed_limit) {
+		this.speed_limit = speed_limit;
 	}
 	
 }

@@ -50,7 +50,6 @@ public class UploadWorker extends Thread {
 	
 	public UploadWorker(int id, File file, Video videodata, int speed_limit, VideoMetadata metadata, Date startAt){
 		this.id = id;
-		this.speed_limit = speed_limit;
 		this.frame = metadata.getFrame();
 		this.upload = null;
 		this.acc_id = metadata.getAccount();
@@ -58,6 +57,7 @@ public class UploadWorker extends Thread {
 		this.videodata = videodata;
 		this.metadata = metadata;
 		this.startAt = startAt;
+		this.speed_limit = speed_limit;
 		this.enddir = metadata.getEndDirectory();
 		this.AccMgr = AccountManager.getInstance();
 		this.uploader = new Uploader(this.AccMgr.getAuth(this.acc_id));
@@ -66,7 +66,6 @@ public class UploadWorker extends Thread {
 	
 	public UploadWorker(int id, File file, Video videodata, int speed_limit, VideoMetadata metadata, String url, String yt_id, Date startAt){
 		this.id = id;
-		this.speed_limit = speed_limit;
 		this.frame = metadata.getFrame();
 		this.acc_id = metadata.getAccount();
 		this.file = file;
@@ -74,6 +73,7 @@ public class UploadWorker extends Thread {
 		this.videodata = videodata;
 		this.metadata = metadata;
 		this.startAt = startAt;
+		this.speed_limit = speed_limit;
 		this.enddir = metadata.getEndDirectory();
 		this.AccMgr = AccountManager.getInstance();
 		this.uploader = new Uploader(this.AccMgr.getAuth(this.acc_id));

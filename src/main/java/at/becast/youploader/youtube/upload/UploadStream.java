@@ -20,17 +20,22 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import com.google.common.util.concurrent.RateLimiter;
+
 public class UploadStream extends BufferedInputStream {
 	private UploadEvent event;
 	private long limit;
 	public long size;
 	private long position;
 	private Boolean finished = false;
+	private RateLimiter rateLimiter;
 	//Buffer of 10 MB to prevent speed being limited by the file read, might limit extreme fast connections still.
 	private final static int BUFFER_SIZE = 10485760;
+	private static final double ONE_KILOBYTE = 1024;
 
 	public UploadStream(File file, UploadEvent event) throws FileNotFoundException {
 		super(new FileInputStream(file),BUFFER_SIZE);
+		this.rateLimiter = RateLimiter.create(Double.MAX_VALUE);
 		this.event = event;
 		this.limit = 0;
 		this.size = file.length();
@@ -57,8 +62,11 @@ public class UploadStream extends BufferedInputStream {
 		if (this.event != null) {
 			this.event.onSpeedLimitSet(limit);
 		}
-
-		this.limit = limit;
+		if(limit <= 0){
+			this.rateLimiter.setRate(Double.MAX_VALUE);
+		}else{
+			this.rateLimiter.setRate(limit * ONE_KILOBYTE);
+		}
 	}
 	
 	public long getSpeedLimit() {
@@ -81,8 +89,14 @@ public class UploadStream extends BufferedInputStream {
 		if (this.event != null) {
 			this.event.onRead(bytes.length, this.position, this.size);
 		}
-
-		if (this.limit != 0) {
+		
+		if (0 < rateLimiter.getRate()) {
+			rateLimiter.acquire(bytes.length);
+		}
+		
+		return super.read(bytes);
+		
+		/*if (this.limit != 0) {
 			long s = System.currentTimeMillis();
 			int r = super.read(bytes);
 
@@ -98,8 +112,8 @@ public class UploadStream extends BufferedInputStream {
 
 			return r;
 		} else {
-			return super.read(bytes);
-		}
+			
+		}*/
 	}
 
 	public void abort() throws IOException {

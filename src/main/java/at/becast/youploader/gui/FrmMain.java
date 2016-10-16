@@ -167,6 +167,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 	private JList<AccountType> AccList;
 	private JPanel PlayPanel;
 	private TrayManager tray;
+	protected static int speed = 0;
 	private DefaultListModel<AccountType> AccListModel = new DefaultListModel<AccountType>();
 	//private static native boolean setAppUserModelID();
 
@@ -193,6 +194,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		UploadMgr = UploadManager.getInstance();
 		TemplateMgr = TemplateManager.getInstance();
 		UploadMgr.setParent(this);
+		speed= Integer.parseInt(Main.s.setting.get("speed"));
 		initComponents();
 		initMenuBar();
 		loadAccounts();
@@ -577,9 +579,12 @@ public class FrmMain extends JFrame implements IMainMenu {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				JSpinner s = (JSpinner) e.getSource();
-				UploadMgr.setLimit(Integer.parseInt(s.getValue().toString()));
+				speed = Integer.parseInt(s.getValue().toString());
+				Main.s.put("speed",String.valueOf(speed));
+				UploadMgr.setLimit(speed);
 			}
 		});
+		spinner.setValue(speed);
 		buttonPanel.add(spinner, "26, 4");
 
 		JLabel lblKbps = new JLabel("kbps");
@@ -746,6 +751,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 	}
 	
 	protected void startUploads() {
+		UploadMgr.setSpeed_limit(speed);
 		if ("0".equals(Main.s.setting.get("tos_agreed")) && !this.tos) {
 			if(Main.debug)
 				LOG.debug("Asking about ToS Agreement");
@@ -908,11 +914,11 @@ public class FrmMain extends JFrame implements IMainMenu {
 				} else if ("FAILED".equals(status)) {
 					f.getBtnEdit().setEnabled(false);
 					f.getProgressBar().setValue(0);
-					f.getProgressBar().setString("Failed");
+					f.getProgressBar().setString(LANG.getString("Upload.Failed"));
 				} else {
 					f.getBtnEdit().setEnabled(false);
 					f.getProgressBar().setValue(100);
-					f.getProgressBar().setString("Finished");
+					f.getProgressBar().setString(LANG.getString("Upload.Finished"));
 				}
 				this.getQueuePanel().add(f, new CC().wrap());
 				this.getQueuePanel().revalidate();
@@ -967,7 +973,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		} else {
 			v.status.privacyStatus = visibility.getData();
 			if (visibility == VisibilityType.PUBLIC) {
-				f.getlblRelease().setText("public");
+				f.getlblRelease().setText(LANG.getString("Visibility.Public"));
 			}
 		}
 		v.status.embeddable = edit.getChckbxAllowEmbedding().isSelected();
@@ -1452,7 +1458,11 @@ public class FrmMain extends JFrame implements IMainMenu {
 	public JSpinner getSpinner() {
 		return spinner;
 	}
-
+	
+	public static int getSpeedlimit() {
+		return speed;
+	}
+	
 	public static JComboBox<AccountType> getCmbAccount() {
 		return cmbAccount;
 	}

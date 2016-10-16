@@ -459,6 +459,10 @@ public class SQLite {
 					//Version 0.5 -> 0.6
 					query("ALTER TABLE `playlists` ADD COLUMN 'shown' VARCHAR");
 					query("ALTER TABLE `uploads` ADD COLUMN 'starttime' DATETIME");
+				case 6:
+				case 7:
+				case 8:
+					query("INSERT INTO `settings` VALUES('speed','0')");
 				default:
 					setVersion(Main.getDBVersion());
 				break;
