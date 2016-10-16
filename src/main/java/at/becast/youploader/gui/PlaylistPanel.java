@@ -56,7 +56,7 @@ public class PlaylistPanel extends JPanel {
 	
 	
 	public void refreshPlaylists() {
-    	AccountType acc = (AccountType) parent.getCmbAccount().getSelectedItem();
+    	AccountType acc = (AccountType) FrmMain.getCmbAccount().getSelectedItem();
 		SwingUtilities.invokeLater(new Runnable() {
 		    public void run() {
 				pl.save(acc.getValue());
@@ -66,7 +66,7 @@ public class PlaylistPanel extends JPanel {
 	}
 	
 	public void loadPlaylists() {
-    	AccountType acc = (AccountType) parent.getCmbAccount().getSelectedItem();
+    	AccountType acc = (AccountType) FrmMain.getCmbAccount().getSelectedItem();
 		this.pl.load();
 		if(!pl.getPlaylists().isEmpty() && pl.getPlaylists().get(acc.getValue())!=null && !pl.getPlaylists().get(acc.getValue()).isEmpty()){
 			for(Playlist p : pl.getPlaylists().get(acc.getValue())){

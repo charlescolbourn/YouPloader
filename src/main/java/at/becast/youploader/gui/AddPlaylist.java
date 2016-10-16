@@ -115,7 +115,7 @@ public class AddPlaylist extends javax.swing.JDialog {
 		if (AccPlaylist.getText() != null && !AccPlaylist.getText().equals("")) {
 			this.setVisible(false);
 			LOG.info("Adding Playlist {}", AccPlaylist.getText());
-			AccountType acc = (AccountType) parent.getCmbAccount().getSelectedItem();
+			AccountType acc = (AccountType) FrmMain.getCmbAccount().getSelectedItem();
 			PlaylistManager pl = PlaylistManager.getInstance();
 			pl.add(AccPlaylist.getText(), acc.getValue());
 			PlaylistUpdater pu = new PlaylistUpdater(parent);

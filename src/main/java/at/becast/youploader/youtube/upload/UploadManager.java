@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import at.becast.youploader.account.AccountManager;
 import at.becast.youploader.database.SQLite;
 import at.becast.youploader.gui.FrmMain;
+import at.becast.youploader.util.DesktopUtil;
 import at.becast.youploader.util.UTF8ResourceBundle;
 import at.becast.youploader.youtube.VisibilityType;
 import at.becast.youploader.youtube.data.Video;
@@ -234,6 +235,15 @@ public class UploadManager implements Runnable{
 				}
 			}
 		}else{
+			if(uploading){
+				if(FrmMain.getCmbAfterFinish().getSelectedIndex()>0){
+					if(FrmMain.getCmbAfterFinish().getSelectedIndex()==1){
+						DesktopUtil.hibernateComputer();
+					}else{
+						DesktopUtil.shutdownComputer();
+					}
+				}
+			}
 			uploading = false;
 		}
 	}

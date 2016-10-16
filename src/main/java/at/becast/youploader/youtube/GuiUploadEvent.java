@@ -153,7 +153,7 @@ public class GuiUploadEvent implements UploadEvent {
 		frame.getProgressBar().setString("100,00%");
 		frame.getProgressBar().setValue(100);
 		frame.getProgressBar().revalidate();
-		frame.getLblETA().setText("");
+		frame.getLblETA().setText("00:00:00");
 		frame.getLblKbs().setText("");
 		frame.revalidate();
 		SQLite.setUploadFinished(frame.upload_id, Status.FINISHED);

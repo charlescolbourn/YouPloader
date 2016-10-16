@@ -161,6 +161,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 	private JTextArea txtTags;
 	private static JComboBox<AccountType> cmbAccount;
 	private SidebarSection ss1, ss2, ss3;
+	private static JComboBox<Object> cmbAfterFinish;
 	public transient static HashMap<Integer, JMenuItem> _accounts = new HashMap<Integer, JMenuItem>();
 	private int editItem = -1;
 	private StatusBar statusBar;
@@ -513,22 +514,44 @@ public class FrmMain extends JFrame implements IMainMenu {
 		gbc_panel_2.fill = GridBagConstraints.BOTH;
 		gbc_panel_2.gridx = 0;
 		gbc_panel_2.gridy = 1;
-		buttonPanel.setLayout(new FormLayout(
-				new ColumnSpec[] { FormSpecs.RELATED_GAP_COLSPEC, FormSpecs.DEFAULT_COLSPEC,
-						FormSpecs.RELATED_GAP_COLSPEC, FormSpecs.DEFAULT_COLSPEC, FormSpecs.RELATED_GAP_COLSPEC,
-						FormSpecs.DEFAULT_COLSPEC, FormSpecs.RELATED_GAP_COLSPEC, FormSpecs.DEFAULT_COLSPEC,
-						FormSpecs.RELATED_GAP_COLSPEC, FormSpecs.DEFAULT_COLSPEC, FormSpecs.RELATED_GAP_COLSPEC,
-						FormSpecs.DEFAULT_COLSPEC, FormSpecs.RELATED_GAP_COLSPEC, FormSpecs.DEFAULT_COLSPEC,
-						FormSpecs.RELATED_GAP_COLSPEC, ColumnSpec.decode("default:grow"), FormSpecs.RELATED_GAP_COLSPEC,
-						ColumnSpec.decode("max(39dlu;default)"), FormSpecs.RELATED_GAP_COLSPEC,
-						FormSpecs.DEFAULT_COLSPEC, FormSpecs.RELATED_GAP_COLSPEC, FormSpecs.DEFAULT_COLSPEC,
-						FormSpecs.RELATED_GAP_COLSPEC, ColumnSpec.decode("max(92dlu;default)"),
-						FormSpecs.RELATED_GAP_COLSPEC, ColumnSpec.decode("max(46dlu;min)"),
-						FormSpecs.RELATED_GAP_COLSPEC, ColumnSpec.decode("left:max(22dlu;default)"),
-						FormSpecs.RELATED_GAP_COLSPEC, FormSpecs.DEFAULT_COLSPEC, },
-				new RowSpec[] { FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC, FormSpecs.RELATED_GAP_ROWSPEC,
-						FormSpecs.DEFAULT_ROWSPEC, FormSpecs.RELATED_GAP_ROWSPEC,
-						RowSpec.decode("max(0dlu;default)"), }));
+		buttonPanel.setLayout(new FormLayout(new ColumnSpec[] {
+				FormSpecs.RELATED_GAP_COLSPEC,
+				FormSpecs.DEFAULT_COLSPEC,
+				FormSpecs.RELATED_GAP_COLSPEC,
+				FormSpecs.DEFAULT_COLSPEC,
+				FormSpecs.RELATED_GAP_COLSPEC,
+				FormSpecs.DEFAULT_COLSPEC,
+				FormSpecs.RELATED_GAP_COLSPEC,
+				FormSpecs.DEFAULT_COLSPEC,
+				FormSpecs.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("default:grow"),
+				FormSpecs.RELATED_GAP_COLSPEC,
+				FormSpecs.DEFAULT_COLSPEC,
+				FormSpecs.RELATED_GAP_COLSPEC,
+				FormSpecs.DEFAULT_COLSPEC,
+				FormSpecs.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("default:grow"),
+				FormSpecs.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("max(39dlu;default)"),
+				FormSpecs.RELATED_GAP_COLSPEC,
+				FormSpecs.DEFAULT_COLSPEC,
+				FormSpecs.RELATED_GAP_COLSPEC,
+				FormSpecs.DEFAULT_COLSPEC,
+				FormSpecs.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("max(92dlu;default)"),
+				FormSpecs.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("max(46dlu;min)"),
+				FormSpecs.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("left:max(22dlu;default)"),
+				FormSpecs.RELATED_GAP_COLSPEC,
+				FormSpecs.DEFAULT_COLSPEC,},
+			new RowSpec[] {
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("max(0dlu;default)"),}));
 
 		JButton btnStart = new JButton(LANG.getString("frmMain.start"));
 		btnStart.addActionListener(new ActionListener() {
@@ -536,6 +559,9 @@ public class FrmMain extends JFrame implements IMainMenu {
 				startUploads();
 			}
 		});
+		
+		JLabel lblAfterUploadsFinish = new JLabel(LANG.getString("frmMain.afterfinish"));
+		buttonPanel.add(lblAfterUploadsFinish, "10, 2, 7, 1");
 		buttonPanel.add(btnStart, "2, 4");
 
 		JButton btnStop = new JButton(LANG.getString("frmMain.stop"));
@@ -545,6 +571,10 @@ public class FrmMain extends JFrame implements IMainMenu {
 			}
 		});
 		buttonPanel.add(btnStop, "6, 4");
+		
+		cmbAfterFinish = new JComboBox<Object>();
+		cmbAfterFinish.setModel(new DefaultComboBoxModel<Object>(new String[] {LANG.getString("frmMain.afterfinish.donothing"), LANG.getString("frmMain.afterfinish.suspend"),LANG.getString("frmMain.afterfinish.shutdown")}));
+		buttonPanel.add(cmbAfterFinish, "10, 4, 7, 1, fill, default");
 
 		JLabel lblUploads = new JLabel(LANG.getString("frmMain.uploads")+":");
 		buttonPanel.add(lblUploads, "18, 4, right, fill");
@@ -1461,6 +1491,10 @@ public class FrmMain extends JFrame implements IMainMenu {
 	
 	public static int getSpeedlimit() {
 		return speed;
+	}
+	
+	public static JComboBox<Object> getCmbAfterFinish() {
+		return cmbAfterFinish;
 	}
 	
 	public static JComboBox<AccountType> getCmbAccount() {
