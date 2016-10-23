@@ -132,10 +132,12 @@ public class UploadManager implements Runnable{
 	}
 	
 	public void setUploadlimit(int limit){
-		if(this.upload_limit<limit){
+		if(this.upload_limit<limit && uploading){
+			this.upload_limit = limit;
 			startNextUpload();
+		}else{
+			this.upload_limit = limit;
 		}
-		this.upload_limit = limit;
 	}
 
 	public void finished(int upload_id) {
@@ -218,15 +220,15 @@ public class UploadManager implements Runnable{
 	
 	public void startNextUpload(){
 		if(!_ToUpload.isEmpty()){
-			for(int i=0;i<upload_limit-_Uploading.size();i++){
-				for(int s=0;s<_ToUpload.size();s++){
-					Date start = _ToUpload.get(i).startAt;
+			for(int i=0;i<=this.upload_limit-_Uploading.size();i++){
+				for(int s=0;s<=_ToUpload.size();s++){
+					Date start = _ToUpload.get(s).startAt;
 					if((start!=null && start.compareTo(new Date())<=0) || start==null){
-						UploadWorker w = _ToUpload.get(i);
+						UploadWorker w = _ToUpload.get(s);
 						w.start();
 						LOG.info("Upload {} started",w.videodata.snippet.title);
 						_Uploading.add(w);
-						_ToUpload.remove(i);
+						_ToUpload.remove(s);
 						uploading = true;
 						break;
 					}else{

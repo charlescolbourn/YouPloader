@@ -72,7 +72,19 @@ public class SimpleHTTP {
 	    post.setEntity(new ByteArrayEntity(body.getBytes("UTF-8")));
 	    response = this.chc.execute(post);
 	    response.close();
-	  }
+  }
+
+  public void postLog(Map<String, String> headers, String body) throws IOException, UploadException {
+	    HttpPost post = new HttpPost("https://api.github.com/gists/");
+
+	    for (String key : headers.keySet()) {
+	      post.setHeader(key, headers.get(key));
+	    }
+
+	    post.setEntity(new ByteArrayEntity(body.getBytes("UTF-8")));
+	    response = this.chc.execute(post);
+	    response.close();
+}
 
   public void put(String url, Map<String, String> headers, BufferedInputStream stream, UploadEvent callback) throws IOException {
     this.put = new HttpPut(url);

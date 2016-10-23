@@ -754,6 +754,14 @@ public class FrmMain extends JFrame implements IMainMenu {
 		});
 		menu.add(mntmShowLogfile);
 		
+		JMenuItem mntmUploadLogfile = new JMenuItem(LANG.getString("frmMain.menu.UploadLatestLogfile"));
+		mntmUploadLogfile.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				DesktopUtil.openDir(new File(System.getProperty("user.home")+"/YouPloader"));
+			}
+		});
+		menu.add(mntmUploadLogfile);
+		
 		chckbxmntmCheckForUpdates = new JCheckBoxMenuItem(LANG.getString("frmMain.menu.CheckforUpdates"));
 		menu.add(chckbxmntmCheckForUpdates);
 		if(Main.s.setting.get("notify_updates").equals("1")){
