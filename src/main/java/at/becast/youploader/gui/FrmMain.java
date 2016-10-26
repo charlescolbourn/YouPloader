@@ -99,6 +99,7 @@ import at.becast.youploader.Main;
 import at.becast.youploader.account.Account;
 import at.becast.youploader.account.AccountManager;
 import at.becast.youploader.account.AccountType;
+import at.becast.youploader.account.AccountUpdater;
 import at.becast.youploader.database.SQLite;
 import at.becast.youploader.gui.slider.SideBar;
 import at.becast.youploader.gui.slider.SidebarSection;
@@ -223,6 +224,9 @@ public class FrmMain extends JFrame implements IMainMenu {
 			PlaylistUpdater pu = new PlaylistUpdater(this);
 			Thread updater = new Thread(pu);
 			updater.start();
+			AccountUpdater au = new AccountUpdater(this);
+			Thread aupdater = new Thread(au);
+			aupdater.start();
 		}
 		EditPanel edit = (EditPanel) ss1.contentPane;
 		if (edit.getCmbTemplate().getModel().getSize() > 0) {
