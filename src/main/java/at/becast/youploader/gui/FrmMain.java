@@ -169,6 +169,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 	private JPanel PlayPanel;
 	private TrayManager tray;
 	protected static int speed = 0;
+	private DefaultContextMenu contextMenu = new DefaultContextMenu();
 	private DefaultListModel<AccountType> AccListModel = new DefaultListModel<AccountType>();
 	//private static native boolean setAppUserModelID();
 
@@ -374,6 +375,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		panel.add(lbltitlelenght, "14, 6, 3, 1, right, top");
 
 		txtTitle = new JTextField();
+		contextMenu.add(txtTitle);
 		panel.add(txtTitle, "3, 7, 14, 1, fill, fill");
 		txtTitle.setColumns(10);
 		txtTitle.addKeyListener(new KeyAdapter() {
@@ -397,6 +399,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		panel.add(DescriptionScrollPane, "3, 13, 14, 1, fill, fill");
 
 		txtDescription = new JTextArea();
+		contextMenu.add(txtDescription);
 		txtDescription.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		DescriptionScrollPane.setViewportView(txtDescription);
 		txtDescription.setWrapStyleWord(true);
@@ -418,6 +421,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		panel.add(TagScrollPane, "3, 16, 14, 1, fill, fill");
 
 		txtTags = new JTextArea();
+		contextMenu.add(txtTags);
 		txtTags.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		TagScrollPane.setViewportView(txtTags);
 		txtTags.setWrapStyleWord(true);
