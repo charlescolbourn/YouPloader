@@ -20,8 +20,10 @@ public class PlaylistUpdater implements Runnable {
 		parent.getStatusBar().setMessage("Updating Playlists");
 		AccountType acc = (AccountType) FrmMain.getCmbAccount().getSelectedItem();
 		PlaylistManager pm = PlaylistManager.getInstance();
-		pm.save(acc.getValue());
-		pm.load();
+		if(acc!=null){
+			pm.save(acc.getValue());
+			pm.load();
+		}
 		parent.getPlaylistPanel().clearPlaylists();
 		parent.getPlaylistPanel().loadPlaylists();
 		parent.getStatusBar().getProgressBar().setIndeterminate(false);

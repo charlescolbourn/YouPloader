@@ -1,7 +1,5 @@
 package at.becast.youploader.util;
 
-import java.io.IOException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +18,7 @@ public class GetVersion {
 			SimpleHTTP http = new SimpleHTTP();
 			String data = http.get("https://version.youploader.com/latest_version?"+System.currentTimeMillis()); //Placeholder until Java Update/Beta 0.8
 			return data.split(";");
-		} catch (IOException e) {
+		} catch (Exception e) {
 			LOG.error("Could not get version! ",e);
 			return null;
 		}

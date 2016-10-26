@@ -195,7 +195,12 @@ public class FrmMain extends JFrame implements IMainMenu {
 		UploadMgr = UploadManager.getInstance();
 		TemplateMgr = TemplateManager.getInstance();
 		UploadMgr.setParent(this);
-		speed= Integer.parseInt(Main.s.setting.get("speed"));
+		String sspeed = Main.s.setting.get("speed");
+		if(sspeed != null){
+			speed = Integer.parseInt(sspeed);
+		}else{
+			speed = 0;
+		}
 		initComponents();
 		initMenuBar();
 		loadAccounts();
@@ -1228,7 +1233,6 @@ public class FrmMain extends JFrame implements IMainMenu {
 		t.setMetadata(metadata);
 		t.setVideodata(v);
 		TemplateMgr.save(t);
-		edit.refreshTemplates(t.name);
 	}
 
 	public void loadTemplate(Item item) {
@@ -1334,7 +1338,6 @@ public class FrmMain extends JFrame implements IMainMenu {
 		}
 		t.setVideodata(v);
 		TemplateMgr.update(id, t);
-		edit.refreshTemplates(t.name);
 	}
 
 	public void setCategory(int catId) {

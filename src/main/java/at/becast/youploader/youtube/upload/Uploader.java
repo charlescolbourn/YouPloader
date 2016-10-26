@@ -97,7 +97,7 @@ public class Uploader {
 		headers.put("Authorization", this.oAuth2.getHeader());
 		headers.put("Content-Type", "application/json; charset=UTF-8");
 		this.http = new SimpleHTTP();
-		this.http.post("https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&fields=snippet", headers, new ObjectMapper().writeValueAsString(new PlaylistItem(playlist,upload.id)));
+		this.http.postPL("https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&fields=snippet", headers, new ObjectMapper().writeValueAsString(new PlaylistItem(playlist,upload.id)));
 		this.http.close();
 	}
 	
