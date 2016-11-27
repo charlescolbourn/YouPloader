@@ -145,7 +145,7 @@ public class AddAccount extends javax.swing.JDialog {
 						try {
 							do {
 								Thread.sleep(5050);
-							} while (!o2.check() || !Thread.currentThread().isInterrupted());
+							} while (!o2.check() && !Thread.currentThread().isInterrupted());
 							account.setRefreshToken(o2.getRefreshToken());
 							LOG.info("Got refresh token {}", account.refreshToken);
 							account.loadCookie();

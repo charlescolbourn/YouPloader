@@ -41,7 +41,7 @@ public class AccountUpdater implements Runnable {
 				a.updateCookie(a.id);
 				
 				if(Main.debug)
-					LOG.debug("Updated Cookie: ", a.name);
+					LOG.debug("Updated Cookie: {}", a.name);
 			} catch (IOException e) {
 				LOG.error("Error updating Cookie", e);
 			}

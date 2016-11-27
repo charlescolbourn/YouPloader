@@ -196,7 +196,7 @@ public class Account {
 		in.close();
 		if(responseCode < 400){
 			this.setCookie(persistentCookieStore.getSerializeableCookies());
-			LOG.info("Got cookie");
+			LOG.info("Got cookie: {}",persistentCookieStore.getSerializeableCookies().toString());
 		}else{
 			LOG.info("Could not fetch Cookie {}", response.toString());
 		}

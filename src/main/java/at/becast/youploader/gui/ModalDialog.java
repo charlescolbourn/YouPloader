@@ -129,6 +129,7 @@ public class ModalDialog extends JDialog {
 				JButton cancelButton = new JButton(LANG.getString("Button.cancel"));
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
+						accd.cancel();
 						close();
 					}
 				});
@@ -141,7 +142,6 @@ public class ModalDialog extends JDialog {
 
 	public void close() {
 		this.setVisible(false);
-		this.accd.cancel();
 		this.dispose();
 	}
 
