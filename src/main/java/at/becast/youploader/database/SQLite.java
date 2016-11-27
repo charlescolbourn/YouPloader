@@ -463,6 +463,9 @@ public class SQLite {
 				case 7:
 				case 8:
 					query("INSERT INTO `settings` VALUES('speed','0')");
+				case 9:
+					query("DELETE FROM `accounts`");
+					query("DELETE FROM `uploads`");
 				default:
 					setVersion(Main.getDBVersion());
 				break;

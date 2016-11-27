@@ -39,8 +39,8 @@ public class Main {
 	public static boolean debug = false;
 	public static final String DB_FILE = System.getProperty("user.home") + "/YouPloader/data/data.db";
 	public static final String APP_NAME = "YouPloader";
-	public static final String VERSION = "0.9";
-	public static final int DB_VERSION = 9;
+	public static final String VERSION = "0.9.1";
+	public static final int DB_VERSION = 10;
 	private static final ResourceBundle LANG = UTF8ResourceBundle.getBundle("lang", Locale.getDefault());
 	public static Settings s;
 	public static Boolean firstlaunch = false;
