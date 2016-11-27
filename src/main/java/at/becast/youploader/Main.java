@@ -89,6 +89,15 @@ public class Main {
 				| UnsupportedLookAndFeelException e) {
 			LOG.error("Look and Feel exception", e);
 		}
+		VersionComparator v = new VersionComparator();
+		int updateAvaiable = v.compare("1.8.0_111",System.getProperty("java.version"));
+		if(updateAvaiable > 0){
+			if(JOptionPane.showConfirmDialog(null,
+					LANG.getString("frmMain.errorjava.Message"),
+					LANG.getString("frmMain.errorjava.title"), JOptionPane.DEFAULT_OPTION)!=-1){
+				System.exit(0);
+			}
+		}
 		File dataDir = new File(System.getProperty("user.home") + "/YouPloader/data/");
 		if (!dataDir.exists()) {
 			LOG.info(APP_NAME + " " + VERSION + " first launch. Database folder not found.", FrmMain.class);
