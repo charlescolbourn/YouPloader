@@ -38,7 +38,7 @@ public class AccountUpdater implements Runnable {
 			try {
 				a = Account.read(acc.getValue());
 				a.loadCookie();
-				a.save();
+				a.updateCookie(a.id);
 				
 				if(Main.debug)
 					LOG.debug("Updated Cookie: ", a.name);

@@ -49,6 +49,7 @@ public class ModalDialog extends JDialog {
 	private static final Logger LOG = LoggerFactory.getLogger(ModalDialog.class);
 	private static final ResourceBundle LANG = UTF8ResourceBundle.getBundle("lang", Locale.getDefault());
 	private final JPanel contentPanel = new JPanel();
+	private AddAccount accd;
 	private JTextField labelcode;
 	private JLabel check_label;
 
@@ -59,7 +60,7 @@ public class ModalDialog extends JDialog {
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	public ModalDialog(Frame parent, Account Acc, String code) {
+	public ModalDialog(Frame parent, Account Acc, String code, AddAccount accd) {
 		super(parent);
 		setTitle("Linking YouTube Account");
 		setAlwaysOnTop(true);
@@ -67,6 +68,7 @@ public class ModalDialog extends JDialog {
 		setResizable(false);
 		setBounds(100, 100, 551, 401);
 		getContentPane().setLayout(new BorderLayout());
+		this.accd = accd;
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setModalityType(ModalityType.DOCUMENT_MODAL);
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -139,6 +141,7 @@ public class ModalDialog extends JDialog {
 
 	public void close() {
 		this.setVisible(false);
+		this.accd.cancel();
 		this.dispose();
 	}
 

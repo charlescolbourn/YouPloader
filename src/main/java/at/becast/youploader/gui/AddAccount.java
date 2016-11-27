@@ -49,6 +49,8 @@ public class AddAccount extends javax.swing.JDialog {
 	private OAuth2 o2;
 	private FrmMain parent;
 	private JTextField AccName;
+	private Thread t;
+	private Browser browser;
 	private static final Logger LOG = LoggerFactory.getLogger(AddAccount.class);
 	private static final ResourceBundle LANG = UTF8ResourceBundle.getBundle("lang", Locale.getDefault());
 
@@ -134,16 +136,16 @@ public class AddAccount extends javax.swing.JDialog {
 				Account account = new Account(AccName.getText());
 				String code = o2.getCode();
 				LOG.info("Created Auth code {}", code);
-				Browser browser = new Browser(account, true);
+				browser = new Browser(account, true);
 				browser.setVisible(true);
 				browser.loadURL("https://accounts.google.com/ServiceLogin?service=youtube&hl=en&passive=true&continue=https%3A%2F%2Fwww.youtube.com%2Fsignin%3Ffeature%3Dedit_video%26next%3Dmy_videos_upload%26hl%3Dde%26action_handle_signin%3Dtrue%26app%3Ddesktop&uilel=3");
-				parent.prepModal(account, code);
+				parent.prepModal(account, code, this);
 				Runnable runnable = new Runnable() {
 					public void run() {
 						try {
 							do {
 								Thread.sleep(5050);
-							} while (!o2.check());
+							} while (!o2.check() || !Thread.currentThread().isInterrupted());
 							account.setRefreshToken(o2.getRefreshToken());
 							LOG.info("Got refresh token {}", account.refreshToken);
 							account.loadCookie();
@@ -156,7 +158,8 @@ public class AddAccount extends javax.swing.JDialog {
 						}
 					}
 				};
-				new Thread(runnable).start();
+				t = new Thread(runnable);
+				t.start();
 				parent.showModal();
 			} else {
 				LOG.info("Account {} already exists", AccName.getText());
@@ -167,6 +170,12 @@ public class AddAccount extends javax.swing.JDialog {
 			JOptionPane.showMessageDialog(this, LANG.getString("AddAccount.nameerror.message"), LANG.getString("AddAccount.nameerror.title"),
 					JOptionPane.WARNING_MESSAGE);
 		}
+	}
+
+	public void cancel() {
+		t.interrupt();
+		browser.setVisible(false);
+		browser.dispose();
 	}
 
 }

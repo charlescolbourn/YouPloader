@@ -848,8 +848,8 @@ public class FrmMain extends JFrame implements IMainMenu {
 
 	}
 
-	public void prepModal(Account Account, String code) {
-		modal = new ModalDialog((Frame) this, Account, code);
+	public void prepModal(Account Account, String code, AddAccount accd) {
+		modal = new ModalDialog((Frame) this, Account, code, accd);
 	}
 
 	public void showModal() {
