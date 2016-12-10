@@ -56,7 +56,7 @@ public class OAuth2 {
 
 
   private OAuth2 refresh() throws IOException {
-    if (this.expires < System.currentTimeMillis()) {
+    if (this.expires >= System.currentTimeMillis() || this.expires==0) {
       SimpleHTTP http = new SimpleHTTP();
       LOG.info("Token expired. Refreshing.");
       Map<String, String> post = new HashMap<>();
