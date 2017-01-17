@@ -142,7 +142,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 	public static UploadManager UploadMgr;
 	public static TemplateManager TemplateMgr;
 	private static final String DEFAULT_WIDTH = "900";
-	private static final String DEFAULT_HEIGHT = "580";
+	private static final String DEFAULT_HEIGHT = "600";
 	private static final ResourceBundle LANG = UTF8ResourceBundle.getBundle("lang", Locale.getDefault());
 	private Boolean loading = false;
 	private AccountManager accMng = AccountManager.getInstance();
@@ -269,7 +269,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		int top = Integer.parseInt(Main.s.get("top","0"));
 		int width = Integer.parseInt(Main.s.get("width",DEFAULT_WIDTH));
 		int height = Integer.parseInt(Main.s.get("height", DEFAULT_HEIGHT));
-		setBounds(left, top, 900, 593);
+		setBounds(left, top, width, height);
 		TabbedPane = new JTabbedPane();
 		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		setTitle(Main.APP_NAME + " " + Main.VERSION);
@@ -394,7 +394,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		panel.add(lbltitlelenght, "14, 8, 3, 1, right, top");
 
 		txtTitle = new JTextField();
-		//contextMenu.add(txtTitle);
+		contextMenu.add(txtTitle);
 		panel.add(txtTitle, "3, 9, 14, 1, fill, fill");
 		txtTitle.setColumns(10);
 		txtTitle.addKeyListener(new KeyAdapter() {
@@ -418,7 +418,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		panel.add(DescriptionScrollPane, "3, 15, 14, 1, fill, fill");
 
 		txtDescription = new JTextArea();
-		//contextMenu.add(txtDescription);
+		contextMenu.add(txtDescription);
 		txtDescription.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		DescriptionScrollPane.setViewportView(txtDescription);
 		txtDescription.setWrapStyleWord(true);
@@ -440,7 +440,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		panel.add(TagScrollPane, "3, 18, 14, 1, fill, fill");
 
 		txtTags = new JTextArea();
-		//contextMenu.add(txtTags);
+		contextMenu.add(txtTags);
 		txtTags.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		TagScrollPane.setViewportView(txtTags);
 		txtTags.setWrapStyleWord(true);
@@ -749,6 +749,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 				mntmAddAccountActionPerformed();
 			}
 		});
+
 		mnuAcc.add(mntmAddAccount);
 		mnuAcc.add(separator);
 		
@@ -761,6 +762,11 @@ public class FrmMain extends JFrame implements IMainMenu {
 		
 		JMenuItem mntmAddTemplate = new JMenuItem(LANG.getString("frmMain.menu.addTemplate"));
 		mnTemplates.add(mntmAddTemplate);
+		mntmAddTemplate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				AddTemplateActionPerformed();
+			}
+		});
 		mnuBar.add(mnLanguage);
 
 		JMenu menu = new JMenu("?");
@@ -871,7 +877,13 @@ public class FrmMain extends JFrame implements IMainMenu {
 		acc.setVisible(true);
 
 	}
+	
+	private void AddTemplateActionPerformed() {
+		AddTemplate addTemplate = new AddTemplate(this);
+		addTemplate.setVisible(true);
 
+	}
+	
 	public void prepModal(Account Account, String code, AddAccount accd) {
 		modal = new ModalDialog((Frame) this, Account, code, accd);
 	}
@@ -1518,7 +1530,12 @@ public class FrmMain extends JFrame implements IMainMenu {
 		PlayPanel.revalidate();
 		PlayPanel.repaint();
 	}
-
+	
+	public void refreshTemplates(){
+		EditPanel edit = (EditPanel) ss1.contentPane;
+		edit.refreshTemplates();
+	}
+	
 	public void deleteTemplate(int id) {
 		EditPanel edit = (EditPanel) ss1.contentPane;
 		TemplateMgr.delete(id);

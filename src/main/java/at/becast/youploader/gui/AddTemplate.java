@@ -27,7 +27,6 @@ import javax.swing.JTextField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import at.becast.youploader.settings.Settings;
 import at.becast.youploader.util.UTF8ResourceBundle;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -43,7 +42,6 @@ public class AddTemplate extends javax.swing.JDialog {
 	 */
 	private static final long serialVersionUID = -2959579909274103655L;
 	private FrmMain parent;
-	private Settings s = Settings.getInstance();
 	private JTextField templateName;
 	private static final Logger LOG = LoggerFactory.getLogger(AddTemplate.class);
 	private static final ResourceBundle LANG = UTF8ResourceBundle.getBundle("lang", Locale.getDefault());
@@ -74,13 +72,13 @@ public class AddTemplate extends javax.swing.JDialog {
 		JButton btnOk = new JButton();
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-		setTitle(LANG.getString("AddAccount.title"));
+		setTitle(LANG.getString("AddTemplate.title"));
 		setMinimumSize(new java.awt.Dimension(350, 130));
 		setName("Add Account"); // NOI18N
 		setPreferredSize(new java.awt.Dimension(350, 130));
 		setType(Type.UTILITY);
 
-		lblAccName.setText(LANG.getString("Account.name"));
+		lblAccName.setText(LANG.getString("Template.name"));
 
 		btnOk.setText(LANG.getString("Button.ok"));
 		btnOk.addActionListener(new java.awt.event.ActionListener() {
@@ -113,9 +111,10 @@ public class AddTemplate extends javax.swing.JDialog {
 		if (templateName.getText() != null && !templateName.getText().equals("")) {
 			this.setVisible(false);
 			LOG.info("Adding Template {}", templateName.getText());
-			
+			this.parent.createTemplate(templateName.getText());
+			this.parent.refreshTemplates();
 		} else {
-			JOptionPane.showMessageDialog(this, LANG.getString("AddAccount.nameerror.message"), LANG.getString("AddAccount.nameerror.title"),
+			JOptionPane.showMessageDialog(this, LANG.getString("AddTemplate.nameerror.message"), LANG.getString("AddTemplate.nameerror.title"),
 					JOptionPane.WARNING_MESSAGE);
 		}
 	}
