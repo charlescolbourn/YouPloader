@@ -170,22 +170,6 @@ public class EditPanel extends javax.swing.JPanel {
 		lblTemplate.setText(LANG.getString("EditPanel.Template")+":");
 		add(lblTemplate, "2, 2, right, center");
 		add(cmbTemplate, "4, 2, 5, 1, fill, fill");
-
-		JButton btnDeleteTemplate = new JButton("");
-		btnDeleteTemplate.setToolTipText(LANG.getString("EditPanel.DeleteTemplate"));
-		btnDeleteTemplate.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				deleteTemplate();
-			}
-		});
-		
-		JButton btnNewTemplate = new JButton("");
-		btnNewTemplate.setToolTipText(LANG.getString("EditPanel.SaveNewTemplate"));
-		btnNewTemplate.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				addTemplate();
-			}
-		});
 				
 		JButton btnSaveTemplate = new JButton("");
 		btnSaveTemplate.setToolTipText(LANG.getString("EditPanel.SaveTemplate"));
@@ -196,10 +180,16 @@ public class EditPanel extends javax.swing.JPanel {
 		});
 		btnSaveTemplate.setIcon(new ImageIcon(getClass().getResource("/disk.png")));
 		add(btnSaveTemplate, "10, 2, fill, fill");
-		btnNewTemplate.setIcon(new ImageIcon(getClass().getResource("/add.png")));
-		add(btnNewTemplate, "12, 2, fill, fill");
-		btnDeleteTemplate.setIcon(new ImageIcon(getClass().getResource("/cross.png")));
-		add(btnDeleteTemplate, "14, 2, fill, fill");
+		
+				JButton btnDeleteTemplate = new JButton("");
+				btnDeleteTemplate.setToolTipText(LANG.getString("EditPanel.DeleteTemplate"));
+				btnDeleteTemplate.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						deleteTemplate();
+					}
+				});
+				btnDeleteTemplate.setIcon(new ImageIcon(getClass().getResource("/cross.png")));
+				add(btnDeleteTemplate, "12, 2, fill, fill");
 
 		JLabel lblStartDirectory = new JLabel(LANG.getString("EditPanel.StartDir")+":");
 		add(lblStartDirectory, "2, 4, right, center");
@@ -474,12 +464,6 @@ public class EditPanel extends javax.swing.JPanel {
 		
 		Item t = (Item) cmbTemplate.getSelectedItem();
 		parent.deleteTemplate(t.getId());
-	}
-
-	public void addTemplate() {
-		this.adding = true;
-		cmbTemplate.setEditable(true);
-		cmbTemplate.grabFocus();
 	}
 	
 	public void setUpdating(boolean updating){

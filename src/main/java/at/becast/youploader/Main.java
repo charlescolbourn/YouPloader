@@ -1,3 +1,18 @@
+/* 
+ * YouPloader Copyright (c) 2017 genuineparts (itsme@genuineparts.org)
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+ * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * 
+ */
+
 package at.becast.youploader;
 
 import java.io.File;
@@ -23,7 +38,10 @@ import at.becast.youploader.util.UTF8ResourceBundle;
 import at.becast.youploader.util.VersionComparator;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.util.StatusPrinter;
-
+import com.sun.jna.Native;
+import com.sun.jna.NativeLong;
+import com.sun.jna.WString;
+import com.sun.jna.ptr.PointerByReference;
 
 /**
  * The YouPloader main class.
@@ -53,6 +71,7 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		LOG.info(APP_NAME + " " + VERSION + " starting.", Main.class);
+		setCurrentProcessExplicitAppUserModelID("BeCast.YouPloader");
 		//We want IPv4
 		System.setProperty("java.net.preferIPv4Stack" , "true");
 		//Debug Switch
@@ -151,5 +170,20 @@ public class Main {
 	public static int getDBVersion() {
 		return DB_VERSION;
 	}
+
+	  public static void setCurrentProcessExplicitAppUserModelID(final String appID)
+	  {
+	    if (SetCurrentProcessExplicitAppUserModelID(new WString(appID)).longValue() != 0)
+	      throw new RuntimeException("unable to set current process explicit AppUserModelID to: " + appID);
+	  }
+
+	  private static native NativeLong GetCurrentProcessExplicitAppUserModelID(PointerByReference appID);
+	  private static native NativeLong SetCurrentProcessExplicitAppUserModelID(WString appID);
+
+
+	  static
+	  {
+	    Native.register("shell32");
+	  }
 
 }

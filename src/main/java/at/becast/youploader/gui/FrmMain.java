@@ -1,5 +1,5 @@
 /* 
- * YouPloader Copyright (c) 2016 genuineparts (itsme@genuineparts.org)
+ * YouPloader Copyright (c) 2017 genuineparts (itsme@genuineparts.org)
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
@@ -85,6 +85,8 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,9 +117,12 @@ import at.becast.youploader.youtube.VisibilityType;
 import at.becast.youploader.youtube.data.GameDataItem;
 import at.becast.youploader.youtube.data.Video;
 import at.becast.youploader.youtube.data.VideoMetadata;
+import at.becast.youploader.youtube.exceptions.UploadException;
 import at.becast.youploader.youtube.playlists.Playlist;
 import at.becast.youploader.youtube.playlists.PlaylistManager;
 import at.becast.youploader.youtube.playlists.PlaylistUpdater;
+import at.becast.youploader.youtube.upload.GistUploader;
+import at.becast.youploader.youtube.upload.SimpleHTTP;
 import at.becast.youploader.youtube.upload.UploadManager;
 import ch.qos.logback.classic.LoggerContext;
 import net.miginfocom.layout.CC;
@@ -379,7 +384,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		panel.add(lbltitlelenght, "14, 6, 3, 1, right, top");
 
 		txtTitle = new JTextField();
-		contextMenu.add(txtTitle);
+		//contextMenu.add(txtTitle);
 		panel.add(txtTitle, "3, 7, 14, 1, fill, fill");
 		txtTitle.setColumns(10);
 		txtTitle.addKeyListener(new KeyAdapter() {
@@ -403,7 +408,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		panel.add(DescriptionScrollPane, "3, 13, 14, 1, fill, fill");
 
 		txtDescription = new JTextArea();
-		contextMenu.add(txtDescription);
+		//contextMenu.add(txtDescription);
 		txtDescription.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		DescriptionScrollPane.setViewportView(txtDescription);
 		txtDescription.setWrapStyleWord(true);
@@ -425,7 +430,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		panel.add(TagScrollPane, "3, 16, 14, 1, fill, fill");
 
 		txtTags = new JTextArea();
-		contextMenu.add(txtTags);
+		//contextMenu.add(txtTags);
 		txtTags.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		TagScrollPane.setViewportView(txtTags);
 		txtTags.setWrapStyleWord(true);
@@ -735,8 +740,14 @@ public class FrmMain extends JFrame implements IMainMenu {
 		mnuAcc.add(separator);
 		
 		JMenu mnLanguage = new JMenu("Language");
-		mnLanguage.setVisible(false);
 		mnLanguage.setEnabled(false);
+		mnLanguage.setVisible(false);
+		
+		JMenu mnTemplates = new JMenu("frmMain.menu.Templates");
+		mnuBar.add(mnTemplates);
+		
+		JMenuItem mntmAddTemplate = new JMenuItem("frmMain.menu.addTemplate");
+		mnTemplates.add(mntmAddTemplate);
 		mnuBar.add(mnLanguage);
 
 		JMenu menu = new JMenu("?");
@@ -770,7 +781,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		JMenuItem mntmUploadLogfile = new JMenuItem(LANG.getString("frmMain.menu.UploadLatestLogfile"));
 		mntmUploadLogfile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				DesktopUtil.openDir(new File(System.getProperty("user.home")+"/YouPloader"));
+				uploadLog();
 			}
 		});
 		menu.add(mntmUploadLogfile);
@@ -1455,7 +1466,11 @@ public class FrmMain extends JFrame implements IMainMenu {
 			edit.getTxtEndDir().setText(metadata.getEndDirectory());
 		}
 	}
-	
+	private void uploadLog(){
+		GistUploader gistUploader = new GistUploader(this);
+		Thread gistUp = new Thread(gistUploader);
+		gistUp.start();
+	}
 	protected void selectPlaylistAccount() {
     	for(Component c : PlayPanel.getComponents()){
     		PlayPanel.remove(c);	

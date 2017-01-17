@@ -1,6 +1,8 @@
 package at.becast.youploader.youtube.upload;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
@@ -12,6 +14,7 @@ import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,8 +22,10 @@ import at.becast.youploader.youtube.exceptions.UploadException;
 
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.Map;
 
 public class SimpleHTTP {
@@ -74,17 +79,44 @@ public class SimpleHTTP {
 	    response.close();
   }
 
-  public void postLog(Map<String, String> headers, String body) throws IOException, UploadException {
-	    HttpPost post = new HttpPost("https://api.github.com/gists/");
-
-	    for (String key : headers.keySet()) {
-	      post.setHeader(key, headers.get(key));
+  @SuppressWarnings("unchecked")
+public String postLog(Map<String, String> headers) throws IOException, UploadException {
+	File fl = new File(System.getProperty("user.home")+"/YouPloader");
+	File[] files = fl.listFiles(new FileFilter() {          
+	    public boolean accept(File file) {
+	        return file.isFile();
 	    }
-
-	    post.setEntity(new ByteArrayEntity(body.getBytes("UTF-8")));
-	    response = this.chc.execute(post);
-	    response.close();
-}
+	});
+	long lastMod = Long.MIN_VALUE;
+	File choice = null;
+	for (File file : files) {
+	    if (file.lastModified() > lastMod) {
+	        choice = file;
+	        lastMod = file.lastModified();
+	    }
+	}
+	HttpPost post = new HttpPost("https://api.github.com/gists");
+	JSONObject obj = new JSONObject();
+	JSONObject file = new JSONObject();
+	JSONObject content = new JSONObject();
+	content.put("content", FileUtils.readFileToString(choice, "UTF-8"));
+	file.put(choice.getName(), content);
+	obj.put("description", choice.getName());
+	obj.put("public", true);
+	obj.put("files", file);
+	for (String key : headers.keySet()) {
+	  post.setHeader(key, headers.get(key));
+	}
+	post.setHeader("Content-Type", headers.get("application/json"));
+	System.out.println(obj.toJSONString());
+	post.setEntity(new ByteArrayEntity(obj.toJSONString().getBytes()));
+	response = this.chc.execute(post);
+	HttpEntity entity = response.getEntity();
+	String resp = EntityUtils.toString(entity, "UTF-8");
+	response.close();
+	return resp;
+	
+  }
 
   public void put(String url, Map<String, String> headers, BufferedInputStream stream, UploadEvent callback) throws IOException {
     this.put = new HttpPut(url);
