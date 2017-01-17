@@ -103,7 +103,7 @@ public class FrmAbout extends JDialog {
 		lblYouploader.setFont(new Font("Arial Black", Font.PLAIN, 11));
 		contentPanel.add(lblYouploader, "3, 2, left, default");
 		
-		JLabel lblGenuineparts = new JLabel(" © 2016 genuineparts");
+		JLabel lblGenuineparts = new JLabel(" © 2016-2017 genuineparts");
 		lblGenuineparts.setFont(new Font("Arial Black", Font.PLAIN, 11));
 		contentPanel.add(lblGenuineparts, "3, 4, left, default");
 		
