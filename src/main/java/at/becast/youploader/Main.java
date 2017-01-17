@@ -59,7 +59,7 @@ public class Main {
 	public static final String DB_FILE = System.getProperty("user.home") + "/YouPloader/data/data.db";
 	public static final String APP_NAME = "YouPloader";
 	public static final String VERSION = "0.9.2";
-	public static final int DB_VERSION = 10;
+	public static final int DB_VERSION = 11;
 	private static final ResourceBundle LANG = UTF8ResourceBundle.getBundle("lang", Locale.getDefault());
 	public static Settings s;
 	public static Boolean firstlaunch = false;
