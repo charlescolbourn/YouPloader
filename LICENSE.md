@@ -1,4 +1,4 @@
- YouPloader Copyright (c) 2016 Bernhard Jaud (bernhard@becast.at)
+ YouPloader Copyright (c) 2016-2017 genuineparts (itsme@genuineparts.org)
  
  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
  to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
