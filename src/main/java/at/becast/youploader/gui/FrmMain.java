@@ -156,7 +156,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 	private JCheckBox chckbxTitleFromFilename;
 	private JMenu mnuAcc;
 	private JTextField txtTitle;
-	private JCheckBoxMenuItem chckbxmntmCheckForUpdates;
+	private JCheckBoxMenuItem chckbxmntmCheckForUpdates,chkstartintray;
 	private JLabel lblTagslenght, lbltitlelenght, lblDesclenght;
 	private JSpinner spinner;
 	private JPanel QueuePanel;
@@ -215,26 +215,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		} catch (SQLException | IOException e) {
 			LOG.error("Error: ", e);
 		}
-		this.setVisible(true);
-		if (Main.firstlaunch) {
-			int n = JOptionPane.showConfirmDialog(null, LANG.getString("frmMain.initialAccount.Message"),
-					LANG.getString("frmMain.initialAccount.title"), JOptionPane.YES_NO_OPTION,
-					JOptionPane.QUESTION_MESSAGE);
-			if (n == JOptionPane.YES_OPTION) {
-				mntmAddAccountActionPerformed();
-			}
-		}else{
-			PlaylistUpdater pu = new PlaylistUpdater(this);
-			Thread updater = new Thread(pu);
-			updater.start();
-			AccountUpdater au = new AccountUpdater(this);
-			Thread aupdater = new Thread(au);
-			aupdater.start();
-		}
-		EditPanel edit = (EditPanel) ss1.contentPane;
-		if (edit.getCmbTemplate().getModel().getSize() > 0) {
-			edit.getCmbTemplate().setSelectedIndex(0);
-		}
+		
 		tray = new TrayManager(this);
 		addWindowStateListener(new WindowStateListener() {
             public void windowStateChanged(WindowEvent e) {
@@ -256,6 +237,32 @@ public class FrmMain extends JFrame implements IMainMenu {
                 }
             }
         });
+		if(Integer.parseInt(Main.s.get("startintray","0"))==1){
+			tray.add();
+		} else {
+			this.setVisible(true);
+		}
+			
+		if (Main.firstlaunch) {
+			int n = JOptionPane.showConfirmDialog(null, LANG.getString("frmMain.initialAccount.Message"),
+					LANG.getString("frmMain.initialAccount.title"), JOptionPane.YES_NO_OPTION,
+					JOptionPane.QUESTION_MESSAGE);
+			if (n == JOptionPane.YES_OPTION) {
+				mntmAddAccountActionPerformed();
+			}
+		}else{
+			PlaylistUpdater pu = new PlaylistUpdater(this);
+			Thread updater = new Thread(pu);
+			updater.start();
+			AccountUpdater au = new AccountUpdater(this);
+			Thread aupdater = new Thread(au);
+			aupdater.start();
+		}
+		EditPanel edit = (EditPanel) ss1.contentPane;
+		if (edit.getCmbTemplate().getModel().getSize() > 0) {
+			edit.getCmbTemplate().setSelectedIndex(0);
+		}
+		
 	}
 
 	/**
@@ -735,6 +742,17 @@ public class FrmMain extends JFrame implements IMainMenu {
 				mnuQuitActionPerformed();
 			}
 		});
+		
+		chkstartintray = new JCheckBoxMenuItem("Start in Tray");
+		if(Main.s.get("startintray").equals("1")){
+			chkstartintray.setSelected(true);
+		}
+		chkstartintray.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				togglestartintray();
+			}
+		});
+		mnuFile.add(chkstartintray);
 		mnuFile.add(mnuQuit);
 
 		mnuBar.add(mnuFile);
@@ -826,7 +844,16 @@ public class FrmMain extends JFrame implements IMainMenu {
 		}
 		Main.s.save("notify_updates");
 	}
-
+	
+	protected void togglestartintray() {
+		if(chkstartintray.isSelected()){
+			Main.s.setting.put("startintray", "1");
+		}else{
+			Main.s.setting.put("startintray", "0");
+		}
+		Main.s.save("startintray");
+	}
+	
 	protected void donateButton() {
 		DesktopUtil.openBrowser("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=AZ42BHSUTGPT6");
 	}
