@@ -34,6 +34,7 @@ import at.becast.youploader.gui.FrmMain;
 import at.becast.youploader.gui.UpdateNotice;
 import at.becast.youploader.settings.Settings;
 import at.becast.youploader.util.GetVersion;
+import at.becast.youploader.util.PlatformUtil;
 import at.becast.youploader.util.UTF8ResourceBundle;
 import at.becast.youploader.util.VersionComparator;
 import ch.qos.logback.classic.LoggerContext;
@@ -108,7 +109,9 @@ public class Main {
 				| UnsupportedLookAndFeelException e) {
 			LOG.error("Look and Feel exception", e);
 		}
-		setCurrentProcessExplicitAppUserModelID("BeCast.YouPloader");
+		if (PlatformUtil.isWindows()) {
+			setCurrentProcessExplicitAppUserModelID("BeCast.YouPloader");
+		}
 		VersionComparator v = new VersionComparator();
 		int updateAvaiable = v.compare("1.8.0_111",System.getProperty("java.version"));
 		if(updateAvaiable > 0){
