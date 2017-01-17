@@ -743,7 +743,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 			}
 		});
 		
-		chkstartintray = new JCheckBoxMenuItem("Start in Tray");
+		chkstartintray = new JCheckBoxMenuItem(LANG.getString("frmMain.menu.StartinTray"));
 		if(Main.s.get("startintray").equals("1")){
 			chkstartintray.setSelected(true);
 		}

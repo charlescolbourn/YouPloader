@@ -65,9 +65,10 @@ public class MetadataUpdater {
 		con.setRequestMethod("GET");
 		con.setRequestProperty("User-Agent", Main.APP_NAME+" "+Main.VERSION);
 		int responseCode = con.getResponseCode();
-		System.out.println("\nSending 'GET' request to URL : " + url);
-		System.out.println("Response Code : " + responseCode);
-
+		if(Main.debug){
+			LOG.debug("Sending 'GET' request to URL: {}", url);
+			LOG.debug("Response Code : {}", responseCode);
+		}
 		BufferedReader in = new BufferedReader(
 		        new InputStreamReader(con.getInputStream()));
 		String inputLine;
@@ -75,6 +76,9 @@ public class MetadataUpdater {
 
 		while ((inputLine = in.readLine()) != null) {
 			response.append(inputLine);
+		}
+		if(Main.debug){
+			LOG.debug("Response: {}", response.toString());
 		}
 		in.close();
 		updateAsBrowser(response.toString());
@@ -91,6 +95,9 @@ public class MetadataUpdater {
 		if (m.find( )) {
 			token =  m.group().replace("var session_token = \"", "").replace("\";", "");;
 			LOG.debug("Got Token {}",token);
+		}else{
+			LOG.error("Token not found!");
+			return;
 		}
 		Map<String, Object> mdata = new HashMap<String, Object>();
 		mdata.put("creator_share_feeds", "yes");
