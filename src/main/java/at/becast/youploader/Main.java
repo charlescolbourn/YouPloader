@@ -108,6 +108,7 @@ public class Main {
 				| UnsupportedLookAndFeelException e) {
 			LOG.error("Look and Feel exception", e);
 		}
+		setCurrentProcessExplicitAppUserModelID("BeCast.YouPloader");
 		VersionComparator v = new VersionComparator();
 		int updateAvaiable = v.compare("1.8.0_111",System.getProperty("java.version"));
 		if(updateAvaiable > 0){
