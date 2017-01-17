@@ -961,6 +961,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		String sql = "SELECT * FROM `uploads` ORDER BY `id`";
 		prest = c.prepareStatement(sql);
 		ResultSet rs = prest.executeQuery();
+		boolean started = false;
 		if (rs.isBeforeFirst()) {
 			while (rs.next()) {
 				UploadItem f = new UploadItem();
@@ -990,6 +991,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 				long position = rs.getLong("uploaded");
 				long size = rs.getLong("lenght");
 				if (url != null && !url.equals("") && !"FINISHED".equals(status)) {
+					started = true;
 					UploadMgr.addResumeableUpload(data, v, metadata, url, yt_id);
 					f.getProgressBar().setString(String.format("%6.2f%%", (float) position / size * 100));
 					f.getProgressBar().setValue((int) ((float) position / size * 100));
@@ -1011,6 +1013,10 @@ public class FrmMain extends JFrame implements IMainMenu {
 				this.getQueuePanel().revalidate();
 
 			}
+		}
+		if(started){
+			UploadMgr.setSpeed_limit(speed);
+			UploadMgr.start();
 		}
 		rs.close();
 		prest.close();
