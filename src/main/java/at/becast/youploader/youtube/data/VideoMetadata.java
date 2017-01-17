@@ -39,6 +39,7 @@ public class VideoMetadata {
 	private String message;
 	private String gametitle;
 	private String gameid;
+	private String ep = "1";
 	private ArrayList<String> playlists = new ArrayList<String>();
 	private boolean restricted;
 	private boolean monetized = false;
@@ -230,6 +231,14 @@ public class VideoMetadata {
 		return playlists;
 	}
 
+	public String getEp() {
+		return ep;
+	}
+
+	public void setEp(String ep) {
+		this.ep = ep;
+	}
+	
 	public void setPlaylists(ArrayList<String> playlists) {
 		this.playlists = playlists;
 	}

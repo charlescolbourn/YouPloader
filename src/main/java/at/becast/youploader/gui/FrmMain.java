@@ -85,8 +85,6 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -117,12 +115,10 @@ import at.becast.youploader.youtube.VisibilityType;
 import at.becast.youploader.youtube.data.GameDataItem;
 import at.becast.youploader.youtube.data.Video;
 import at.becast.youploader.youtube.data.VideoMetadata;
-import at.becast.youploader.youtube.exceptions.UploadException;
 import at.becast.youploader.youtube.playlists.Playlist;
 import at.becast.youploader.youtube.playlists.PlaylistManager;
 import at.becast.youploader.youtube.playlists.PlaylistUpdater;
 import at.becast.youploader.youtube.upload.GistUploader;
-import at.becast.youploader.youtube.upload.SimpleHTTP;
 import at.becast.youploader.youtube.upload.UploadManager;
 import ch.qos.logback.classic.LoggerContext;
 import net.miginfocom.layout.CC;
@@ -157,6 +153,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 	private JTextArea txtDescription;
 	private JTabbedPane TabbedPane;
 	private JComboBox<String> cmbFile;
+	private JCheckBox chckbxTitleFromFilename;
 	private JMenu mnuAcc;
 	private JTextField txtTitle;
 	private JCheckBoxMenuItem chckbxmntmCheckForUpdates;
@@ -177,6 +174,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 	protected static int speed = 0;
 	private DefaultContextMenu contextMenu = new DefaultContextMenu();
 	private DefaultListModel<AccountType> AccListModel = new DefaultListModel<AccountType>();
+	private JTextField txtEpisode;
 	//private static native boolean setAppUserModelID();
 
 	/**
@@ -185,7 +183,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 	public FrmMain() {
 		self = this;
 		this.tos = false;
-		this.setMinimumSize(new Dimension(900, 580));
+		this.setMinimumSize(new Dimension(900, 620));
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
@@ -271,7 +269,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		int top = Integer.parseInt(Main.s.get("top","0"));
 		int width = Integer.parseInt(Main.s.get("width",DEFAULT_WIDTH));
 		int height = Integer.parseInt(Main.s.get("height", DEFAULT_HEIGHT));
-		setBounds(left, top, width, height);
+		setBounds(left, top, 900, 593);
 		TabbedPane = new JTabbedPane();
 		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		setTitle(Main.APP_NAME + " " + Main.VERSION);
@@ -342,7 +340,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 				FormSpecs.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("20px:grow"),
 				FormSpecs.LABEL_COMPONENT_GAP_COLSPEC,
-				ColumnSpec.decode("23px"),
+				ColumnSpec.decode("23px:grow"),
 				ColumnSpec.decode("33px"),
 				FormSpecs.UNRELATED_GAP_COLSPEC,
 				ColumnSpec.decode("61px"),
@@ -362,6 +360,8 @@ public class FrmMain extends JFrame implements IMainMenu {
 				RowSpec.decode("14px"),
 				RowSpec.decode("25px"),
 				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
+				FormSpecs.RELATED_GAP_ROWSPEC,
 				RowSpec.decode("14px"),
 				RowSpec.decode("25px"),
 				FormSpecs.LINE_GAP_ROWSPEC,
@@ -379,13 +379,23 @@ public class FrmMain extends JFrame implements IMainMenu {
 				FormSpecs.PARAGRAPH_GAP_ROWSPEC,
 				RowSpec.decode("24px"),
 				RowSpec.decode("23px"),}));
+		
+		JLabel lblEpisode = new JLabel("Episode:");
+		panel.add(lblEpisode, "3, 6, left, default");
+		
+		txtEpisode = new JTextField();
+		panel.add(txtEpisode, "4, 6, 2, 1, fill, default");
+		txtEpisode.setColumns(10);
+		
+		chckbxTitleFromFilename = new JCheckBox("Title from Filename");
+		panel.add(chckbxTitleFromFilename, "11, 6, 6, 1");
 
 		lbltitlelenght = new JLabel("(0/100)");
-		panel.add(lbltitlelenght, "14, 6, 3, 1, right, top");
+		panel.add(lbltitlelenght, "14, 8, 3, 1, right, top");
 
 		txtTitle = new JTextField();
 		//contextMenu.add(txtTitle);
-		panel.add(txtTitle, "3, 7, 14, 1, fill, fill");
+		panel.add(txtTitle, "3, 9, 14, 1, fill, fill");
 		txtTitle.setColumns(10);
 		txtTitle.addKeyListener(new KeyAdapter() {
 			@Override
@@ -395,17 +405,17 @@ public class FrmMain extends JFrame implements IMainMenu {
 		});
 
 		JLabel lblCategory = new JLabel(LANG.getString("frmMain.Category"));
-		panel.add(lblCategory, "3, 9, 4, 1, left, bottom");
-		panel.add(cmbCategory, "3, 10, 14, 1, fill, fill");
+		panel.add(lblCategory, "3, 11, 4, 1, left, bottom");
+		panel.add(cmbCategory, "3, 12, 14, 1, fill, fill");
 
 		JLabel lblDescription = new JLabel(LANG.getString("frmMain.Description"));
-		panel.add(lblDescription, "3, 12, 4, 1, left, bottom");
+		panel.add(lblDescription, "3, 14, 4, 1, left, bottom");
 
 		lblDesclenght = new JLabel("(0/5000)");
-		panel.add(lblDesclenght, "14, 12, 3, 1, right, bottom");
+		panel.add(lblDesclenght, "14, 14, 3, 1, right, bottom");
 
 		JScrollPane DescriptionScrollPane = new JScrollPane();
-		panel.add(DescriptionScrollPane, "3, 13, 14, 1, fill, fill");
+		panel.add(DescriptionScrollPane, "3, 15, 14, 1, fill, fill");
 
 		txtDescription = new JTextArea();
 		//contextMenu.add(txtDescription);
@@ -421,13 +431,13 @@ public class FrmMain extends JFrame implements IMainMenu {
 		});
 		
 		JLabel lblTags = new JLabel(LANG.getString("frmMain.Tags"));
-		panel.add(lblTags, "3, 15, 4, 1, left, bottom");
+		panel.add(lblTags, "3, 17, 4, 1, left, bottom");
 
 		lblTagslenght = new JLabel("(0/500)");
-		panel.add(lblTagslenght, "14, 15, 3, 1, right, top");
+		panel.add(lblTagslenght, "14, 17, 3, 1, right, top");
 
 		JScrollPane TagScrollPane = new JScrollPane();
-		panel.add(TagScrollPane, "3, 16, 14, 1, fill, fill");
+		panel.add(TagScrollPane, "3, 18, 14, 1, fill, fill");
 
 		txtTags = new JTextArea();
 		//contextMenu.add(txtTags);
@@ -444,9 +454,9 @@ public class FrmMain extends JFrame implements IMainMenu {
 		});
 
 		JLabel lblAccount = new JLabel(LANG.getString("frmMain.Account"));
-		panel.add(lblAccount, "3, 18, 4, 1, left, bottom");
+		panel.add(lblAccount, "3, 20, 4, 1, left, bottom");
 		cmbAccount = new JComboBox<AccountType>();
-		panel.add(getCmbAccount(), "3, 19, 14, 1, fill, fill");
+		panel.add(getCmbAccount(), "3, 21, 14, 1, fill, fill");
 		cmbAccount.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				changeUser();
@@ -454,7 +464,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		});
 		btnAddToQueue = new JButton(LANG.getString("frmMain.addtoQueue"));
 		btnAddToQueue.setEnabled(false);
-		panel.add(btnAddToQueue, "3, 21, 6, 1, fill, fill");
+		panel.add(btnAddToQueue, "3, 23, 6, 1, fill, fill");
 		btnAddToQueue.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				queueButton();
@@ -490,7 +500,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		btnSelectMovie.setIcon(new ImageIcon(getClass().getResource("/film_add.png")));
 
 		JLabel lblTitle = new JLabel(LANG.getString("frmMain.Title"));
-		panel.add(lblTitle, "3, 6, 4, 1, left, bottom");
+		panel.add(lblTitle, "3, 8, 4, 1, left, bottom");
 
 		JButton btnReset = new JButton(LANG.getString("frmMain.Reset"));
 		btnReset.addActionListener(new ActionListener() {
@@ -498,7 +508,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 				resetEdit();
 			}
 		});
-		panel.add(btnReset, "11, 21, 6, 1, fill, fill");
+		panel.add(btnReset, "11, 23, 6, 1, fill, fill");
 		btnSelectMovie.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				EditPanel edit = (EditPanel) ss1.contentPane;
@@ -512,6 +522,9 @@ public class FrmMain extends JFrame implements IMainMenu {
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					cmbFile.removeAllItems();
 					cmbFile.addItem(chooser.getSelectedFile().getAbsolutePath().toString());
+					if(chckbxTitleFromFilename.isSelected()){
+						txtTitle.setText(chooser.getSelectedFile().getName().replaceAll("\\..*", ""));
+					}
 				}
 			}
 		});
@@ -743,10 +756,10 @@ public class FrmMain extends JFrame implements IMainMenu {
 		mnLanguage.setEnabled(false);
 		mnLanguage.setVisible(false);
 		
-		JMenu mnTemplates = new JMenu("frmMain.menu.Templates");
+		JMenu mnTemplates = new JMenu(LANG.getString("frmMain.menu.Templates"));
 		mnuBar.add(mnTemplates);
 		
-		JMenuItem mntmAddTemplate = new JMenuItem("frmMain.menu.addTemplate");
+		JMenuItem mntmAddTemplate = new JMenuItem(LANG.getString("frmMain.menu.addTemplate"));
 		mnTemplates.add(mntmAddTemplate);
 		mnuBar.add(mnLanguage);
 
@@ -1145,6 +1158,10 @@ public class FrmMain extends JFrame implements IMainMenu {
 				this.editItem = -1;
 			} else {
 				if (cmbFile.getSelectedItem() != null && !cmbFile.getSelectedItem().toString().equals("")) {
+					String title = txtTitle.getText();
+					if(!txtEpisode.getText().equals("")){
+						title.replaceAll("%ep%", txtEpisode.getText());
+					}
 					createUpload(cmbFile.getSelectedItem().toString(), txtTitle.getText(), acc.getValue());
 					cmbFile.removeAllItems();
 				} else {
@@ -1235,6 +1252,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		if (txtTags != null && !txtTags.getText().equals("")) {
 			v.snippet.tags = TagUtil.trimTags(txtTags.getText());
 		}
+		t.setTitlefromfile(chckbxTitleFromFilename.isSelected());
 		VisibilityType visibility = (VisibilityType) edit.getCmbVisibility().getSelectedItem();
 		if (visibility == VisibilityType.SCHEDULED) {
 			v.status.publishAt = edit.getDateTimePicker().getEditor().getText();
@@ -1262,6 +1280,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		txtTitle.setText(t.videodata.snippet.title);
 		txtDescription.setText(t.videodata.snippet.description);
 		txtTags.setText(TagUtil.prepareTagsfromArray(t.videodata.snippet.tags));
+		chckbxTitleFromFilename.setSelected(t.isTitlefromfile());
 		edit.setLicence(t.videodata.status.license);
 		if (t.videodata.status.publishAt != null && !t.videodata.status.publishAt.equals("0")
 				&& t.videodata.status.privacyStatus.equals("private")) {
@@ -1281,6 +1300,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		}
 		if(t.getMetadata()!=null){
 			resetMetadata(t.getMetadata());
+			txtEpisode.setText(t.metadata.getEp());
 		}
 		calcNotifies();
 		edit.setUpdating(false);
@@ -1335,6 +1355,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		Template t = TemplateMgr.get(id);
 		t.setMetadata(metadata);
 		v.snippet.title = txtTitle.getText();
+		t.setTitlefromfile(chckbxTitleFromFilename.isSelected());
 		Categories cat = (Categories) cmbCategory.getSelectedItem();
 		v.snippet.categoryId = cat.getID();
 		v.snippet.description = txtDescription.getText();
@@ -1404,6 +1425,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		PlaylistPanel play = (PlaylistPanel) ss2.contentPane;
 		MonetPanel monet = (MonetPanel) ss3.contentPane;
 		meta.setPlaylists(play.getSelectedPlaylists());
+		meta.setEp(txtEpisode.getText());
 		meta.setMonetized(monet.getChckbxMonetize().isSelected());
 		SyndicationType syn = (SyndicationType) monet.getCmbContentSyndication().getSelectedItem();
 		meta.setSyndication(syn.getData());

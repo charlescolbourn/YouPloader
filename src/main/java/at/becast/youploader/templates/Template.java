@@ -10,6 +10,7 @@ public class Template {
 	
 	public String name;
 	public Video videodata;
+	public boolean titlefromfile = false;
 	public VideoMetadata metadata;
 	public String startdir;
 	
@@ -68,5 +69,13 @@ public class Template {
 	@Override
 	public String toString(){
 		return name;
+	}
+	
+	public boolean isTitlefromfile() {
+		return titlefromfile;
+	}
+
+	public void setTitlefromfile(boolean titlefromfile) {
+		this.titlefromfile = titlefromfile;
 	}
 }

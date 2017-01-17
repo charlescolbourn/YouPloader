@@ -16,7 +16,6 @@
 package at.becast.youploader.gui;
 
 import java.awt.Toolkit;
-import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -28,8 +27,6 @@ import javax.swing.JTextField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import at.becast.youploader.account.Account;
-import at.becast.youploader.oauth.OAuth2;
 import at.becast.youploader.settings.Settings;
 import at.becast.youploader.util.UTF8ResourceBundle;
 import java.awt.event.KeyAdapter;

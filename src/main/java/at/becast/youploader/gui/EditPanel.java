@@ -35,6 +35,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import org.slf4j.Logger;
@@ -285,7 +286,7 @@ public class EditPanel extends javax.swing.JPanel {
 	                                DataFlavor.javaFileListFlavor);
 	                for (File file : droppedFiles) {
 	                	if(file.getName().endsWith(".jpg") || file.getName().endsWith(".png") || file.getName().endsWith(".jpeg")){
-	                		txtThumbnail.setText(file.getAbsolutePath());
+	                		checkThumbnail(file.getAbsolutePath());
 	                	}
 	                }
 	            } catch (Exception ex) {
@@ -304,7 +305,7 @@ public class EditPanel extends javax.swing.JPanel {
 				chooser.setFileFilter(new FileNameExtensionFilter("Image Files", "jpg", "jpeg", "png"));
 				int returnVal = chooser.showOpenDialog(getParent());
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					txtThumbnail.setText(chooser.getSelectedFile().getAbsolutePath().toString());
+					checkThumbnail(chooser.getSelectedFile().getAbsolutePath().toString());
 				}
 			}
 		});
@@ -508,6 +509,19 @@ public class EditPanel extends javax.swing.JPanel {
 			if (cmbLicense.getItemAt(i).getData().equals(license)) {
 				cmbLicense.setSelectedIndex(i);
 			}
+		}
+	}
+	
+	private void checkThumbnail(String path){
+		File file = new File(path);
+		if(!file.exists()){
+			txtThumbnail.setText(path);
+			return;
+		}
+		if(file.length() > 2048000){
+			JOptionPane.showMessageDialog(null,	LANG.getString("frmMain.errorThumbnail.Message"),LANG.getString("frmMain.errorThumbnail.title"), JOptionPane.ERROR_MESSAGE);
+		}else{
+			txtThumbnail.setText(file.getAbsolutePath());
 		}
 	}
 	
