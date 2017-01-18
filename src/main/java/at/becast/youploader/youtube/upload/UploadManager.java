@@ -332,20 +332,20 @@ public class UploadManager implements Runnable{
 		for(int i=0;i<_Uploading.size();i++){
 			if(_Uploading.get(i).id == upload_id){
 				UploadWorker o = _Uploading.get(i);
+				_Uploading.remove(i);
+				try {
+					o.join();
+				} catch (InterruptedException e1) {
+					LOG.error("Upload worker thread timeout was interrupted", e1);
+				}
 				if(o.retrys<5){
-					try {
-						for(int s = 10; s>0;s--){
-							o.frame.getProgressBar().setString(String.format(LANG.getString("Upload.Error"), s));
-							Thread.sleep(1000);
-						}
-					} catch (InterruptedException e) {
-						LOG.error("Upload worker thread timeout was interrupted", e);
+					for(int s = 10; s>0;s--){
+						o.frame.getProgressBar().setString(String.format(LANG.getString("Upload.Error"), s));
 					}
-	
 					LOG.info("Restarting Upload {}",o.videodata.snippet.title);
 					UploadWorker worker = new UploadWorker(upload_id, o.file, o.videodata, this.getSpeed_limit(), o.metadata, o.upload.url, o.upload.id, o.startAt);
 					worker.setRetrys(o.getRetrys());
-					_Uploading.set(i, worker);
+					_Uploading.addFirst(worker);
 					worker.start();
 				}else{
 					o.frame.getProgressBar().setString(LANG.getString("Upload.Failed"));
