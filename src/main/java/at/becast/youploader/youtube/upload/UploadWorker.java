@@ -96,7 +96,7 @@ public class UploadWorker extends Thread {
 		
 	public void setThumbnail(){
 		try {
-			File f = new File(this.metadata.getThumbnail().replaceAll("%ep%", this.metadata.getEp()));
+			File f = new File(this.metadata.getThumbnail());
 			if(f.exists() && f.length() <= 2048000){
 				this.uploader.uploadThumbnail(new File(this.metadata.getThumbnail()), upload);
 			}else{

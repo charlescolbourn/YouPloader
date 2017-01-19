@@ -175,7 +175,6 @@ public class FrmMain extends JFrame implements IMainMenu {
 	private DefaultContextMenu contextMenu = new DefaultContextMenu();
 	private DefaultListModel<AccountType> AccListModel = new DefaultListModel<AccountType>();
 	private JTextField txtEpisode;
-	//private static native boolean setAppUserModelID();
 
 	/**
 	 * Creates new form frmMain
@@ -1205,9 +1204,9 @@ public class FrmMain extends JFrame implements IMainMenu {
 				if (cmbFile.getSelectedItem() != null && !cmbFile.getSelectedItem().toString().equals("")) {
 					String title = txtTitle.getText();
 					if(!txtEpisode.getText().equals("")){
-						title.replaceAll("%ep%", txtEpisode.getText());
+						title = title.replaceAll("%ep%", txtEpisode.getText());
 					}
-					createUpload(cmbFile.getSelectedItem().toString(), txtTitle.getText(), acc.getValue());
+					createUpload(cmbFile.getSelectedItem().toString(), title, acc.getValue());
 					cmbFile.removeAllItems();
 				} else {
 					JOptionPane.showMessageDialog(null, LANG.getString("frmMain.fileerror.text"), LANG.getString("frmMain.fileerror.title"),
@@ -1477,7 +1476,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		meta.setInstream(monet.getChckbxSkippableVideoads().isSelected());
 		meta.setOverlay(monet.getChckbxOverlayads().isSelected());
 		meta.setProduct(monet.getChckbxSponsoredCards().isSelected());
-		meta.setThumbnail(edit.getTxtThumbnail().getText().trim());
+		meta.setThumbnail(edit.getTxtThumbnail().getText().trim().replaceAll("%ep%", txtEpisode.getText().trim()));
 		meta.setProductplacement(monet.getChckbxProductplacement().isSelected());
 		if(edit.getCmbVisibility().getSelectedItem() == VisibilityType.PUBLIC || edit.getCmbVisibility().getSelectedItem() == VisibilityType.SCHEDULED){
 			meta.setMessage(edit.getTxtMessage().getText());
