@@ -147,7 +147,7 @@ public class UploadManager implements Runnable{
 					UploadWorker w = _Uploading.get(i);
 					LOG.info("Upload {} finished",w.videodata.snippet.title);
 					if(w.metadata.getThumbnail()!=null && !w.metadata.getThumbnail().trim().equals("")){
-						LOG.info("Uploading Thumbnail {}",w.metadata.getThumbnail());
+						LOG.info("Uploading Thumbnail {}",w.metadata.getThumbnail().replaceAll("%ep%", w.metadata.getEp().trim()));
 						w.frame.getProgressBar().setString(String.format(LANG.getString("Upload.UploadingThumbnail")));
 						w.uploadThumbnail();
 					}

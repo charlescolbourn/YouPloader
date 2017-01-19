@@ -1476,7 +1476,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		meta.setInstream(monet.getChckbxSkippableVideoads().isSelected());
 		meta.setOverlay(monet.getChckbxOverlayads().isSelected());
 		meta.setProduct(monet.getChckbxSponsoredCards().isSelected());
-		meta.setThumbnail(edit.getTxtThumbnail().getText().trim().replaceAll("%ep%", txtEpisode.getText().trim()));
+		meta.setThumbnail(edit.getTxtThumbnail().getText().trim());
 		meta.setProductplacement(monet.getChckbxProductplacement().isSelected());
 		if(edit.getCmbVisibility().getSelectedItem() == VisibilityType.PUBLIC || edit.getCmbVisibility().getSelectedItem() == VisibilityType.SCHEDULED){
 			meta.setMessage(edit.getTxtMessage().getText());
@@ -1515,6 +1515,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 				edit.getCmbGameTitle().addItem(new GameDataItem(metadata.getGametitle(),null));
 			}
 		}
+		txtEpisode.setText(metadata.getEp());
 		edit.getTxtThumbnail().setText(metadata.getThumbnail());
 		monet.getChckbxMonetize().setSelected(metadata.isMonetized());
 		monet.getChckbxSkippableVideoads().setSelected(metadata.isInstream());

@@ -96,9 +96,9 @@ public class UploadWorker extends Thread {
 		
 	public void setThumbnail(){
 		try {
-			File f = new File(this.metadata.getThumbnail());
+			File f = new File(this.metadata.getThumbnail().replaceAll("%ep%", this.metadata.getEp().trim()));
 			if(f.exists() && f.length() <= 2048000){
-				this.uploader.uploadThumbnail(new File(this.metadata.getThumbnail()), upload);
+				this.uploader.uploadThumbnail(f, upload);
 			}else{
 				LOG.info("Could not set Thumbnail {}. File does either not exist, or is too big.", f.getAbsolutePath());
 			}
