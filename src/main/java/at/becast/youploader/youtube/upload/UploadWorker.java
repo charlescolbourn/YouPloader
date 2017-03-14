@@ -83,8 +83,10 @@ public class UploadWorker extends Thread {
 	public void prepare(){
 		try {
 			this.upload = this.uploader.prepareUpload(this.file, this.videodata);
-		} catch (IOException | UploadException e) {
-			LOG.error("Could not prepare upload ",e);
+		} catch (IOException s){
+			LOG.error("Could not prepare upload",s);
+		} catch (UploadException e) {
+			LOG.error("Could not prepare upload {} {}", e.getMessage(), e.error);
 		}
 		if(this.metadata==null){
 			LOG.error("Metadata is NULL!");

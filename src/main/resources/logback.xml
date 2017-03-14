@@ -31,4 +31,6 @@
 		<appender-ref ref="HTML"/>
 		<appender-ref ref="STDOUT" />
 	</root>
+    <logger name="org.apache" level="DEBUG" />
+    <logger name="httpclient.wire" level="DEBUG" />
 </configuration>

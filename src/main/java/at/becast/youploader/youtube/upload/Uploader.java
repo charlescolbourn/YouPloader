@@ -1,5 +1,5 @@
 /* 
- * YouPloader Copyright (c) 2016 genuineparts (itsme@genuineparts.org)
+ * YouPloader Copyright (c) 2017 genuineparts (itsme@genuineparts.org)
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
@@ -26,9 +26,14 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.http.client.ClientProtocolException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Uploader {
+	private static final Logger LOG = LoggerFactory.getLogger(Uploader.class);
 	private OAuth2 oAuth2;
 	private UploadStream stream;
 	private SimpleHTTP http;
@@ -69,7 +74,11 @@ public class Uploader {
 
 		stream = new UploadStream(upload.file, event);
 		stream.setSpeedLimit(limit);
-		this.http.put(upload.url, headers, stream, event);
+		try{
+			this.http.put(upload.url, headers, stream, event);
+		} catch(ClientProtocolException e){
+			LOG.error("Client Protocol Exception ", e);
+		}
 		stream.setFinished();
 		stream.close();
 		this.http.close();
@@ -106,7 +115,7 @@ public class Uploader {
 			this.stream.close();
 			this.http.close();
 		} catch (Exception e) {
-
+			LOG.error("Abort ", e);
 		}
 	}
 

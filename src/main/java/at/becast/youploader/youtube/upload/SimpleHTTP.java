@@ -59,6 +59,11 @@ public class SimpleHTTP {
     }
 
     if (location[0] == null) {
+    	StringBuilder b = new StringBuilder();
+    	for (Header h : response.getAllHeaders()) {
+    		b.append(h.getName() + ":" + h.getValue());
+    	}
+    	LOG.error("Could not create upload! Return: {} , Headers: {}", response.getStatusLine(), b.toString());
       throw UploadException.construct(response.getEntity().getContent());
     }
 

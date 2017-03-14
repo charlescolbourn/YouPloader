@@ -329,34 +329,38 @@ public class UploadManager implements Runnable{
 	}
 
 	public void restart(int upload_id) {
+		UploadWorker o = null;
 		for(int i=0;i<_Uploading.size();i++){
 			if(_Uploading.get(i).id == upload_id){
-				UploadWorker o = _Uploading.get(i);
+				o = _Uploading.get(i);
 				_Uploading.remove(i);
-				try {
-					o.join();
-				} catch (InterruptedException e1) {
-					LOG.error("Upload worker thread timeout was interrupted", e1);
-				}
-				if(o.retrys<5){
-					for(int s = 10; s>0;s--){
-						o.frame.getProgressBar().setString(String.format(LANG.getString("Upload.Error"), s));
-					}
-					LOG.info("Restarting Upload {}",o.videodata.snippet.title);
-					UploadWorker worker = new UploadWorker(upload_id, o.file, o.videodata, this.getSpeed_limit(), o.metadata, o.upload.url, o.upload.id, o.startAt);
-					worker.setRetrys(o.getRetrys());
-					_Uploading.addFirst(worker);
-					worker.start();
-				}else{
-					o.frame.getProgressBar().setString(LANG.getString("Upload.Failed"));
-					o.frame.getProgressBar().setValue(0);
-					LOG.info("Retried 5 times. Failing Upload {}",o.videodata.snippet.title);
-					_Uploading.remove(i);
-					UploadWorker worker = new UploadWorker(upload_id, o.file, o.videodata, this.getSpeed_limit(), o.metadata, o.upload.url, o.upload.id, o.startAt);
-					_ToUpload.add(worker);
-					SQLite.setUploadFinished(upload_id,Status.STOPPED);
-				}
 			}
+		}
+		if(o == null){
+			LOG.error("Can't find upload to retry: {}",upload_id);
+		}
+		try {
+			o.join();
+		} catch (InterruptedException e1) {
+			LOG.error("Upload worker thread timeout was interrupted", e1);
+			return;
+		}
+		if(o.retrys<5){
+			for(int s = 10; s>0;s--){
+				o.frame.getProgressBar().setString(String.format(LANG.getString("Upload.Error"), s));
+			}
+			LOG.info("Restarting Upload {}",o.videodata.snippet.title);
+			UploadWorker worker = new UploadWorker(upload_id, o.file, o.videodata, this.getSpeed_limit(), o.metadata, o.upload.url, o.upload.id, o.startAt);
+			worker.setRetrys(o.getRetrys());
+			_Uploading.addFirst(worker);
+			worker.start();
+		}else{
+			o.frame.getProgressBar().setString(LANG.getString("Upload.Failed"));
+			o.frame.getProgressBar().setValue(0);
+			LOG.info("Retried 5 times. Failing Upload {}",o.videodata.snippet.title);
+			UploadWorker worker = new UploadWorker(upload_id, o.file, o.videodata, this.getSpeed_limit(), o.metadata, o.upload.url, o.upload.id, o.startAt);
+			_ToUpload.add(worker);
+			SQLite.setUploadFinished(upload_id,Status.STOPPED);
 		}
 	}
 

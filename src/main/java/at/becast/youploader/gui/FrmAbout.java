@@ -61,60 +61,46 @@ public class FrmAbout extends JDialog {
 	public FrmAbout() {
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setResizable(false);
-		setTitle(String.format(LANG.getString("About.title"),Main.APP_NAME));
-        ResourceBundle bundle = ResourceBundle.getBundle( "build" );
-        String rev = bundle.getString( "git-sha-1" );
-        String build = bundle.getString( "jenkins-build" );
+		setTitle(String.format(LANG.getString("About.title"), Main.APP_NAME));
+		ResourceBundle bundle = ResourceBundle.getBundle("build");
+		String rev = bundle.getString("git-sha-1");
+		String build = bundle.getString("jenkins-build");
 		this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/yp.png")));
 		setBounds(100, 100, 500, 397);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
-		contentPanel.setLayout(new FormLayout(new ColumnSpec[] {
-				ColumnSpec.decode("max(166dlu;default)"),
-				FormSpecs.RELATED_GAP_COLSPEC,
-				ColumnSpec.decode("210px:grow"),},
-			new RowSpec[] {
-				FormSpecs.UNRELATED_GAP_ROWSPEC,
-				RowSpec.decode("20px"),
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				RowSpec.decode("20px"),
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				RowSpec.decode("20px"),
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				RowSpec.decode("20px"),
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				RowSpec.decode("20px"),
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				FormSpecs.DEFAULT_ROWSPEC,
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				FormSpecs.DEFAULT_ROWSPEC,
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				RowSpec.decode("20px"),
-				FormSpecs.PARAGRAPH_GAP_ROWSPEC,
-				RowSpec.decode("103px"),}));
-		
+		contentPanel.setLayout(new FormLayout(
+				new ColumnSpec[] { ColumnSpec.decode("max(166dlu;default)"), FormSpecs.RELATED_GAP_COLSPEC,
+						ColumnSpec.decode("210px:grow"), },
+				new RowSpec[] { FormSpecs.UNRELATED_GAP_ROWSPEC, RowSpec.decode("20px"), FormSpecs.RELATED_GAP_ROWSPEC,
+						RowSpec.decode("20px"), FormSpecs.RELATED_GAP_ROWSPEC, RowSpec.decode("20px"),
+						FormSpecs.RELATED_GAP_ROWSPEC, RowSpec.decode("20px"), FormSpecs.RELATED_GAP_ROWSPEC,
+						RowSpec.decode("20px"), FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC,
+						FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC, FormSpecs.RELATED_GAP_ROWSPEC,
+						RowSpec.decode("20px"), FormSpecs.PARAGRAPH_GAP_ROWSPEC, RowSpec.decode("103px"), }));
+
 		JLabel label = new JLabel("");
 		label.setHorizontalAlignment(SwingConstants.CENTER);
 		label.setIcon(new ImageIcon(getClass().getResource("/yp.png")));
 		contentPanel.add(label, "1, 2, 1, 9, left, fill");
-		
-		JLabel lblYouploader = new JLabel("YouPloader "+Main.VERSION);
+
+		JLabel lblYouploader = new JLabel("YouPloader " + Main.VERSION);
 		lblYouploader.setFont(new Font("Arial Black", Font.PLAIN, 11));
 		contentPanel.add(lblYouploader, "3, 2, left, default");
-		
+
 		JLabel lblGenuineparts = new JLabel(" © 2016-2017 genuineparts");
 		lblGenuineparts.setFont(new Font("Arial Black", Font.PLAIN, 11));
 		contentPanel.add(lblGenuineparts, "3, 4, left, default");
-		
-		JLabel lblRevision = new JLabel("Revision "+rev);
+
+		JLabel lblRevision = new JLabel("Revision " + rev);
 		lblRevision.setFont(new Font("Arial", Font.PLAIN, 13));
 		contentPanel.add(lblRevision, "3, 6");
-		
-		JLabel lblBuild = new JLabel("Build "+build);
+
+		JLabel lblBuild = new JLabel("Build " + build);
 		lblBuild.setFont(new Font("Arial", Font.PLAIN, 13));
 		contentPanel.add(lblBuild, "3, 8");
-		
+
 		JLabel lblHttpsgithubcombecastyouploader = new JLabel("https://github.com/becast/youploader");
 		lblHttpsgithubcombecastyouploader.addMouseListener(new MouseAdapter() {
 			@Override
@@ -125,36 +111,34 @@ public class FrmAbout extends JDialog {
 		lblHttpsgithubcombecastyouploader.setForeground(Color.BLUE);
 		lblHttpsgithubcombecastyouploader.setFont(new Font("Arial", Font.PLAIN, 13));
 		contentPanel.add(lblHttpsgithubcombecastyouploader, "3, 10");
-		
+
 		JLabel lblCredits = new JLabel("Credits:");
 		contentPanel.add(lblCredits, "1, 14");
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		contentPanel.add(scrollPane, "1, 16, 3, 3, fill, fill");
-		
+
 		JTextPane txtCredits = new JTextPane();
-		txtCredits.setText("Thanks to everyone who contributed!\r\n\r\nGerman Translation\r\nMeduax - https://github.com/Meduax - https://www.youtube.com/user/Meduax\r\n\r\nTesting:\r\nWePlaydThis\r\n@WePlaydThis\r\nhttps://www.youtube.com/user/WePlaydThis\r\n\r\nTheJessaChannel\r\n@TheJessaChannel\r\nhttps://www.youtube.com/user/TheJessaChannel\r\n\r\nThe kind people of /r/letsplay\r\n");
+		txtCredits.setText(
+				"Thanks to everyone who contributed!\r\n\r\nGerman Translation\r\nMeduax - https://github.com/Meduax - https://www.youtube.com/user/Meduax\r\n\r\nTesting:\r\nWePlaydThis\r\n@WePlaydThis\r\nhttps://www.youtube.com/user/WePlaydThis\r\n\r\nTheJessaChannel\r\n@TheJessaChannel\r\nhttps://www.youtube.com/user/TheJessaChannel\r\n\r\nThe kind people of /r/letsplay\r\n");
 		txtCredits.setCaretPosition(0);
 		txtCredits.setEditable(false);
 		scrollPane.setViewportView(txtCredits);
-		{
-			JPanel buttonPane = new JPanel();
-			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-			getContentPane().add(buttonPane, BorderLayout.SOUTH);
-			{
-				JButton okButton = new JButton("OK");
-				okButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						okButton();
-					}
-				});
-				okButton.setActionCommand("OK");
-				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
+		JPanel buttonPane = new JPanel();
+		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		getContentPane().add(buttonPane, BorderLayout.SOUTH);
+		JButton okButton = new JButton("OK");
+		okButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				okButton();
 			}
-		}
+		});
+		okButton.setActionCommand("OK");
+		buttonPane.add(okButton);
+		getRootPane().setDefaultButton(okButton);
+
 	}
-	
+
 	private void okButton() {
 		this.dispose();
 	}
