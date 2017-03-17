@@ -11,9 +11,13 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import at.becast.youploader.util.DownloadingCountInputStream;
 import at.becast.youploader.util.UTF8ResourceBundle;
+import at.becast.youploader.util.Unzip;
+
 import javax.swing.JLabel;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -41,7 +45,7 @@ public class UpdateNotice extends JDialog implements ActionListener {
 	 */
 	private static final long serialVersionUID = -3277493043241496978L;
 	private final JPanel contentPanel = new JPanel();
-	//private static final Logger LOG = LoggerFactory.getLogger(UpdateNotice.class);
+	private static final Logger LOG = LoggerFactory.getLogger(UpdateNotice.class);
 	private static final ResourceBundle LANG = UTF8ResourceBundle.getBundle("lang", Locale.getDefault());
 	private JButton dlButton;
 	private int length = 0;
@@ -106,7 +110,9 @@ public class UpdateNotice extends JDialog implements ActionListener {
 							   
 							   @Override
 							   protected void done() {
-								   
+								   Unzip z = new Unzip();
+								   z.unZipIt(System.getProperty("user.dir") + "/update.zip", System.getProperty("user.dir") + "/update/");
+								   new File(System.getProperty("user.dir") + "/update.zip").delete();
 							   }
 							  };
 							  
@@ -160,7 +166,8 @@ public class UpdateNotice extends JDialog implements ActionListener {
         OutputStream os = null;
         InputStream is = null;
         try {
-            fl = new File(System.getProperty("user.home") + "/YouPloader/update.exe");
+        	new File(System.getProperty("user.dir") + "/update/").mkdirs();
+            fl = new File(System.getProperty("user.dir") + "/update.zip");
             dl = new URL("https://version.youploader.com/updates/" + this.updatefile);
             os = new FileOutputStream(fl);
             is = dl.openStream();
@@ -172,7 +179,7 @@ public class UpdateNotice extends JDialog implements ActionListener {
             IOUtils.copy(is, dcount);
 
         } catch (Exception e) {
-            System.out.println(e);
+        	LOG.error("Update error", e);
         } finally {
             IOUtils.closeQuietly(os);
             IOUtils.closeQuietly(is);
