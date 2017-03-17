@@ -3,6 +3,7 @@ package at.becast.youploader.youtube.upload;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpVersion;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
@@ -25,7 +26,6 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.Map;
 
 public class SimpleHTTP {
@@ -37,11 +37,11 @@ public class SimpleHTTP {
   
   public SimpleHTTP() {
     this.chc = HttpClients.createDefault();
-  }
+  } 
 
   public String[] post(String url, Map<String, String> headers, String body) throws IOException, UploadException {
     HttpPost post = new HttpPost(url);
-
+    post.setProtocolVersion(HttpVersion.HTTP_1_1);
     for (String key : headers.keySet()) {
       post.setHeader(key, headers.get(key));
     }
@@ -74,7 +74,7 @@ public class SimpleHTTP {
   
   public void postPL(String url, Map<String, String> headers, String body) throws IOException, UploadException {
 	    HttpPost post = new HttpPost(url);
-
+	    post.setProtocolVersion(HttpVersion.HTTP_1_1);
 	    for (String key : headers.keySet()) {
 	      post.setHeader(key, headers.get(key));
 	    }
@@ -125,6 +125,7 @@ public String postLog(Map<String, String> headers) throws IOException, UploadExc
 
   public void put(String url, Map<String, String> headers, BufferedInputStream stream, UploadEvent callback) throws IOException {
     this.put = new HttpPut(url);
+    this.put.setProtocolVersion(HttpVersion.HTTP_1_1);
     for (String key : headers.keySet()) {
     	this.put.setHeader(key, headers.get(key));
     }
@@ -152,6 +153,7 @@ public String postLog(Map<String, String> headers) throws IOException, UploadExc
   
   public void put(String url, Map<String, String> headers, String body) throws IOException {
 	this.put = new HttpPut(url);
+	this.put.setProtocolVersion(HttpVersion.HTTP_1_1);
 	for (String key : headers.keySet()) {
 		this.put.setHeader(key, headers.get(key));
 	}
@@ -168,6 +170,7 @@ public String postLog(Map<String, String> headers) throws IOException, UploadExc
   
   public void post(String url, Map<String, String> headers, File body) throws IOException {
 	HttpPost post =  new HttpPost(url);
+	post.setProtocolVersion(HttpVersion.HTTP_1_1);
 	for (String key : headers.keySet()) {
 		post.setHeader(key, headers.get(key));
 	}
