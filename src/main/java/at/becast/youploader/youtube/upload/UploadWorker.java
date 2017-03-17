@@ -160,9 +160,6 @@ public class UploadWorker extends Thread {
 	public void abort(){
 		this.uploader.abort();
 	}
-	public void uploadThumbnail(){
-		this.setThumbnail();
-	}
 	
 	public int getRetrys() {
 		return retrys;

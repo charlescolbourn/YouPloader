@@ -93,6 +93,7 @@ public class Uploader {
 	}
 	
 	public void uploadThumbnail(File thumbnail, Upload upload) throws IOException, UploadException {
+		LOG.info("Uploading Thumbnail {}",upload.metadata.getThumbnail().replaceAll("%ep%", upload.metadata.getEp().trim()));
 		this.http = new SimpleHTTP();
 		Map<String, String> headers = new HashMap<>();
 		headers.put("Authorization", this.oAuth2.getHeader());
