@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Joiner;
 
 public class Uploader {
 	private static final Logger LOG = LoggerFactory.getLogger(Uploader.class);
@@ -59,6 +60,7 @@ public class Uploader {
 		String[] result = http.post(
 				"https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status",
 				headers, new ObjectMapper().writeValueAsString(video));
+		LOG.debug("Upload prep result: {}",Joiner.on(" ").join(result));
 		Upload url = new Upload(result[0], file, result[1], video);
 
 		this.http.close();
