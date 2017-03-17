@@ -224,6 +224,7 @@ public class UploadManager implements Runnable{
 					Date start = _ToUpload.get(s).startAt;
 					if((start!=null && start.compareTo(new Date())<=0) || start==null){
 						UploadWorker w = _ToUpload.get(s);
+						w.resetUploader();
 						w.start();
 						LOG.info("Upload {} started",w.videodata.snippet.title);
 						_Uploading.add(w);

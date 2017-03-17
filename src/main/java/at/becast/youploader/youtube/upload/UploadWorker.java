@@ -81,6 +81,7 @@ public class UploadWorker extends Thread {
 	}
 	
 	public void prepare(){
+		
 		try {
 			this.upload = this.uploader.prepareUpload(this.file, this.videodata);
 		} catch (IOException s){
@@ -155,7 +156,6 @@ public class UploadWorker extends Thread {
 	public void resetUploader(){
 		this.uploader = new Uploader(this.AccMgr.getAuth(acc_id));
 	}
-	
 	
 	public void abort(){
 		this.uploader.abort();
