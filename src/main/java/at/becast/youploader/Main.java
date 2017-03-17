@@ -164,7 +164,7 @@ public class Main {
 			int updateAvaiable = v.compare(gitVersion[0], VERSION);
 			if(updateAvaiable > 0){
 				LOG.info("Update {} avaiable!", gitVersion[0]);
-				UpdateNotice un = new UpdateNotice(gitVersion[0],gitVersion[2]);
+				UpdateNotice un = new UpdateNotice(gitVersion[0],gitVersion[1],gitVersion[2]);
 				un.setVisible(true);
 			}
 		}

@@ -10,7 +10,9 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import at.becast.youploader.util.DesktopUtil;
+import org.apache.commons.io.IOUtils;
+
+import at.becast.youploader.util.DownloadingCountInputStream;
 import at.becast.youploader.util.UTF8ResourceBundle;
 import javax.swing.JLabel;
 import com.jgoodies.forms.layout.FormLayout;
@@ -19,13 +21,20 @@ import com.jgoodies.forms.layout.RowSpec;
 import com.jgoodies.forms.layout.FormSpecs;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
+import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
 import java.awt.event.ActionEvent;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.JProgressBar;
 
-public class UpdateNotice extends JDialog {
+public class UpdateNotice extends JDialog implements ActionListener {
 
 	/**
 	 * 
@@ -35,12 +44,16 @@ public class UpdateNotice extends JDialog {
 	//private static final Logger LOG = LoggerFactory.getLogger(UpdateNotice.class);
 	private static final ResourceBundle LANG = UTF8ResourceBundle.getBundle("lang", Locale.getDefault());
 	private JButton dlButton;
+	private int length = 0;
+	private String updatefile;
 	private JButton cancelButton;
+	private JProgressBar progressBar;
 
 	/**
 	 * Create the dialog.
 	 */
-	public UpdateNotice(String gitVersion, String changelog) {
+	public UpdateNotice(String gitVersion,String updatefile, String changelog) {
+		this.updatefile = updatefile;
 		setTitle(LANG.getString("frmMain.newVersion.title"));
 		setBounds(100, 100, 551, 300);
 		getContentPane().setLayout(new BorderLayout());
@@ -83,7 +96,21 @@ public class UpdateNotice extends JDialog {
 				dlButton = new JButton(LANG.getString("UpdateNotice.download"));
 				dlButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
-						DesktopUtil.openBrowser("https://github.com/becast/youploader/releases");
+						//DesktopUtil.openBrowser("https://github.com/becast/youploader/releases");
+						SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+							   @Override
+							   protected Void doInBackground() throws Exception {
+								download();
+							    return null;
+							   }
+							   
+							   @Override
+							   protected void done() {
+								   
+							   }
+							  };
+							  
+							  worker.execute();
 					}
 				});
 				dlButton.setActionCommand("OK");
@@ -91,13 +118,23 @@ public class UpdateNotice extends JDialog {
 			}
 			{
 				cancelButton = new JButton(LANG.getString("Button.cancel"));
+				cancelButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						dispose();
+					}
+				});
 				cancelButton.setActionCommand("Cancel");
 			}
+			progressBar = new JProgressBar();
+			progressBar.setStringPainted(true);
+			progressBar.setVisible(false);
 			GroupLayout gl_buttonPane = new GroupLayout(buttonPane);
 			gl_buttonPane.setHorizontalGroup(
 				gl_buttonPane.createParallelGroup(Alignment.LEADING)
 					.addGroup(gl_buttonPane.createSequentialGroup()
-						.addGap(361)
+						.addContainerGap()
+						.addComponent(progressBar, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addGap(205)
 						.addComponent(dlButton)
 						.addGap(5)
 						.addComponent(cancelButton))
@@ -107,10 +144,45 @@ public class UpdateNotice extends JDialog {
 					.addGroup(gl_buttonPane.createSequentialGroup()
 						.addGap(5)
 						.addGroup(gl_buttonPane.createParallelGroup(Alignment.LEADING)
-							.addComponent(dlButton)
-							.addComponent(cancelButton)))
+							.addGroup(Alignment.TRAILING, gl_buttonPane.createParallelGroup(Alignment.LEADING)
+								.addComponent(dlButton)
+								.addComponent(cancelButton))
+							.addComponent(progressBar, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
 			);
 			buttonPane.setLayout(gl_buttonPane);
 		}
+	}
+	
+	private void download(){
+		progressBar.setVisible(true);
+		URL dl = null;
+        File fl = null;
+        OutputStream os = null;
+        InputStream is = null;
+        try {
+            fl = new File(System.getProperty("user.home") + "/YouPloader/update.exe");
+            dl = new URL("https://version.youploader.com/updates/" + this.updatefile);
+            os = new FileOutputStream(fl);
+            is = dl.openStream();
+
+            DownloadingCountInputStream dcount = new DownloadingCountInputStream(os);
+            dcount.setListener(this);
+            length = Integer.parseInt(dl.openConnection().getHeaderField("Content-Length"));
+
+            IOUtils.copy(is, dcount);
+
+        } catch (Exception e) {
+            System.out.println(e);
+        } finally {
+            IOUtils.closeQuietly(os);
+            IOUtils.closeQuietly(is);
+        }
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		
+		long downloaded = ((DownloadingCountInputStream) e.getSource()).getByteCount();
+		progressBar.setValue((int) (((float) downloaded / length) * 100));
 	}
 }
