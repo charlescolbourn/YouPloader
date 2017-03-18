@@ -9,11 +9,13 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class DefaultContextMenu extends JPopupMenu
 {
 	private static final long serialVersionUID = 2291660356199672333L;
-
+	private static final ResourceBundle LANG = UTF8ResourceBundle.getBundle("lang", Locale.getDefault());
 	private Clipboard clipboard;
 
     private UndoManager undoManager;
@@ -33,14 +35,14 @@ public class DefaultContextMenu extends JPopupMenu
         undoManager = new UndoManager();
         clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 
-        undo = new JMenuItem("Undo");
+        undo = new JMenuItem(LANG.getString("Control.Undo"));
         undo.setEnabled(false);
         undo.setAccelerator(KeyStroke.getKeyStroke("control Z"));
         undo.addActionListener(event -> undoManager.undo());
 
         add(undo);
 
-        redo = new JMenuItem("Redo");
+        redo = new JMenuItem(LANG.getString("Control.Redo"));
         redo.setEnabled(false);
         redo.setAccelerator(KeyStroke.getKeyStroke("control Y"));
         redo.addActionListener(event -> undoManager.redo());
@@ -49,28 +51,28 @@ public class DefaultContextMenu extends JPopupMenu
 
         add(new JSeparator());
 
-        cut = new JMenuItem("Cut");
+        cut = new JMenuItem(LANG.getString("Control.Cut"));
         cut.setEnabled(false);
         cut.setAccelerator(KeyStroke.getKeyStroke("control X"));
         cut.addActionListener(event -> jTextComponent.cut());
 
         add(cut);
 
-        copy = new JMenuItem("Copy");
+        copy = new JMenuItem(LANG.getString("Control.Copy"));
         copy.setEnabled(false);
         copy.setAccelerator(KeyStroke.getKeyStroke("control C"));
         copy.addActionListener(event -> jTextComponent.copy());
 
         add(copy);
 
-        paste = new JMenuItem("Paste");
+        paste = new JMenuItem(LANG.getString("Control.Paste"));
         paste.setEnabled(false);
         paste.setAccelerator(KeyStroke.getKeyStroke("control V"));
         paste.addActionListener(event -> jTextComponent.paste());
 
         add(paste);
 
-        delete = new JMenuItem("Delete");
+        delete = new JMenuItem(LANG.getString("Control.Delete"));
         delete.setEnabled(false);
         delete.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
         delete.addActionListener(event -> jTextComponent.replaceSelection(""));
@@ -79,7 +81,7 @@ public class DefaultContextMenu extends JPopupMenu
 
         add(new JSeparator());
 
-        selectAll = new JMenuItem("Select All");
+        selectAll = new JMenuItem(LANG.getString("Control.Selectall"));
         selectAll.setEnabled(false);
         selectAll.setAccelerator(KeyStroke.getKeyStroke("control A"));
         selectAll.addActionListener(event -> jTextComponent.selectAll());
