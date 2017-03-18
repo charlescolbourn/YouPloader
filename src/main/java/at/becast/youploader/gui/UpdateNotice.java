@@ -29,6 +29,7 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import at.becast.youploader.util.DesktopUtil;
 import at.becast.youploader.util.DownloadingCountInputStream;
 import at.becast.youploader.util.UTF8ResourceBundle;
 import at.becast.youploader.util.Unzip;
@@ -106,6 +107,9 @@ public class UpdateNotice extends JDialog implements ActionListener {
 		{
 			JTextPane txtChangelog = new JTextPane();
 			txtChangelog.setContentType("text/html");
+			if(this.updatefile.equals("null")){
+				changelog = "<strong> Autoupdates have been disabled for this update</strong><br />" + changelog;
+			}
 			txtChangelog.setText(changelog);
 			scrollPane.setViewportView(txtChangelog);
 		}
@@ -116,32 +120,35 @@ public class UpdateNotice extends JDialog implements ActionListener {
 				dlButton = new JButton(LANG.getString("UpdateNotice.download"));
 				dlButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
-						//DesktopUtil.openBrowser("https://github.com/becast/youploader/releases");
-						SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
-							   @Override
-							   protected Void doInBackground() throws Exception {
-								download();
-							    return null;
-							   }
-							   
-							   @Override
-							   protected void done() {
-									File destLib = new File(System.getProperty("user.dir") + File.separator + "lib");
-									try {
-										FileUtils.deleteDirectory(destLib);
-									} catch (IOException e) {
-										e.printStackTrace();
-									}
-								   Unzip z = new Unzip();
-								   z.unZipIt(System.getProperty("user.dir") + File.separator + "update.zip", System.getProperty("user.dir"));
-								   new File(System.getProperty("user.dir") + File.separator + "update.zip").delete();
-								   restart();
-							   }
-
-
-							  };
-							  
-							  worker.execute();
+						if(updatefile.equals("null")){
+							DesktopUtil.openBrowser("https://github.com/becast/youploader/releases");
+						}else{
+							SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+								   @Override
+								   protected Void doInBackground() throws Exception {
+									download();
+								    return null;
+								   }
+								   
+								   @Override
+								   protected void done() {
+										File destLib = new File(System.getProperty("user.dir") + File.separator + "lib");
+										try {
+											FileUtils.deleteDirectory(destLib);
+										} catch (IOException e) {
+											e.printStackTrace();
+										}
+									   Unzip z = new Unzip();
+									   z.unZipIt(System.getProperty("user.dir") + File.separator + "update.zip", System.getProperty("user.dir"));
+									   new File(System.getProperty("user.dir") + File.separator + "update.zip").delete();
+									   restart();
+								   }
+	
+	
+								  };
+								  
+								  worker.execute();
+						}
 					}
 				});
 				dlButton.setActionCommand("OK");
