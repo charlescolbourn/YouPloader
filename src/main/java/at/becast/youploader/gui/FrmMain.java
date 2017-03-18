@@ -610,7 +610,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 		buttonPanel.add(btnStop, "6, 4");
 		
 		cmbAfterFinish = new JComboBox<Object>();
-		cmbAfterFinish.setModel(new DefaultComboBoxModel<Object>(new String[] {LANG.getString("frmMain.afterfinish.donothing"), LANG.getString("frmMain.afterfinish.suspend"),LANG.getString("frmMain.afterfinish.shutdown")}));
+		cmbAfterFinish.setModel(new DefaultComboBoxModel<Object>(new String[] {LANG.getString("frmMain.afterfinish.donothing"), LANG.getString("frmMain.afterfinish.suspend"),LANG.getString("frmMain.afterfinish.shutdown"),LANG.getString("frmMain.afterfinish.quit")}));
 		buttonPanel.add(cmbAfterFinish, "10, 4, 7, 1, fill, default");
 
 		JLabel lblUploads = new JLabel(LANG.getString("frmMain.uploads")+":");

@@ -245,8 +245,10 @@ public class UploadManager implements Runnable{
 				if(FrmMain.getCmbAfterFinish().getSelectedIndex()>0){
 					if(FrmMain.getCmbAfterFinish().getSelectedIndex()==1){
 						DesktopUtil.hibernateComputer();
-					}else{
+					}else if(FrmMain.getCmbAfterFinish().getSelectedIndex()==2){
 						DesktopUtil.shutdownComputer();
+					}else{
+						System.exit(0);
 					}
 				}
 			}
