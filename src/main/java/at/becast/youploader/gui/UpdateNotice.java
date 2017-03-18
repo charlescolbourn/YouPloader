@@ -16,7 +16,6 @@ package at.becast.youploader.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Toolkit;
-import java.awt.Window;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -30,7 +29,6 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import at.becast.youploader.util.PlatformUtil;
 import at.becast.youploader.util.DownloadingCountInputStream;
 import at.becast.youploader.util.UTF8ResourceBundle;
 import at.becast.youploader.util.Unzip;
@@ -50,7 +48,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.management.ManagementFactory;
 import java.net.URL;
 import java.awt.event.ActionEvent;
 import javax.swing.GroupLayout;
@@ -129,32 +126,16 @@ public class UpdateNotice extends JDialog implements ActionListener {
 							   
 							   @Override
 							   protected void done() {
-								   Unzip z = new Unzip();
-								   z.unZipIt(System.getProperty("user.dir") + File.separator + "update.zip", System.getProperty("user.dir") + File.separator + "update" + File.separator);
-								   new File(System.getProperty("user.dir") + File.separator + "update.zip").delete();
-								   String destdir = System.getProperty("user.dir");
-									File srcLib = new File(System.getProperty("user.dir") + File.separator + "update" + File.separator + "lib");
-									File srcExe = new File(System.getProperty("user.dir") + File.separator + "update" + File.separator + "YouPloader.exe");
-									File srcJar = new File(System.getProperty("user.dir") + File.separator + "update" + File.separator + "YouPloader.jar");
-									File srcSh = new File(System.getProperty("user.dir") + File.separator + "update" + File.separator + "youploader.sh");
-									File destLib = new File(destdir + File.separator + "lib");
-									File destExe = new File(destdir + File.separator + "YouPloader.exe");
-									File destJar = new File(destdir + File.separator + "YouPloader.jar");
-									File destSh = new File(destdir + File.separator + "youploader.sh");
+									File destLib = new File(System.getProperty("user.dir") + File.separator + "lib");
 									try {
 										FileUtils.deleteDirectory(destLib);
-										FileUtils.deleteQuietly(destExe);
-										FileUtils.deleteQuietly(destJar);
-										FileUtils.deleteQuietly(destSh);
-
-										FileUtils.copyDirectory(srcLib, destLib);
-										FileUtils.copyFile(srcExe, destExe);
-										FileUtils.copyFile(srcSh, destSh);
-										FileUtils.copyFile(srcJar, destJar);
 									} catch (IOException e) {
 										e.printStackTrace();
 									}
-									restart();
+								   Unzip z = new Unzip();
+								   z.unZipIt(System.getProperty("user.dir") + File.separator + "update.zip", System.getProperty("user.dir"));
+								   new File(System.getProperty("user.dir") + File.separator + "update.zip").delete();
+								   restart();
 							   }
 
 
@@ -210,7 +191,6 @@ public class UpdateNotice extends JDialog implements ActionListener {
         OutputStream os = null;
         InputStream is = null;
         try {
-        	new File(System.getProperty("user.dir") + File.separator + "update" + File.separator).mkdirs();
             fl = new File(System.getProperty("user.dir") + File.separator +"update.zip");
             dl = new URL("https://version.youploader.com/updates/" + this.updatefile);
             os = new FileOutputStream(fl);
@@ -231,24 +211,14 @@ public class UpdateNotice extends JDialog implements ActionListener {
 	}
 	
 	public void restart() {
-		String command;
-		if (PlatformUtil.isWindows()) {
-			command = "YouPloader.exe";
-		} else if (PlatformUtil.isLinux()) {
-			command = "java -jar YouPloader.jar";
-		} else if (PlatformUtil.isMac()) {
-			command = "java -jar YouPloader.jar";
-		} else {
-			return;
-		}
-		ProcessBuilder pb = new ProcessBuilder(new String[] { command });
+		ProcessBuilder pb = new ProcessBuilder("java","-jar",System.getProperty("user.dir") + File.separator + "YouPloader.jar");
 		pb.directory(new File(System.getProperty("user.dir")));
 		try {
 			pb.start();
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.error("Start error", e);
 		}
-          System.exit(0);
+        System.exit(0);
    }
 	@Override
 	public void actionPerformed(ActionEvent e) {
