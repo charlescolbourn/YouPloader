@@ -16,6 +16,7 @@ package at.becast.youploader.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -24,10 +25,12 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import at.becast.youploader.util.PlatformUtil;
 import at.becast.youploader.util.DownloadingCountInputStream;
 import at.becast.youploader.util.UTF8ResourceBundle;
 import at.becast.youploader.util.Unzip;
@@ -44,8 +47,10 @@ import javax.swing.UIManager;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.management.ManagementFactory;
 import java.net.URL;
 import java.awt.event.ActionEvent;
 import javax.swing.GroupLayout;
@@ -127,7 +132,32 @@ public class UpdateNotice extends JDialog implements ActionListener {
 								   Unzip z = new Unzip();
 								   z.unZipIt(System.getProperty("user.dir") + File.separator + "update.zip", System.getProperty("user.dir") + File.separator + "update" + File.separator);
 								   new File(System.getProperty("user.dir") + File.separator + "update.zip").delete();
+								   String destdir = System.getProperty("user.dir");
+									File srcLib = new File(System.getProperty("user.dir") + File.separator + "update" + File.separator + "lib");
+									File srcExe = new File(System.getProperty("user.dir") + File.separator + "update" + File.separator + "YouPloader.exe");
+									File srcJar = new File(System.getProperty("user.dir") + File.separator + "update" + File.separator + "YouPloader.jar");
+									File srcSh = new File(System.getProperty("user.dir") + File.separator + "update" + File.separator + "youploader.sh");
+									File destLib = new File(destdir + File.separator + "lib");
+									File destExe = new File(destdir + File.separator + "YouPloader.exe");
+									File destJar = new File(destdir + File.separator + "YouPloader.jar");
+									File destSh = new File(destdir + File.separator + "youploader.sh");
+									try {
+										FileUtils.deleteDirectory(destLib);
+										FileUtils.deleteQuietly(destExe);
+										FileUtils.deleteQuietly(destJar);
+										FileUtils.deleteQuietly(destSh);
+
+										FileUtils.copyDirectory(srcLib, destLib);
+										FileUtils.copyFile(srcExe, destExe);
+										FileUtils.copyFile(srcSh, destSh);
+										FileUtils.copyFile(srcJar, destJar);
+									} catch (IOException e) {
+										e.printStackTrace();
+									}
+									restart();
 							   }
+
+
 							  };
 							  
 							  worker.execute();
@@ -172,7 +202,7 @@ public class UpdateNotice extends JDialog implements ActionListener {
 			buttonPane.setLayout(gl_buttonPane);
 		}
 	}
-	
+
 	private void download(){
 		progressBar.setVisible(true);
 		URL dl = null;
@@ -199,7 +229,27 @@ public class UpdateNotice extends JDialog implements ActionListener {
             IOUtils.closeQuietly(is);
         }
 	}
-
+	
+	public void restart() {
+		String command;
+		if (PlatformUtil.isWindows()) {
+			command = "YouPloader.exe";
+		} else if (PlatformUtil.isLinux()) {
+			command = "java -jar YouPloader.jar";
+		} else if (PlatformUtil.isMac()) {
+			command = "java -jar YouPloader.jar";
+		} else {
+			return;
+		}
+		ProcessBuilder pb = new ProcessBuilder(new String[] { command });
+		pb.directory(new File(System.getProperty("user.dir")));
+		try {
+			pb.start();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+          System.exit(0);
+   }
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
