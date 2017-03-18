@@ -146,6 +146,9 @@ public class UploadManager implements Runnable{
 				if(_Uploading.get(i).id == upload_id){
 					UploadWorker w = _Uploading.get(i);
 					LOG.info("Upload {} finished",w.videodata.snippet.title);
+					LOG.debug("refreshing token");
+					w.resetUploader();
+					//The token could be expired after the upload.
 					if(w.metadata.getThumbnail()!=null && !w.metadata.getThumbnail().trim().equals("")){
 						w.frame.getProgressBar().setString(String.format(LANG.getString("Upload.UploadingThumbnail")));
 						w.setThumbnail();
@@ -224,6 +227,7 @@ public class UploadManager implements Runnable{
 					Date start = _ToUpload.get(s).startAt;
 					if((start!=null && start.compareTo(new Date())<=0) || start==null){
 						UploadWorker w = _ToUpload.get(s);
+						//The token could be expired since the Uploader has been created.
 						w.resetUploader();
 						w.start();
 						LOG.info("Upload {} started",w.videodata.snippet.title);
