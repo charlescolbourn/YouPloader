@@ -30,7 +30,7 @@ public class GetVersion {
 	public static String[] get(){
 		try {
 			SimpleHTTP http = new SimpleHTTP();
-			String data = http.get("https://version.youploader.com/latest_version?"+System.currentTimeMillis());
+			String data = http.get("https://raw.githubusercontent.com/becast/YouPloader/master/version?"+System.currentTimeMillis());
 			return data.split(";");
 		} catch (Exception e) {
 			LOG.error("Could not get version! ",e);

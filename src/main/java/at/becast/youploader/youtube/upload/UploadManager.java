@@ -192,7 +192,8 @@ public class UploadManager implements Runnable{
 				if(_Uploading.get(i).id == upload_id){
 					UploadWorker w = _Uploading.get(i);
 					w.abort();
-					_Uploading.remove(i);
+					//_Uploading.remove(i);
+					this.delete(upload_id);
 					w.delete();
 					startNextUpload();
 				}

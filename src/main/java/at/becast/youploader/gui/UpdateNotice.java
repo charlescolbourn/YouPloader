@@ -199,7 +199,7 @@ public class UpdateNotice extends JDialog implements ActionListener {
         InputStream is = null;
         try {
             fl = new File(System.getProperty("user.dir") + File.separator +"update.zip");
-            dl = new URL("https://version.youploader.com/updates/" + this.updatefile);
+            dl = new URL("https://github.com/becast/YouPloader/releases/download/" + this.updatefile);
             os = new FileOutputStream(fl);
             is = dl.openStream();
 
