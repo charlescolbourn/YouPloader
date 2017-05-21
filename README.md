@@ -1,10 +1,5 @@
 [![forthebadge](http://forthebadge.com/images/badges/gluten-free.svg)](http://forthebadge.com) [![forthebadge](http://forthebadge.com/images/badges/built-with-love.svg)](http://forthebadge.com)
 
-
-# YouTube has changed their site and made YouPloader unable to monetize videos with the hacky way it did before since YouTube has not enabled the API to set these kind of things. Since the program also lost it's use for me the active developement has ceased.
-# Feel free to fork! If you want to take over you can message me.
-
-
 # YouPloader
 
 YouPloader is an Java based, multi platform YouTube uploader aiming to make uploads convenient and manageable.
@@ -12,10 +7,10 @@ Inspired by the “Simple Java YouTube Uploader” by Dennis Fischer, which is n
 YouPloader is released under the MIT Licence.
 Currently YouPloader is in beta and the first releases have been published!
 
-#ToDos
+# ToDos
 Writeup of compilation process & Pull requests
 
-#Help
+# Help
 You can help translate YouPloader into your language. Simply check out /src/main/resources/lang/lang.properties
 Translate the strings into your language and save them as lang_(Two char iso code).properties (e.g. lang_fr.properties for French)
 Send a pull request and I will happily credit you!
