@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -163,6 +164,11 @@ public class UploadManager implements Runnable{
 					}
 					LOG.info("Updating Metadata");
 					w.frame.getProgressBar().setString(String.format(LANG.getString("Upload.Metadata")));
+					try {
+						Thread.sleep(TimeUnit.SECONDS.toMillis(10));
+					} catch (InterruptedException e1) {
+						LOG.info("Can't sleep!");
+					}
 					MetadataUpdater u = new MetadataUpdater(w.acc_id,w.upload);
 					try {
 						u.updateMetadata();

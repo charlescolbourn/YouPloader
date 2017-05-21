@@ -125,7 +125,7 @@ public class Browser extends JFrame {
                 engine.locationProperty().addListener(new ChangeListener<String>() {
                     @Override
                     public void changed(ObservableValue<? extends String> ov, String oldValue, final String newValue) {
-                    	if(newValue.contains("www.youtube.com") && !newValue.contains("accounts.youtube.com/accounts/SetSID") && !newValue.contains("accounts.google.com/signin/challenge/") && !newValue.contains("accounts.google.com/ServiceLogin") && !newValue.contains("accounts.google.com/CheckCookie") && !newValue.contains("&pageId=") ){
+                    	if(newValue.contains("www.youtube.com") && !newValue.contains("accounts.google.com/signin/selectchallenge") && !newValue.contains("accounts.youtube.com/accounts/SetSID") && !newValue.contains("accounts.google.com/signin/challenge/") && !newValue.contains("accounts.google.com/ServiceLogin") && !newValue.contains("accounts.google.com/CheckCookie") && !newValue.contains("&pageId=") ){
                     		acc.setCookie(persistentCookieStore.getSerializeableCookies());
                     		if(listener){
                     			loadURL("https://google.com/device");

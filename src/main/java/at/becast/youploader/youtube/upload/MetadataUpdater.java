@@ -91,10 +91,15 @@ public class MetadataUpdater {
 		 //var session_token = "(.*)";
 		String token = null;
 		Pattern r = Pattern.compile("var session_token = \"(.*?)\";");
+		Pattern rnew = Pattern.compile(".*'XSRF_TOKEN': \"(.*?)\",");
 		Matcher m = r.matcher(body);
+		Matcher mnew = rnew.matcher(body);
 		if (m.find( )) {
 			token =  m.group().replace("var session_token = \"", "").replace("\";", "");;
 			LOG.debug("Got Token {}",token);
+		}else if(mnew.find()){
+			token = mnew.group(1);
+			LOG.debug("Got Token (new algo) {}",token);
 		}else{
 			LOG.error("Token not found!");
 			return;
@@ -122,17 +127,18 @@ public class MetadataUpdater {
 		}
 		String modified = Joiner.on(",").join(mdata.keySet());
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("session_token", token);
+		params.putAll(mdata);
 		params.put("modified_fields", modified);
 		params.put("video_id", upload.id);
-		params.putAll(mdata);
-		
+		params.put("session_token", token);
+	
 		String url = "https://www.youtube.com/metadata_ajax?action_edit_video=1";
 		URL obj = new URL(url);
 		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 		con.setRequestMethod("POST");
 		con.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
 		con.setRequestProperty("User-Agent", Main.APP_NAME+" "+Main.VERSION);
+		con.setRequestProperty("Referer", "https://www.youtube.com/edit?o=U&video_id="+upload.id);
 		con.setDoOutput(true);
 		DataOutputStream wr = new DataOutputStream(con.getOutputStream());
 		String data = Joiner.on("&").withKeyValueSeparator("=").join(params);
@@ -152,6 +158,7 @@ public class MetadataUpdater {
 			response.append(inputLine);
 		}
 		in.close();
+		LOG.debug("Response {}",response);
 	}
 	
 	private String boolConvert(boolean value){
