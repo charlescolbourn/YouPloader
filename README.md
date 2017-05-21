@@ -1,5 +1,10 @@
 [![forthebadge](http://forthebadge.com/images/badges/gluten-free.svg)](http://forthebadge.com) [![forthebadge](http://forthebadge.com/images/badges/built-with-love.svg)](http://forthebadge.com)
 
+
+# YouTube has changed their site and made YouPloader unable to monetize videos with the hacky way it did before since YouTube has not enabled the API to set these kind of things. Since the program also lost it's use for me the active developement has ceased.
+# Feel free to fork! If you want to take over you can message me.
+
+
 # YouPloader
 
 YouPloader is an Java based, multi platform YouTube uploader aiming to make uploads convenient and manageable.
