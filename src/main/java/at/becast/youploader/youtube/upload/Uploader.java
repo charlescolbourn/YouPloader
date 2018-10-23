@@ -76,10 +76,15 @@ public class Uploader {
 
 		stream = new UploadStream(upload.file, event);
 		stream.setSpeedLimit(limit);
+		int restarts = 0;
 		try{
 			this.http.put(upload.url, headers, stream, event);
 		} catch(ClientProtocolException e){
-			LOG.error("Client Protocol Exception ", e);
+			LOG.error("Client Protocol Exception restarted " + restarts + " times", e);
+			if (restarts<5){
+				restarts++;
+				this.resumeUpload(upload, event, limit);
+			}
 		}
 		stream.setFinished();
 		stream.close();

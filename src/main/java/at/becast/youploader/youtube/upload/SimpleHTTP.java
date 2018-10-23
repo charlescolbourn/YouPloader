@@ -5,6 +5,7 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpVersion;
 import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
@@ -27,6 +28,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.SocketException;
 import java.util.Map;
 
 public class SimpleHTTP {
@@ -41,6 +43,7 @@ public class SimpleHTTP {
     this.chc = HttpClients.createDefault();
     config = RequestConfig.custom()
             .setExpectContinueEnabled(true)
+            .setSocketTimeout(600000)
             .build();
   } 
 
@@ -140,15 +143,18 @@ public String postLog(Map<String, String> headers) throws IOException, UploadExc
     this.put.setEntity(new InputStreamEntity(stream));
     try {
     	response = this.chc.execute(this.put);
-    }catch(Exception e){
-    	if(!aborted){
-	    	LOG.error("Upload failed ", e);
-	    	if(callback != null){
-	    		callback.onError(false);
-	    	}
-    	}else{
-    		LOG.info("Upload aborted");
-    	}
+    }catch(SocketException se){
+    	LOG.error("Socket exception thrown, trying to restart");
+    	throw new ClientProtocolException("trying to restart");
+//    }catch(Exception e){
+//    	if(!aborted){
+//    		LOG.error("Upload failed ", e);
+//    		if(callback != null){
+//    			callback.onError(false);
+//    		}
+//    	}else{
+//    		LOG.info("Upload aborted");
+//    	}
     }
     if(response!=null){
     	StatusLine l = response.getStatusLine();

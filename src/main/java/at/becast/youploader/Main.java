@@ -58,11 +58,14 @@ public class Main {
 	public static boolean debug = false;
 	public static final String DB_FILE = System.getProperty("user.home") + "/YouPloader/data/data.db";
 	public static final String APP_NAME = "YouPloader";
-	public static final String VERSION = "0.9.5";
+	public static final String VERSION = "0.9.6";
 	public static final int DB_VERSION = 11;
 	private static final ResourceBundle LANG = UTF8ResourceBundle.getBundle("lang", Locale.getDefault());
 	public static Settings s;
 	public static Boolean firstlaunch = false;
+	
+	private enum OS_MODE { linux, windows };
+	private static final OS_MODE CURRENT_OS_MODE;
 	
 	/**
 	 * The YouPloader main Method
@@ -72,7 +75,8 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		LOG.info(APP_NAME + " " + VERSION + " starting.", Main.class);
-		setCurrentProcessExplicitAppUserModelID("BeCast.YouPloader");
+		if (CURRENT_OS_MODE.equals(OS_MODE.windows))
+			setCurrentProcessExplicitAppUserModelID("BeCast.YouPloader");
 		//We want IPv4
 		System.setProperty("java.net.preferIPv4Stack" , "true");
 		//Debug Switch
@@ -175,19 +179,18 @@ public class Main {
 		return DB_VERSION;
 	}
 
-	  public static void setCurrentProcessExplicitAppUserModelID(final String appID)
-	  {
-	    if (SetCurrentProcessExplicitAppUserModelID(new WString(appID)).longValue() != 0)
-	      throw new RuntimeException("unable to set current process explicit AppUserModelID to: " + appID);
-	  }
+	public static void setCurrentProcessExplicitAppUserModelID(final String appID) {
+		if (SetCurrentProcessExplicitAppUserModelID(new WString(appID)).longValue() != 0)
+			throw new RuntimeException("unable to set current process explicit AppUserModelID to: " + appID);
+	}
 
-	  private static native NativeLong GetCurrentProcessExplicitAppUserModelID(PointerByReference appID);
-	  private static native NativeLong SetCurrentProcessExplicitAppUserModelID(WString appID);
+	private static native NativeLong GetCurrentProcessExplicitAppUserModelID(PointerByReference appID);
+	private static native NativeLong SetCurrentProcessExplicitAppUserModelID(WString appID);
 
-
-	  static
-	  {
-	    Native.register("shell32");
-	  }
+	static {
+		CURRENT_OS_MODE = System.getProperty("os.name").equals("Linux") ? OS_MODE.linux : OS_MODE.windows;
+		if (CURRENT_OS_MODE.equals(OS_MODE.windows))
+			Native.register("shell32");
+	}
 
 }
