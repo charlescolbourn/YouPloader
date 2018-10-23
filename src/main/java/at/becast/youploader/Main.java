@@ -64,9 +64,6 @@ public class Main {
 	public static Settings s;
 	public static Boolean firstlaunch = false;
 	
-	private enum OS_MODE { linux, windows };
-	private static final OS_MODE CURRENT_OS_MODE;
-	
 	/**
 	 * The YouPloader main Method
 	 * 
@@ -75,8 +72,11 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		LOG.info(APP_NAME + " " + VERSION + " starting.", Main.class);
-		if (CURRENT_OS_MODE.equals(OS_MODE.windows))
+		if (PlatformUtil.isWindows())
+		{
 			setCurrentProcessExplicitAppUserModelID("BeCast.YouPloader");
+		}
+		
 		//We want IPv4
 		System.setProperty("java.net.preferIPv4Stack" , "true");
 		//Debug Switch
@@ -188,9 +188,10 @@ public class Main {
 	private static native NativeLong SetCurrentProcessExplicitAppUserModelID(WString appID);
 
 	static {
-		CURRENT_OS_MODE = System.getProperty("os.name").equals("Linux") ? OS_MODE.linux : OS_MODE.windows;
-		if (CURRENT_OS_MODE.equals(OS_MODE.windows))
+		if (PlatformUtil.isWindows())
+		{
 			Native.register("shell32");
+		}
 	}
 
 }
