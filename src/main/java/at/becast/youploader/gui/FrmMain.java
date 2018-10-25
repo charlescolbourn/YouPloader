@@ -1435,7 +1435,7 @@ public class FrmMain extends JFrame implements IMainMenu {
 	protected void changeCategory() {
 		EditPanel edit = (EditPanel) ss1.contentPane;
 		edit.getCmbGameTitle().setEnabled(false);
-		if (cmbCategory.getSelectedItem() == Categories.GAMES) {
+		if (cmbCategory.getSelectedItem() == Categories.GAMES) { // not working correctly on Ubuntu. Something to do with locale?
 			edit.getCmbGameTitle().setEnabled(true); //Disabled until further Test
 		}
 	}

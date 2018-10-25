@@ -16,6 +16,7 @@ package at.becast.youploader.youtube.upload;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.CookieHandler;
 import java.net.CookieManager;
@@ -24,6 +25,9 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,6 +53,13 @@ public class GameData {
 		persistentCookieStore.setSerializeableCookies(this.acc.getCookie());
 		CookieHandler.setDefault(cmrCookieMan);
 	}
+	
+	private String getStringFromStream (InputStream stream) throws IOException
+	{
+		try (BufferedReader buffer = new BufferedReader(new InputStreamReader(stream))) {
+			return buffer.lines().collect(Collectors.joining("\n"));
+		}
+	}
 
 	public List<GameDataItem> getGames(String search) throws IOException {
 		String url = String.format("https://www.youtube.com/game_suggestions_ajax?action_get_game_suggestions=1&token=%s&max_matches=10&use_similar=0",URLEncoder.encode(search,"UTF-8"));
@@ -57,15 +68,20 @@ public class GameData {
 		con.setRequestMethod("GET");
 		con.setRequestProperty("Accept","text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
 		con.setRequestProperty("User-Agent", Main.APP_NAME+" "+Main.VERSION);
-		BufferedReader in = new BufferedReader(
-		        new InputStreamReader(con.getInputStream()));
-		String inputLine;
-		StringBuffer response = new StringBuffer();
-
-		while ((inputLine = in.readLine()) != null) {
-			response.append(inputLine);
+		String response = "";
+		if (con.getErrorStream() != null)
+		{
+			LOG.info(String.format("Error getting game data %s", getStringFromStream(con.getErrorStream()) ));
 		}
-		in.close();
+		
+		//TODO write a test for this change 
+		else if (con.getInputStream() != null)
+		{
+			response = getStringFromStream(con.getInputStream());
+			LOG.info(String.format("Game data returned %s", response ));
+
+		}
+
 		String data = response.substring(1, response.length()-1).toString();
 		String[] items = JSONSplitter.split(data);
 		for(String i : items){
